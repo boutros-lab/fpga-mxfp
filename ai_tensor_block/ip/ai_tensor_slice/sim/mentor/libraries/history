@@ -1,0 +1,6 @@
+- Entry: 1
+  Time: Wed Nov 19 10:50:51 2025
+  Command: /tools/altera/quartus-pro/25.3/questa_fe/linux_x86_64/qrun -compile -noautoorder -parallel -outdir ./libraries -vlog.options -end -vcom.options -end -vlog.ext=+.vo -vlog.ext=+.vt -vcom.ext=+.vho -sv -suppress 13338 -makelib work /tools/altera/quartus-pro/25.3/quartus/eda/sim_lib/simsf_dpi.cpp -end 
+- Entry: 2
+  Time: Wed Nov 19 10:50:52 2025
+  Command: /tools/altera/quartus-pro/25.3/questa_fe/linux_x86_64/qrun -compile -noautoorder -parallel -outdir ./libraries -vlog.options -end -vcom.options -end -vlog.ext=+.vo -vlog.ext=+.vt -vcom.ext=+.vho -sv -suppress 13338 -f modelsim_com.f 

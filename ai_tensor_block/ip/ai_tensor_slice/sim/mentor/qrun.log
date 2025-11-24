@@ -1,0 +1,33 @@
+Questa Altera FPGA Edition-64 qrun 2025.2 Utility 2025.05 May 31 2025
+Start time: 10:50:52 on Nov 19,2025
+qrun -compile -noautoorder -parallel -outdir ./libraries -vlog.options -end -vcom.options -end -vlog.ext=+.vo -vlog.ext=+.vt -vcom.ext=+.vho -sv -suppress 13338 -f modelsim_com.f 
+** Note: (qrun-220) 'modelsim.ini' is used as the ini file.
+Mapping library 'agilex_native_tensor_dsp_100' to './libraries/agilex_native_tensor_dsp_100'.
+** Note: (vmap-220) 'modelsim.ini' is used as the ini file.
+Mapping library 'ai_tensor_slice' to './libraries/ai_tensor_slice'.
+** Note: (vmap-220) 'modelsim.ini' is used as the ini file.
+Questa Altera FPGA Edition-64 vlog 2025.2 Compiler 2025.05 May 31 2025
+Start time: 10:50:52 on Nov 19,2025
+vlog -sv -suppress 13338 ../../agilex_native_tensor_dsp_100/sim/ai_tensor_slice_agilex_native_tensor_dsp_100_jv5neqi.v -work ./libraries/agilex_native_tensor_dsp_100 -statslog ./libraries/stats_log -csession=incr -csessiondir ./libraries/sessions 
+** Note: (vlog-220) 'modelsim.ini' is used as the ini file.
+-- Compiling module ai_tensor_slice_agilex_native_tensor_dsp_100_jv5neqi
+
+Top level modules:
+	ai_tensor_slice_agilex_native_tensor_dsp_100_jv5neqi
+End time: 10:50:52 on Nov 19,2025, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
+Questa Altera FPGA Edition-64 vlog 2025.2 Compiler 2025.05 May 31 2025
+Start time: 10:50:52 on Nov 19,2025
+vlog -sv -suppress 13338 ../ai_tensor_slice.v -work ./libraries/ai_tensor_slice -statslog ./libraries/stats_log -csession=incr -csessiondir ./libraries/sessions 
+** Note: (vlog-220) 'modelsim.ini' is used as the ini file.
+-- Compiling module ai_tensor_slice
+
+Top level modules:
+	ai_tensor_slice
+End time: 10:50:52 on Nov 19,2025, Elapsed time: 0:00:00
+Errors: 0, Warnings: 0
+End time: 10:50:52 on Nov 19,2025, Elapsed time: 0:00:00
+*** Summary *********************************************
+    qrun: Errors:   0, Warnings:   0
+    vlog: Errors:   0, Warnings:   0
+  Totals: Errors:   0, Warnings:   0

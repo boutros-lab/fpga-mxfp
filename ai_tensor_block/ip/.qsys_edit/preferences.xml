@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<preferences>
+ <debug showDebugMenu="0" />
+ <window width="1100" height="800" x="193" y="107" />
+ <generation
+   path=""
+   system_verilog_wrapper="1"
+   simulation="VERILOG"
+   modelsim="1"
+   modelsim_flow="QRUN" />
+</preferences>
