@@ -1,6 +1,6 @@
 module packed_multiplier #(
     parameter width = 3,
-    parameter number = 18 / 2 / (width + 1)
+    parameter number = 18 / 2 / width
 ) (
     input logic clk,
     input logic rst,
@@ -16,21 +16,22 @@ reg [35:0] result_reg;
 
 // 18 x 18
 // width = 3
-// XXXXXXXAAAXXXXXBBB
+// XXXAAAXXXBBBXXXCCC
 // XXXXXXXXXXXXXXXSSS
+// XXXXXXAAAAAAXXXXXXBBBBBBXXXXXXCCCCCC
 // width = 2
-// XXXXAAXXXXBBXXXXCC
+// XXXXAAXXBBXXCCXXDD
 // XXXXXXXXXXXXXXXXSS
-// width = 1
-// XXXXXAXXXBXXXCXXXD
-// XXXXXXXXXXXXXXXXXS
+// XXXXXXXXAAAAXXXXBBBBXXXXCCCCXXXXDDDD
 
 for (genvar i = 0; i < number; i++) begin : gen_operand_packing
-    assign operandA[i * 2 * (width + 1) +: width] = operands[i]; // place operand
-    assign operandA[i * 2 * (width + 1) + width +: (width + 2)] = {(width + 2){1'b0}}; // pad rest with zeros
-    assign products[i] = result_reg[i * 2 * (width + 1) +: 2 * width]; // extract product
+    assign operandA[i * 2 * width +: width] = operands[i]; // place operand
+    assign operandA[i * 2 * width + width +: width] = {(width){1'b0}}; // pad other half with zeros
+    assign products[i] = result_reg[i * 2 * width +: 2 * width]; // extract product
 end
-assign operandA[number * 2 * (width + 1) +: (18 - number * 2 * (width + 1))] = {(18 - number * 2 * (width + 1)){1'b0}}; // pad rest with zeros
+if (number * 2 * width < 18) begin
+    assign operandA[number * 2 * width +: (18 - number * 2 * width)] = {(18 - number * 2 * width){1'b0}}; // pad rest with zeros
+end
 assign operandB[0 +: width] = sharedOperand; // place shared operand
 assign operandB[width +: (18 - width)] = {(18 - width){1'b0}}; // pad rest with zeros
 
