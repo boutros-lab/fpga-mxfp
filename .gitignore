@@ -1,2 +1,12 @@
 work
 transcript
+dni
+qdb
+*.rpt
+*.pin
+*.qpf
+*.qsf
+*.summary
+*.done
+*_save_view.txt
+*.qws

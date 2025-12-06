@@ -1,47 +1,33 @@
-module packed_multiplier #(
-    parameter width = 3,
-    parameter number = 18 / 2 / width
+module packed_multiplier # (
+    parameter op_width = 3,
+    parameter mul_width = 18,
+    parameter is_registered = 1,
+    localparam num_ops = mul_width / 2 / op_width
 ) (
     input logic clk,
-    input logic rst,
-    input logic [width-1:0] operands [number-1:0],
-    input logic [width-1:0] sharedOperand,
-    output logic [2*width-1:0] products [number-1:0]
+    input logic [op_width-1:0] operands [num_ops-1:0], sharedOperand,
+    output logic [2*op_width-1:0] products [num_ops-1:0]
 );
-generate
 
-wire [17:0] operandA; 
-wire [17:0] operandB;
-reg [35:0] result_reg;
+// Internal packed signals connecting to hard multiplier
+wire [mul_width-1:0] mul_x, mul_y; 
+logic [2 * mul_width-1:0] mul_result; // registered output if needed
 
-// 18 x 18
-// width = 3
-// XXXAAAXXXBBBXXXCCC
-// XXXXXXXXXXXXXXXSSS
-// XXXXXXAAAAAAXXXXXXBBBBBBXXXXXXCCCCCC
-// width = 2
-// XXXXAAXXBBXXCCXXDD
-// XXXXXXXXXXXXXXXXSS
-// XXXXXXXXAAAAXXXXBBBBXXXXCCCCXXXXDDDD
-
-for (genvar i = 0; i < number; i++) begin : gen_operand_packing
-    assign operandA[i * 2 * width +: width] = operands[i]; // place operand
-    assign operandA[i * 2 * width + width +: width] = {(width){1'b0}}; // pad other half with zeros
-    assign products[i] = result_reg[i * 2 * width +: 2 * width]; // extract product
+// Pack and unpack operands and products
+for (genvar i = 0; i < num_ops; i++) begin : gen_operand_packing
+    assign mul_x[i * 2 * op_width +: op_width] = operands[i]; // place operand
+    assign mul_x[i * 2 * op_width + op_width +: op_width] = {(op_width){1'b0}}; // pad other half with zeros
+    assign products[i] = mul_result[i * 2 * op_width +: 2 * op_width]; // extract product
 end
-if (number * 2 * width < 18) begin
-    assign operandA[number * 2 * width +: (18 - number * 2 * width)] = {(18 - number * 2 * width){1'b0}}; // pad rest with zeros
-end
-assign operandB[0 +: width] = sharedOperand; // place shared operand
-assign operandB[width +: (18 - width)] = {(18 - width){1'b0}}; // pad rest with zeros
+if (num_ops * 2 * op_width < mul_width) // pad remaining bits with zeros
+    assign mul_x[num_ops * 2 * op_width +: (mul_width - num_ops * 2 * op_width)] = {(mul_width - num_ops * 2 * op_width){1'b0}};
+assign mul_y[0 +: op_width] = sharedOperand; // place shared operand
+assign mul_y[op_width +: (mul_width - op_width)] = {(mul_width - op_width){1'b0}}; // pad rest with zeros
 
-always_ff @(posedge clk) begin
-    if (rst) begin
-        result_reg <= 36'b0; // reset result register
-    end else begin
-        result_reg <= operandA * operandB; // perform multiplication
-    end
-end
+// Multiplication can be registered or combinational
+if (is_registered)
+    always_ff @(posedge clk) mul_result <= mul_x * mul_y; // registered multiplication
+else
+    assign mul_result = mul_x * mul_y; // combinational multiplication
 
-endgenerate
 endmodule
