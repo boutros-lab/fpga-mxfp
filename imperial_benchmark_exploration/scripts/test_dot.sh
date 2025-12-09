@@ -5,11 +5,7 @@ mkdir sim
 
 cd sim
 
-MXROOT="/home/msmekhem/lp_dsp/MX-for-FPGA"
-RTLROOT="/home/msmekhem/lp_dsp/rtl"
-TBROOT="/home/msmekhem/lp_dsp/tb"
-
-mul_int="$RTLROOT/mul_int.sv"
+mul_int="$RTL_ROOT/mul_int.sv"
 
 exp_width=2
 man_width=1
@@ -60,8 +56,8 @@ while getopts "e:m:k:i:o:h" opt; do
     esac
 done
 
-xvlog --sv -svlog $TBROOT/dot_fp_tb.sv $RTLROOT/dot_fp_staged.sv $RTLROOT/pipeline.sv $MXROOT/src/dot/dot_fp.sv $MXROOT/src/util/arith/vec_mul_fp.sv \
-	$MXROOT/src/util/arith/vec_sum_int.sv $MXROOT/src/util/arith/mul_fp.sv $mul_int -d EXP_WIDTH=$exp_width -d MAN_WIDTH=$man_width \
+xvlog --sv -svlog $TB_ROOT/dot_fp_tb.sv $RTL_ROOT/dot_fp_staged.sv $RTL_ROOT/pipeline.sv $MX_ROOT/src/dot/dot_fp.sv $MX_ROOT/src/util/arith/vec_mul_fp.sv \
+	$MX_ROOT/src/util/arith/vec_sum_int.sv $MX_ROOT/src/util/arith/mul_fp.sv $mul_int -d EXP_WIDTH=$exp_width -d MAN_WIDTH=$man_width \
 	-d K=$k -d INPUT_STAGES=$input_stages -d OUTPUT_STAGES=$output_stages
 xelab work.dot_fp_tb -R
 
