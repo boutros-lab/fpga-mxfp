@@ -11,7 +11,8 @@
 #   result_fp32.hex - fp32 representation of dot product result, shared exponent taken into account
 #
 # Usage:
-# TODO
+#   Example generating data for E3M2, vector length 32, 64 tests:
+#     ./generate_data.py -e 3 -m 2 -k 32 -t 64
 
 import os
 import random
@@ -112,6 +113,10 @@ def mult_mxfp(num0, num1, exp_bits, man_bits, mult_bits):
     # Convert to two's complement
     man_res = get_twos_complement(sign_res, man_res, mult_bits - 1)
 
+    mask = (1 << mult_bits + 1) - 1
+    
+    assert (man_res & mask) == man_res, "ERROR: mult_mxfp, multiplication result exceeds mult_bits."
+
     return man_res
 
 # Find dot product for 2 fixed point vectors
@@ -121,9 +126,9 @@ def dot_mxfp(vector_a, vector_b, exp_bits, man_bits, mult_bits, sum_bits):
     for a, b in zip(vector_a, vector_b):
         result += mult_mxfp(a, b, exp_bits, man_bits, mult_bits)
 
-    mask = 1 << sum_bits - 1
+    mask = (1 << sum_bits + 1) - 1
 
-    #assert (result & mask) == result, "ERROR: dot_mxfp, dot product result exceeds sum_bits."
+    assert (result & mask) == result, "ERROR: dot_mxfp, dot product result exceeds sum_bits."
 
     return result
 
@@ -138,13 +143,17 @@ def fixed_to_fp32(num, bits, shared_exp):
     # Convert bin to fp32 (struct)
     return 0
 
-def write_vector_list_to_file(vector_list, shared_exponent_list, file):
-    with open(file, 'w') as f:
-        for vector, shared_exponent in zip(vector_list, shared_exponent_list):
+def write_vector_list_to_file(vector_list, shared_exp_list, vector_file, shared_exp_file):
+    with open(vector_file, 'w') as f:
+        for vector in vector_list:
             for element in vector:
                 f.write(f'{element:x} ')
 
-            f.write(f'{shared_exponent:x}\n')
+            f.write(f'\n')
+
+    with open(shared_exp_file, 'w') as f:
+        for shared_exp in shared_exp_list:
+            f.write(f'{shared_exp:x}\n')
 
 def write_result_list_to_file(result_list, file):
     with open(file, 'w') as f:
@@ -174,6 +183,10 @@ def main():
     mult_bits  = 2 * fixed_bits # width of fixed point multiplication result
     sum_bits   = mult_bits + math.ceil(math.log2(k)) # sum of products
 
+    # Position of the point in fixed point representations
+    point_position = 0
+    mult_point_position = point_position * 2
+
     # Get exponent bias
     bias = 2**(exp_bits-1) - 1
 
@@ -185,7 +198,9 @@ def main():
     os.makedirs(OUTPUT_ROOT, exist_ok=True)
 
     vector_a_file     = OUTPUT_ROOT + "vector_a.hex"
+    shared_exp_a_file = OUTPUT_ROOT + "shared_exp_a.hex"
     vector_b_file     = OUTPUT_ROOT + "vector_b.hex"
+    shared_exp_b_file = OUTPUT_ROOT + "shared_exp_b.hex"
     fixed_result_file = OUTPUT_ROOT + "fixed_result.hex"
     fp32_result_file  = OUTPUT_ROOT + "fp32_result.hex"
 
@@ -210,8 +225,8 @@ def main():
         fixed_result_list.append(dot_mxfp(vector_a, vector_b, exp_bits, man_bits, mult_bits, sum_bits))
 
     # Write to output files
-    write_vector_list_to_file(vector_a_list, shared_exp_a_list, vector_a_file)
-    write_vector_list_to_file(vector_b_list, shared_exp_b_list, vector_b_file)
+    write_vector_list_to_file(vector_a_list, shared_exp_a_list, vector_a_file, shared_exp_a_file)
+    write_vector_list_to_file(vector_b_list, shared_exp_b_list, vector_b_file, shared_exp_b_file)
 
     write_result_list_to_file(fixed_result_list, fixed_result_file)
 
