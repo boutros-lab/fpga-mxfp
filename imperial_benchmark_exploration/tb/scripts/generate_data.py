@@ -1,11 +1,39 @@
 #!/usr/bin/env python3
+#
+# Generate data for MXFP dot product circuits
+#
+# Generates the following inputs vectors:
+#   vector_a.hex - space seperated argument defined MXFP vector of length K, final value is an 8-bit shared exponent
+#   vector_b.hex - space seperated argument defined MXFP vector of length K, final value is an 8-bit shared exponent
+#
+# Generates the following output vectors:
+#   result_int.hex  - fixed point representation of dot product result, shared exponent not taken into account
+#   result_fp32.hex - fp32 representation of dot product result, shared exponent taken into account
+#
+# Usage:
+# TODO
 
+import os
 import random
 import math
+import struct
 
 # Create a random MXFP number
 def generate_mxfp(exp_bits, man_bits):
     return random.getrandbits(1 + exp_bits + man_bits)
+
+# Create a random shared exponent
+def generate_shared_exponent(exp_bits):
+    return random.getrandbits(exp_bits)
+
+# Create a k length vector of MXFP numbers
+def generate_mxfp_vector(exp_bits, man_bits, k):
+    vector = []
+
+    for i in range(k):
+        vector.append(generate_mxfp(exp_bits, man_bits))
+
+    return vector
 
 # Convert number to two's complement
 def get_twos_complement(sign, num, bits):
@@ -44,6 +72,22 @@ def get_components_shift(num, exp_bits, man_bits):
 
     return sign, exp, man
 
+# Convert an MXFP number to fp32
+def mxfp_to_fp32(num, exp_bits, man_bits, bias):
+    sign, exp, man = get_components(num, exp_bits, man_bits)
+
+    man = man & ((1 << man_bits) - 1) # remove implied 1
+
+    fp32_bias = 2**(8-1) - 1
+
+    exp = exp + fp32_bias - bias # shift exponent to new bias
+
+    fp32_bits = (sign << 31) + (exp << 23) + (man << (23 - man_bits))
+
+    fp32 = struct.unpack('>f', struct.pack('>I', fp32_bits))[0]
+
+    return fp32
+
 # Convert an MXFP number to a fixed point representation
 def mxfp_to_fixed(num, exp_bits, man_bits):
     sign, exp, man = get_components_shift(num, exp_bits, man_bits)
@@ -66,12 +110,22 @@ def mult_mxfp(num0, num1, exp_bits, man_bits, mult_bits):
     man_res = man_res << (exp_res - (exp0 != 0) - (exp1 != 0))
 
     # Convert to two's complement
-    man_res = get_twos_complement(sign_res, man_res, mult_bits)
+    man_res = get_twos_complement(sign_res, man_res, mult_bits - 1)
 
     return man_res
 
-def dot_mxfp():
-    return 0
+# Find dot product for 2 fixed point vectors
+def dot_mxfp(vector_a, vector_b, exp_bits, man_bits, mult_bits, sum_bits):
+    result = 0
+
+    for a, b in zip(vector_a, vector_b):
+        result += mult_mxfp(a, b, exp_bits, man_bits, mult_bits)
+
+    mask = 1 << sum_bits - 1
+
+    #assert (result & mask) == result, "ERROR: dot_mxfp, dot product result exceeds sum_bits."
+
+    return result
 
 # Convert fixed point representation to FP32
 def fixed_to_fp32(num, bits, shared_exp):
@@ -84,6 +138,19 @@ def fixed_to_fp32(num, bits, shared_exp):
     # Convert bin to fp32 (struct)
     return 0
 
+def write_vector_list_to_file(vector_list, shared_exponent_list, file):
+    with open(file, 'w') as f:
+        for vector, shared_exponent in zip(vector_list, shared_exponent_list):
+            for element in vector:
+                f.write(f'{element:x} ')
+
+            f.write(f'{shared_exponent:x}\n')
+
+def write_result_list_to_file(result_list, file):
+    with open(file, 'w') as f:
+        for result in result_list:
+            f.write(f'{result:x}\n')
+
 def main():
     import argparse
 
@@ -91,34 +158,62 @@ def main():
     parser.add_argument('-e', '--exp_bits', type=int, default=2)
     parser.add_argument('-m', '--man_bits', type=int, default=1)
     parser.add_argument('-k', '--vector_length', type=int, default=8)
+    parser.add_argument('-t', '--test_length', type=int, default=256)
 
     args = parser.parse_args()
 
-    exp_bits = args.exp_bits
-    man_bits = args.man_bits
-    k        = args.vector_length
+    exp_bits        = args.exp_bits
+    man_bits        = args.man_bits
+    k               = args.vector_length
+    shared_exp_bits = 8
+
+    test_length = args.test_length
 
     # Get widths of intermediate representations
-    fixed_bits = 2**exp_bits + man_bits
-    mult_bits  = 2 * fixed_bits
-    sum_bits   = mult_bits + math.ceil(math.log2(k))
+    fixed_bits = 2**exp_bits + man_bits # width of fixed point representation of MXFP number
+    mult_bits  = 2 * fixed_bits # width of fixed point multiplication result
+    sum_bits   = mult_bits + math.ceil(math.log2(k)) # sum of products
 
     # Get exponent bias
     bias = 2**(exp_bits-1) - 1
 
-    test_mxfp  = generate_mxfp(exp_bits, man_bits)
-    test_mxfp1 = generate_mxfp(exp_bits, man_bits)
+    # Set output paths
+    PROJ_ROOT = os.environ['PROJ_ROOT']
 
-    test_fixed  = mxfp_to_fixed(test_mxfp, exp_bits, man_bits)
-    test_fixed1 = mxfp_to_fixed(test_mxfp1, exp_bits, man_bits)
+    OUTPUT_ROOT = PROJ_ROOT + "/data/"
+    
+    os.makedirs(OUTPUT_ROOT, exist_ok=True)
 
-    test_mult = mult_mxfp(test_mxfp, test_mxfp1, exp_bits, man_bits, mult_bits)
+    vector_a_file     = OUTPUT_ROOT + "vector_a.hex"
+    vector_b_file     = OUTPUT_ROOT + "vector_b.hex"
+    fixed_result_file = OUTPUT_ROOT + "fixed_result.hex"
+    fp32_result_file  = OUTPUT_ROOT + "fp32_result.hex"
 
-    print(f"Original Number 0: 0b{test_mxfp:04b}")
-    print(f"Fixed Point     0: 0b{test_fixed:0{fixed_bits}b}")
-    print(f"Original Number 1: 0b{test_mxfp1:04b}")
-    print(f"Fixed Point     1: 0b{test_fixed1:0{fixed_bits}b}")
-    print(f"Mult             : 0b{test_mult:0{mult_bits}b}")
+    vector_a_list     = []
+    shared_exp_a_list = []
+    vector_b_list     = []
+    shared_exp_b_list = []
+
+    fixed_result_list = []
+    fp32_result_list  = []
+
+    # Generate input vectors
+    for i in range(test_length):
+        vector_a_list.append(generate_mxfp_vector(exp_bits, man_bits, k))
+        vector_b_list.append(generate_mxfp_vector(exp_bits, man_bits, k))
+
+        shared_exp_a_list.append(generate_shared_exponent(shared_exp_bits))
+        shared_exp_b_list.append(generate_shared_exponent(shared_exp_bits))
+
+    # Find Fixed-point dot product results
+    for vector_a, vector_b in zip(vector_a_list, vector_b_list):
+        fixed_result_list.append(dot_mxfp(vector_a, vector_b, exp_bits, man_bits, mult_bits, sum_bits))
+
+    # Write to output files
+    write_vector_list_to_file(vector_a_list, shared_exp_a_list, vector_a_file)
+    write_vector_list_to_file(vector_b_list, shared_exp_b_list, vector_b_file)
+
+    write_result_list_to_file(fixed_result_list, fixed_result_file)
 
 
 if __name__ == '__main__':
