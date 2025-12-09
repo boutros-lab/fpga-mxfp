@@ -110,6 +110,10 @@ def mult_mxfp(num0, num1, exp_bits, man_bits, mult_bits):
     # Shift by exponent
     man_res = man_res << (exp_res - (exp0 != 0) - (exp1 != 0))
 
+    # Return early to avoid generating -0
+    if man_res == 0:
+        return man_res
+
     # Convert to two's complement
     man_res = get_twos_complement(sign_res, man_res, mult_bits - 1)
 
@@ -119,16 +123,31 @@ def mult_mxfp(num0, num1, exp_bits, man_bits, mult_bits):
 
     return man_res
 
+# Sign extend two's complement number
+def sign_extend(num, orig_bits, target_bits):
+    msb = num >> (orig_bits - 1) & 1
+
+    if msb == 0:
+        return num
+    
+    bit_difference = target_bits - orig_bits
+
+    extension = ((msb << bit_difference) - 1) << orig_bits
+
+    return extension + num
+
 # Find dot product for 2 fixed point vectors
 def dot_mxfp(vector_a, vector_b, exp_bits, man_bits, mult_bits, sum_bits):
     result = 0
 
-    for a, b in zip(vector_a, vector_b):
-        result += mult_mxfp(a, b, exp_bits, man_bits, mult_bits)
-
     mask = (1 << sum_bits + 1) - 1
 
-    assert (result & mask) == result, "ERROR: dot_mxfp, dot product result exceeds sum_bits."
+    for a, b in zip(vector_a, vector_b):
+        a_mult_b = mult_mxfp(a, b, exp_bits, man_bits, mult_bits)
+
+        # Sign extend to sum_bits
+        result += sign_extend(a_mult_b, mult_bits, sum_bits)
+        result &= mask
 
     return result
 
@@ -143,6 +162,7 @@ def fixed_to_fp32(num, bits, shared_exp):
     # Convert bin to fp32 (struct)
     return 0
 
+# Write input vector to hex file
 def write_vector_list_to_file(vector_list, shared_exp_list, vector_file, shared_exp_file):
     with open(vector_file, 'w') as f:
         for vector in vector_list:
@@ -155,6 +175,7 @@ def write_vector_list_to_file(vector_list, shared_exp_list, vector_file, shared_
         for shared_exp in shared_exp_list:
             f.write(f'{shared_exp:x}\n')
 
+# Write result to hex file
 def write_result_list_to_file(result_list, file):
     with open(file, 'w') as f:
         for result in result_list:

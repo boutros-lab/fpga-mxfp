@@ -35,7 +35,7 @@ usage() {
 }
 
 # Parse command line arguments
-while getopts "e:m:k:i:o:h" opt; do
+while getopts "e:m:k:i:o:t:h" opt; do
     case ${opt} in
         e )
             exp_width=$OPTARG

@@ -83,6 +83,8 @@ module mxfp_dot_tb();
         .o_dp_q(p0_dp_out)
     );
 
+    int mismatch_count = 0;
+
     initial begin
 	#10
 
@@ -90,6 +92,8 @@ module mxfp_dot_tb();
 	$display("Width Exp:     %d", exp_width);
         $display("Width Man:     %d", man_width);
         $display("K:             %d", k);
+        $display("Mult Width:    %d", prd_width);
+        $display("Output Width:  %d", out_width);
         $display("Input Stages:  %d", input_stages);
         $display("Output Stages: %d", output_stages);
         $display("=====================================");
@@ -103,13 +107,25 @@ module mxfp_dot_tb();
 	    end
 
 	    if (p0_dp_out != fixed_result[i]) begin
-		$display("!!!!!TEST FAILED!!!!!");
+		$display("!!!!!MISMATCH!!!!!");
 		$display("TEST: %0x", i);
 		$display("DUT: %0x", p0_dp_out);
 		$display("REF: %0x", fixed_result[i]);
-		$finish();
+
+		mismatch_count = mismatch_count + 1;
 	    end
 	end
+
+	if (mismatch_count != 0) begin
+            $display("=====================================");
+	    $display("TEST FAILED");
+	    $display("Total Mismatches: %0d/%0d", mismatch_count, `TESTS);
+            $display("=====================================");
+         end else begin
+            $display("=====================================");
+	    $display("TEST PASSED");
+            $display("=====================================");
+         end
 
         $finish();
     end
