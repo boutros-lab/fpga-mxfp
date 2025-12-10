@@ -1,0 +1,7 @@
+
+WORK > DEFAULT
+DEFAULT:                              ./libraries/work/                                
+work:                                 ./libraries/work/                                
+agilex_native_floating_point_dsp_100: ./libraries/agilex_native_floating_point_dsp_100/
+sum_of_two:                           ./libraries/sum_of_two/                          
+OTHERS=_device_synopsys_sim.setup                                                      

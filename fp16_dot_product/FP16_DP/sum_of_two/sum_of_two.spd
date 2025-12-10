@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simPackage>
+ <file
+   path="agilex_native_floating_point_dsp_100/sim/sum_of_two_agilex_native_floating_point_dsp_100_pmzaffa.v"
+   type="VERILOG"
+   library="agilex_native_floating_point_dsp_100" />
+ <file
+   path="sim/sum_of_two.v"
+   type="VERILOG"
+   library="sum_of_two"
+   hasInlineConfiguration="true" />
+ <topLevel name="sum_of_two.sum_of_two" />
+ <deviceFamily name="agilex5" />
+ <device name="A5EC065BB32AE4S" />
+</simPackage>

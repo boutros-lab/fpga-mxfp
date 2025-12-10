@@ -1,0 +1,10 @@
+
+DEFINE std            $CDS_ROOT/tools/inca/files/STD/           
+DEFINE synopsys       $CDS_ROOT/tools/inca/files/SYNOPSYS/      
+DEFINE ieee           $CDS_ROOT/tools/inca/files/IEEE/          
+DEFINE ambit          $CDS_ROOT/tools/inca/files/AMBIT/         
+DEFINE vital_memory   $CDS_ROOT/tools/inca/files/VITAL_MEMORY/  
+DEFINE ncutils        $CDS_ROOT/tools/inca/files/NCUTILS/       
+DEFINE ncinternal     $CDS_ROOT/tools/inca/files/NCINTERNAL/    
+DEFINE ncmodels       $CDS_ROOT/tools/inca/files/NCMODELS/      
+DEFINE cds_assertions $CDS_ROOT/tools/inca/files/CDS_ASSERTIONS/
