@@ -77,11 +77,30 @@ def get_components_shift(num, exp_bits, man_bits):
 def mxfp_to_fp32(num, exp_bits, man_bits, bias):
     sign, exp, man = get_components(num, exp_bits, man_bits)
 
-    man = man & ((1 << man_bits) - 1) # remove implied 1
+    man_mask = (1 << man_bits) - 1
+    exp_c    = 0
+
+    if exp != 0:
+        # Normal number
+        man = man & man_mask # remove implied 1
+    elif man == 0:
+        # Zero
+        return 0
+    else:
+        # Subnormal number
+        # Get position of leading 1 in mantissa
+        leading_1_pos = math.floor(math.log2(man))
+
+        # Shift mantissa left until leading 1 is removed
+        man_shift = man_bits - leading_1_pos
+        man = (man << man_shift) & man_mask
+
+        # Adjust exponent to correct for mantissa shift
+        exp_c = man_shift - 1
 
     fp32_bias = 2**(8-1) - 1
 
-    exp = exp + fp32_bias - bias # shift exponent to new bias
+    exp = exp + fp32_bias - bias - exp_c # shift exponent to new bias
 
     fp32_bits = (sign << 31) + (exp << 23) + (man << (23 - man_bits))
 
@@ -164,8 +183,7 @@ def fixed_to_fp32(num, bits, point_position, shared_exp_a, shared_exp_b):
         num = get_twos_complement(sign, num, bits)
 
     if num == 0:
-        # TODO, may need to return -0
-        return 0
+        return 0, 0.0
 
     # Bit position of leading 1
     leading_1_pos = math.floor(math.log2(num))
@@ -180,10 +198,11 @@ def fixed_to_fp32(num, bits, point_position, shared_exp_a, shared_exp_b):
 
     if (exp >= 2**exp_bits):
         # Overflow
-        exp = 2**exp_bits - 1
+        exp = 2**exp_bits - 1 # exp all 1's for inf/nan
+        man = 0 # 0 for inf, !=0 for nan
     elif exp < 0:
         # Underflow
-        return 0
+        return 0, 0.0
 
     man_mask = (1 << leading_1_pos) - 1
 
@@ -201,7 +220,7 @@ def fixed_to_fp32(num, bits, point_position, shared_exp_a, shared_exp_b):
 
     fp32 = struct.unpack('>f', struct.pack('>I', fp32_bits))[0]
 
-    return fp32_bits
+    return fp32_bits, fp32
 
 # Write input vector to hex file
 def write_vector_list_to_file(vector_list, shared_exp_list, vector_file, shared_exp_file):
@@ -289,7 +308,8 @@ def main():
 
     # Convert fixed-point results to fp32 and apply shared exponents
     for fixed_result, shared_exp_a, shared_exp_b in zip(fixed_result_list, shared_exp_a_list, shared_exp_b_list):
-        fp32_result_list.append(fixed_to_fp32(fixed_result, sum_bits, mult_point_position, shared_exp_a, shared_exp_b))
+        fp32_bits, fp32 = fixed_to_fp32(fixed_result, sum_bits, mult_point_position, shared_exp_a, shared_exp_b)
+        fp32_result_list.append(fp32_bits)
 
     # Write to output files
     write_vector_list_to_file(vector_a_list, shared_exp_a_list, vector_a_file, shared_exp_a_file)
