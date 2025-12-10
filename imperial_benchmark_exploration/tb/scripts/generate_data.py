@@ -185,17 +185,17 @@ def fixed_to_fp32(num, bits, point_position, shared_exp_a, shared_exp_b):
         # Underflow
         return 0
 
-    man_bits = max(bits - 1, man_bits)
     man_mask = (1 << leading_1_pos) - 1
 
+    # Remove leading 1
     man = num & man_mask
 
-    man = man << (man_bits - leading_1_pos)
-
-    # More than 24 bits represented
-    if leading_1_pos > (man_bits + 1):
+    if man_bits > leading_1_pos:
+        man = man << (man_bits - leading_1_pos - 1)
+    else:
+        # More than 24 bits represented
         # TODO, check, also may need to consider rounding
-        man = man >> (leading_1_pos - (man_bits + 1))
+        man = man >> (leading_1_pos - man_bits)
 
     fp32_bits = (sign << (man_bits + exp_bits)) + (exp << man_bits) + man
 
