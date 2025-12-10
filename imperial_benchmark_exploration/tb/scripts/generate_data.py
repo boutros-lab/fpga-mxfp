@@ -7,8 +7,8 @@
 #   vector_b.hex - space seperated argument defined MXFP vector of length K, final value is an 8-bit shared exponent
 #
 # Generates the following output vectors:
-#   result_int.hex  - fixed point representation of dot product result, shared exponent not taken into account
-#   result_fp32.hex - fp32 representation of dot product result, shared exponent taken into account
+#   fixed_result.hex  - fixed point representation of dot product result, shared exponent not taken into account
+#   fp32_result.hex - fp32 representation of dot product result, shared exponent taken into account
 #
 # Usage:
 #   Example generating data for E3M2, vector length 32, 64 tests:
@@ -48,7 +48,7 @@ def get_twos_complement(sign, num, bits):
     mask = (1 << (bits + 1)) - 1
 
     # Flip bits, add 1
-    twos_complement = (num ^ mask) + 1
+    twos_complement = ((num ^ mask) + 1) & mask
 
     return twos_complement
 
@@ -152,15 +152,56 @@ def dot_mxfp(vector_a, vector_b, exp_bits, man_bits, mult_bits, sum_bits):
     return result
 
 # Convert fixed point representation to FP32
-def fixed_to_fp32(num, bits, shared_exp):
-    # Convert from two's complement
-    # Count Leading 0's
-    # Get Exponent
-    # Add Shared Exponent
-    # Get Mantissa
-    # Pack bits
-    # Convert bin to fp32 (struct)
-    return 0
+def fixed_to_fp32(num, bits, point_position, shared_exp_a, shared_exp_b):
+    # FP32 Components:
+    exp_bits  = 8
+    man_bits  = 23
+    fp32_bias = 2**(exp_bits-1) - 1
+
+    sign = (num >> (bits - 1)) & 1
+
+    if sign == 1:
+        num = get_twos_complement(sign, num, bits)
+
+    if num == 0:
+        # TODO, may need to return -0
+        return 0
+
+    # Bit position of leading 1
+    leading_1_pos = math.floor(math.log2(num))
+
+    exp = fp32_bias
+
+    exp += leading_1_pos - point_position
+
+    # TODO, assuming this uses fp32 bias
+    # TODO, handle inf/nan/etc.
+    exp += shared_exp_a + shared_exp_b - (2 * fp32_bias)
+
+    if (exp >= 2**exp_bits):
+        # Overflow
+        exp = 2**exp_bits - 1
+    elif exp < 0:
+        # Underflow
+        return 0
+
+    man_bits = max(bits - 1, man_bits)
+    man_mask = (1 << leading_1_pos) - 1
+
+    man = num & man_mask
+
+    man = man << (man_bits - leading_1_pos)
+
+    # More than 24 bits represented
+    if leading_1_pos > (man_bits + 1):
+        # TODO, check, also may need to consider rounding
+        man = man >> (leading_1_pos - (man_bits + 1))
+
+    fp32_bits = (sign << (man_bits + exp_bits)) + (exp << man_bits) + man
+
+    fp32 = struct.unpack('>f', struct.pack('>I', fp32_bits))[0]
+
+    return fp32_bits
 
 # Write input vector to hex file
 def write_vector_list_to_file(vector_list, shared_exp_list, vector_file, shared_exp_file):
@@ -205,7 +246,8 @@ def main():
     sum_bits   = mult_bits + math.ceil(math.log2(k)) # sum of products
 
     # Position of the point in fixed point representations
-    point_position = 0
+    emin = 2**(exp_bits-1) - 2
+    point_position = emin + man_bits
     mult_point_position = point_position * 2
 
     # Get exponent bias
@@ -245,11 +287,16 @@ def main():
     for vector_a, vector_b in zip(vector_a_list, vector_b_list):
         fixed_result_list.append(dot_mxfp(vector_a, vector_b, exp_bits, man_bits, mult_bits, sum_bits))
 
+    # Convert fixed-point results to fp32 and apply shared exponents
+    for fixed_result, shared_exp_a, shared_exp_b in zip(fixed_result_list, shared_exp_a_list, shared_exp_b_list):
+        fp32_result_list.append(fixed_to_fp32(fixed_result, sum_bits, mult_point_position, shared_exp_a, shared_exp_b))
+
     # Write to output files
     write_vector_list_to_file(vector_a_list, shared_exp_a_list, vector_a_file, shared_exp_a_file)
     write_vector_list_to_file(vector_b_list, shared_exp_b_list, vector_b_file, shared_exp_b_file)
 
     write_result_list_to_file(fixed_result_list, fixed_result_file)
+    write_result_list_to_file(fp32_result_list, fp32_result_file)
 
 
 if __name__ == '__main__':
