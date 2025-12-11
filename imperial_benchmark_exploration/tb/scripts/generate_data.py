@@ -20,19 +20,26 @@ import math
 import struct
 
 # Create a random MXFP number
-def generate_mxfp(exp_bits, man_bits):
-    return random.getrandbits(1 + exp_bits + man_bits)
+def generate_mxfp(exp_bits, man_bits, no_subnormals=False):
+    while True:
+        mxfp = random.getrandbits(1 + exp_bits + man_bits)
+        exp = (mxfp >> man_bits) & ((1 << exp_bits) - 1)
+
+        if (exp != 0) or (no_subnormals == False):
+            break
+
+    return mxfp
 
 # Create a random shared exponent
 def generate_shared_exponent(exp_bits):
     return random.getrandbits(exp_bits)
 
 # Create a k length vector of MXFP numbers
-def generate_mxfp_vector(exp_bits, man_bits, k):
+def generate_mxfp_vector(exp_bits, man_bits, k, no_subnormals=False):
     vector = []
 
     for i in range(k):
-        vector.append(generate_mxfp(exp_bits, man_bits))
+        vector.append(generate_mxfp(exp_bits, man_bits, no_subnormals))
 
     return vector
 
@@ -249,6 +256,8 @@ def main():
     parser.add_argument('-m', '--man_bits', type=int, default=1)
     parser.add_argument('-k', '--vector_length', type=int, default=8)
     parser.add_argument('-t', '--test_length', type=int, default=256)
+    parser.add_argument('-i', '--ignore_shared_exp', action='store_true')
+    parser.add_argument('-n', '--no_subnormals', action='store_true')
 
     args = parser.parse_args()
 
@@ -296,8 +305,8 @@ def main():
 
     # Generate input vectors
     for i in range(test_length):
-        vector_a_list.append(generate_mxfp_vector(exp_bits, man_bits, k))
-        vector_b_list.append(generate_mxfp_vector(exp_bits, man_bits, k))
+        vector_a_list.append(generate_mxfp_vector(exp_bits, man_bits, k, args.no_subnormals))
+        vector_b_list.append(generate_mxfp_vector(exp_bits, man_bits, k, args.no_subnormals))
 
         shared_exp_a_list.append(generate_shared_exponent(shared_exp_bits))
         shared_exp_b_list.append(generate_shared_exponent(shared_exp_bits))
@@ -308,7 +317,12 @@ def main():
 
     # Convert fixed-point results to fp32 and apply shared exponents
     for fixed_result, shared_exp_a, shared_exp_b in zip(fixed_result_list, shared_exp_a_list, shared_exp_b_list):
-        fp32_bits, fp32 = fixed_to_fp32(fixed_result, sum_bits, mult_point_position, shared_exp_a, shared_exp_b)
+        if args.ignore_shared_exp:
+            # Set shared exponent to fp32 bias value, effectively 0
+            fp32_bits, fp32 = fixed_to_fp32(fixed_result, sum_bits, mult_point_position, 127, 127)
+        else:
+            fp32_bits, fp32 = fixed_to_fp32(fixed_result, sum_bits, mult_point_position, shared_exp_a, shared_exp_b)
+
         fp32_result_list.append(fp32_bits)
 
     # Write to output files
