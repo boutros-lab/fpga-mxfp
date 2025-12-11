@@ -1,4 +1,4 @@
-module fp16_dp #(
+module fp16_mxfp_dp #(
    	parameter exp_width = 2,
     	parameter man_width = 1,
 	parameter k = 2,
@@ -23,7 +23,7 @@ module fp16_dp #(
 				.man_bits_i(man_width), 
 				.exp_bits_o(5), 
 				.man_bits_o(10)
-			) u_mxfp_to_fp (
+			) u_mxfp_to_fp_a (
 				.clk(clk),
 				.rst(rst),
 				.i_mxfp(mxfp_in_a[i]),
@@ -35,7 +35,7 @@ module fp16_dp #(
 				.man_bits_i(man_width), 
 				.exp_bits_o(5), 
 				.man_bits_o(10)
-			) u_mxfp_to_fp (
+			) u_mxfp_to_fp_b (
 				.clk(clk),
 				.rst(rst),
 				.i_mxfp(mxfp_in_b[i]),
