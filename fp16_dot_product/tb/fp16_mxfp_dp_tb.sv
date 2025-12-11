@@ -110,7 +110,7 @@ module fp16_mxfp_dp_tb();
                 #10;
 	    end
 
-	    if (fp32_out != fp32_result[i]) begin
+	    if (fp32_out !== fp32_result[i]) begin
 		$display("!!!!!MISMATCH!!!!!");
 		$display("TEST: %0x", i);
 		$display("DUT: %0x", fp32_out);

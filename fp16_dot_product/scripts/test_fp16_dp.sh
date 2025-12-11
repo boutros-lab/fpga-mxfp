@@ -62,6 +62,6 @@ vlog -sv $TB_ROOT/fp16_dp_tb.sv $RTL_ROOT/fp16_dp.sv $RTL_ROOT/mxfp_to_fp.sv \
 	+define+EXP_WIDTH=$exp_width +define+MAN_WIDTH=$man_width \
 	+define+K=$k +define+INPUT_STAGES=$input_stages +define+OUTPUT_STAGES=$output_stages
 
-vsim -voptargs=+acc -L tennm -c work.fp16_dot_tb -do "run -all"
+vsim -voptargs=+acc -L tennm_ver -c work.fp16_dot_tb -do "run -all"
 
 cd ..

@@ -106,7 +106,7 @@ module mxfp_dot_tb();
                 #10;
 	    end
 
-	    if (p0_dp_out != fixed_result[i]) begin
+	    if (p0_dp_out !== fixed_result[i]) begin
 		$display("!!!!!MISMATCH!!!!!");
 		$display("TEST: %0x", i);
 		$display("DUT: %0x", p0_dp_out);
