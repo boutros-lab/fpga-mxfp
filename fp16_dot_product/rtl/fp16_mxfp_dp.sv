@@ -46,8 +46,8 @@ module fp16_mxfp_dp #(
 
 	sum_of_two u0 (
 		.fp16_mult_top_a (fp16_in_a[0]), //   input,  width = 16, fp16_mult_top_a.fp16_mult_top_a
-		.fp16_mult_top_b (fp16_in_b[1]), //   input,  width = 16, fp16_mult_top_b.fp16_mult_top_b
-		.fp16_mult_bot_a (fp16_in_a[0]), //   input,  width = 16, fp16_mult_bot_a.fp16_mult_bot_a
+		.fp16_mult_top_b (fp16_in_b[0]), //   input,  width = 16, fp16_mult_top_b.fp16_mult_top_b
+		.fp16_mult_bot_a (fp16_in_a[1]), //   input,  width = 16, fp16_mult_bot_a.fp16_mult_bot_a
 		.fp16_mult_bot_b (fp16_in_b[1]), //   input,  width = 16, fp16_mult_bot_b.fp16_mult_bot_b
 		.fp32_chainin    (32'b0),    //   input,  width = 32,    fp32_chainin.fp32_chainin
 		.clr0            (rst),            //   input,   width = 1,            clr0.reset

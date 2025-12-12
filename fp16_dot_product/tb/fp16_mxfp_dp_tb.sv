@@ -115,6 +115,10 @@ module fp16_mxfp_dp_tb();
 		$display("TEST: %0x", i);
 		$display("DUT: %0x", fp32_out);
 		$display("REF: %0x", fp32_result[i]);
+		$display("FP16 A 0: %0x", u_dot.fp16_in_a[0]);
+		$display("FP16 A 1: %0x", u_dot.fp16_in_a[1]);
+		$display("FP16 B 0: %0x", u_dot.fp16_in_b[0]);
+		$display("FP16 B 1: %0x", u_dot.fp16_in_b[1]);
 
 		mismatch_count = mismatch_count + 1;
 	    end

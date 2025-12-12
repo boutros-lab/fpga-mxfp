@@ -27,7 +27,7 @@ logic [man_bits_o-1:0] man_o;
 
 assign sign_o = sign_i;
 assign exp_o = exp_i + bias_c;
-assign man_o = {man_i, 'b0};
+assign man_o = {man_i, {(man_bits_o - man_bits_i){1'b0}}};
 
 assign o_fp = {sign_o, exp_o, man_o};
 
