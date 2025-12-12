@@ -13,6 +13,9 @@
 # Usage:
 #   Example generating data for E3M2, vector length 32, 64 tests:
 #     ./generate_data.py -e 3 -m 2 -k 32 -t 64
+#
+#     Use -n to disable subnormal generation
+#     Use -i to disable shared exponent (file will still be generated but will not reflect in fp32 result)
 
 import os
 import random
@@ -187,7 +190,9 @@ def fixed_to_fp32(num, bits, point_position, shared_exp_a, shared_exp_b):
     sign = (num >> (bits - 1)) & 1
 
     if sign == 1:
-        num = get_twos_complement(sign, num, bits)
+        # two's complement function provides result as bit + 1
+        # We want to maintain the number of bits
+        num = get_twos_complement(sign, num, (bits - 1))
 
     if num == 0:
         return 0, 0.0
@@ -206,7 +211,7 @@ def fixed_to_fp32(num, bits, point_position, shared_exp_a, shared_exp_b):
     if (exp >= 2**exp_bits):
         # Overflow
         exp = 2**exp_bits - 1 # exp all 1's for inf/nan
-        man = 0 # 0 for inf, !=0 for nan
+        num = 0 # sets man, 0 for inf, !=0 for nan
     elif exp < 0:
         # Underflow
         return 0, 0.0
@@ -217,7 +222,7 @@ def fixed_to_fp32(num, bits, point_position, shared_exp_a, shared_exp_b):
     man = num & man_mask
 
     if man_bits > leading_1_pos:
-        man = man << (man_bits - leading_1_pos - 1)
+        man = man << (man_bits - leading_1_pos)
     else:
         # More than 24 bits represented
         # TODO, check, also may need to consider rounding
