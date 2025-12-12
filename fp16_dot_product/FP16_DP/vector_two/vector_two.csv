@@ -1,0 +1,18 @@
+# system info vector_two on 2025.12.12.12:04:52
+system_info:
+name,value
+DEVICE,A5EC065BB32AE4S
+DEVICE_FAMILY,Agilex 5
+GENERATION_ID,0
+#
+#
+# Files generated for vector_two on 2025.12.12.12:04:52
+files:
+filepath,kind,attributes,module,is_top
+sim/vector_two.v,VERILOG,CONTAINS_INLINE_CONFIGURATION,vector_two,true
+agilex_native_floating_point_dsp_100/sim/vector_two_agilex_native_floating_point_dsp_100_6dlvmmq.v,VERILOG,,vector_two_agilex_native_floating_point_dsp_100_6dlvmmq,false
+#
+# Map from instance-path to kind of module
+instances:
+instancePath,module
+vector_two.agilex_native_floating_point_dsp_0,vector_two_agilex_native_floating_point_dsp_100_6dlvmmq

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pinplan
+ variation_name="agilex_native_floating_point_dsp_0"
+ megafunction_name="AGILEX_NATIVE_FLOATING_POINT_DSP"
+ intended_family="Agilex 5"
+ specifies="all_ports">
+ <global>
+  <pin name="fp32_chainin[31..0]" direction="input" scope="external" />
+  <pin name="fp16_mult_top_a[15..0]" direction="input" scope="external" />
+  <pin name="fp16_mult_top_b[15..0]" direction="input" scope="external" />
+  <pin name="fp16_mult_bot_a[15..0]" direction="input" scope="external" />
+  <pin name="fp16_mult_bot_b[15..0]" direction="input" scope="external" />
+  <pin name="fp32_adder_a[31..0]" direction="input" scope="external" />
+  <pin name="clr0" direction="input" scope="external" />
+  <pin name="clr1" direction="input" scope="external" />
+  <pin name="clk" direction="input" scope="external" />
+  <pin name="ena[2..0]" direction="input" scope="external" />
+  <pin name="fp32_result[31..0]" direction="output" scope="external" />
+  <pin name="fp32_chainout[31..0]" direction="output" scope="external" />
+ </global>
+</pinplan>
