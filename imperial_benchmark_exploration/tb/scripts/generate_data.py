@@ -146,7 +146,7 @@ def mult_mxfp(num0, num1, exp_bits, man_bits, mult_bits):
     # Convert to two's complement
     man_res = get_twos_complement(sign_res, man_res, mult_bits - 1)
 
-    mask = (1 << mult_bits + 1) - 1
+    mask = (1 << mult_bits) - 1
     
     assert (man_res & mask) == man_res, "ERROR: mult_mxfp, multiplication result exceeds mult_bits."
 
