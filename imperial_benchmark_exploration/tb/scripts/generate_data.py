@@ -169,7 +169,7 @@ def sign_extend(num, orig_bits, target_bits):
 def dot_mxfp(vector_a, vector_b, exp_bits, man_bits, mult_bits, sum_bits):
     result = 0
 
-    mask = (1 << sum_bits + 1) - 1
+    mask = (1 << sum_bits) - 1
 
     for a, b in zip(vector_a, vector_b):
         a_mult_b = mult_mxfp(a, b, exp_bits, man_bits, mult_bits)
