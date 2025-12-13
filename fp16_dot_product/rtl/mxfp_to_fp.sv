@@ -29,6 +29,35 @@ assign sign_o = sign_i;
 assign exp_o = exp_i + bias_c;
 assign man_o = {man_i, {(man_bits_o - man_bits_i){1'b0}}};
 
+/*
+	Subnormal handling:
+
+	leading_zero_count of man_i
+
+	wire [$clog2(man_bits_i) - 1:0] leading_zero_count;
+	wire [man_bits - 1:0] man_shifted;
+
+	always_comb begin
+		for (int i = 0; i < man_bits_i; i++) begin
+			leading_zero_count += man_i[i] == 0;
+
+			if (man_i[i] == 1) begin
+				break;
+			end
+		end
+	end
+
+	man_shifted = man_i << (leading_zero_count + 1);
+
+	max shift should be man_bits_i (including the + 1)
+
+	if (exp_i == 0) begin
+		assign man_o = {man_shifted, {(man_bits_o - man_bits_i){1'b0}}};
+		man_o = man_i << (leading_zero_count + 1)
+		exp_o = exp_i + bias_c + (leading_zero_count + 1)
+	end
+*/
+
 assign o_fp = {sign_o, exp_o, man_o};
 
 endmodule
