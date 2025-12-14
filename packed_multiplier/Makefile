@@ -1,9 +1,16 @@
+DUT ?= packed_multiplier
+
 sim: 
-	vlog -sv packed_multiplier.sv packed_multiplier_tb.sv
-	vsim -c packed_multiplier_tb -do "run -all"
+	vlog -sv DSP_sim.sv $(DUT).sv $(DUT)_tb.sv 
+	vsim -c $(DUT)_tb -do "run -all"
 
 synth:
-	quartus_sh --flow compile packed_multiplier
+	quartus_sh --prepare -f Agilex $(DUT)
+	quartus_sh --set DEVICE=A5EC065BB32AE4S $(DUT)
+	quartus_sh --flow compile $(DUT)
+
+resynth:
+	quartus_sh --flow recompile $(DUT)
 
 clean:
 	git clean -dfX

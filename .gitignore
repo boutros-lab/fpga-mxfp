@@ -6,7 +6,10 @@ qdb
 *.pin
 *.qpf
 *.qsf
+*.qsf.backup
 *.summary
 *.done
 *_save_view.txt
 *.qws
+.qsys_edit
+simulation
