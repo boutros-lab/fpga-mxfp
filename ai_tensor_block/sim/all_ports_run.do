@@ -1,4 +1,4 @@
-#quit -sim
+quit -sim
 ## vmap altera_mf
 #if ![info exists QUARTUS_INSTALL_DIR] { 
 #  set QUARTUS_INSTALL_DIR "/tools/altera/quartus-pro/25.3/quartus/"
