@@ -1,3 +1,6 @@
+// Module to convert MXFP number to a larger FP format
+// Assumes FP components are larger than MXFP components
+
 module mxfp_to_fp #(
 	parameter exp_bits_i = 2,
 	parameter man_bits_i = 1,
@@ -9,55 +12,72 @@ module mxfp_to_fp #(
 	input  logic [exp_bits_i + man_bits_i:0] i_mxfp,
 	output logic [exp_bits_o + man_bits_o:0] o_fp
 );
-// TODO, this doesn't handle subnormals correctly (unless e_i == e_o)
 localparam bias_i = 2**(exp_bits_i - 1) - 1;
 localparam bias_o = 2**(exp_bits_o - 1) - 1;
 
 localparam bias_c = bias_o - bias_i;
 
+// If exponent bits are equal, don't need special subnormal handling
+localparam equal_exp = exp_bits_i == exp_bits_o;
+
+// Input MXFP components
 logic sign_i;
 logic [exp_bits_i-1:0] exp_i;
 logic [man_bits_i-1:0] man_i;
 
-assign {sign_i, exp_i, man_i} = i_mxfp;
-
+// Output FP components
 logic sign_o;
 logic [exp_bits_o-1:0] exp_o;
 logic [man_bits_o-1:0] man_o;
 
-assign sign_o = sign_i;
-assign exp_o = exp_i + bias_c;
-assign man_o = {man_i, {(man_bits_o - man_bits_i){1'b0}}};
+// Subnormal handling
+logic [$clog2(man_bits_i) - 1:0] leading_zero_count;
+logic [man_bits_i-1:0]           man_shifted;
 
-/*
-	Subnormal handling:
+// Breakout MXFP components
+assign {sign_i, exp_i, man_i} = i_mxfp;
 
-	leading_zero_count of man_i
+generate
+	if (equal_exp == 0) begin
+		// Special subnormal handling required
+		always_comb begin
+			// Count leading zeros, always shift by at least 1
+			leding_zero_count = 1;
+		
+			for (int i = man_bits_i - 1; i > 0; i--) begin
+				if (man_i[i] == 1) begin
+					break;
+				end else begin
+					leading_zero_count = leading_zero_count + 1;
+				end
+			end
+		
+			// Shift the mantissa so that the leading 1 is discarded
+			// This is absorbed by the implied 1 of the output FP number
+			man_shifted = man_i << leading_zero_count;
 
-	wire [$clog2(man_bits_i) - 1:0] leading_zero_count;
-	wire [man_bits - 1:0] man_shifted;
-
-	always_comb begin
-		for (int i = 0; i < man_bits_i; i++) begin
-			leading_zero_count += man_i[i] == 0;
-
-			if (man_i[i] == 1) begin
-				break;
+			if (exp_i == 0) begin
+				// Subnormal number
+				sign_o = sign_i;
+				exp_o  = exp_i + bias_c + leading_zero_count;
+				man_o  = {man_shifted, {(man_bits_o - man_bits_i){1'b0}}};
+			end else begin
+				// Normal nuber
+				sign_o = sign_i;
+				exp_o  = exp_i + bias_c;
+				man_o  = {man_i, {(man_bits_o - man_bits_i){1'b0}}};
 			end
 		end
+	end else begin
+		// No special subnormal handling when source and target
+		// formats have equal exponent bits
+		assign sign_o = sign_i;
+		assign exp_o  = exp_i + bias_c + leading_zero_count;
+		assign man_o  = {man_i, {(man_bits_o - man_bits_i){1'b0}}};
 	end
+endgenerate
 
-	man_shifted = man_i << (leading_zero_count + 1);
-
-	max shift should be man_bits_i (including the + 1)
-
-	if (exp_i == 0) begin
-		assign man_o = {man_shifted, {(man_bits_o - man_bits_i){1'b0}}};
-		man_o = man_i << (leading_zero_count + 1)
-		exp_o = exp_i + bias_c + (leading_zero_count + 1)
-	end
-*/
-
+// Form FP output from components
 assign o_fp = {sign_o, exp_o, man_o};
 
 endmodule

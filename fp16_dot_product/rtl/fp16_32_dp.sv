@@ -1,11 +1,10 @@
 module fp16_32_dp #(
-	parameter k = 12
+	parameter k = 32
 ) (
 	input logic clk,
 	input logic rst,
 	input logic [15:0] fp16_in_a [k],
 	input logic [15:0] fp16_in_b [k],
-	input logic [31:0] fp32_in,
 	output logic [31:0] fp32_out
 );
 
