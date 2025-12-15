@@ -44,9 +44,9 @@ set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/mxfp_to
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/fp16_32_dp.sv]
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/add_shared_exp.sv]
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/pipeline.sv]
-set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/ip/sum_of_two.sv]
-set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/ip/vector_one.sv]
-set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/ip/vector_two.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/ip/sum_of_two.v]
+set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/ip/vector_one.v]
+set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/ip/vector_two.v]
 set_global_assignment -name SDC_FILE [file normalize $SDC_FILE]
 
 # Set number of processors and top design

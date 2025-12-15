@@ -23,16 +23,16 @@ assign signed_exp_a = $signed({2'b0, shared_exp_in_a});
 assign signed_exp_b = $signed({2'b0, shared_exp_in_b});
 
 // 254 = exp_bias * 2
-assign exp_result = signed_exp_i + signed_exp_a + signed_exp_b - 254;
+assign exp_result = signed_exp_i + signed_exp_a + signed_exp_b - 10'd254;
 
 always_comb begin
-	if (exp_result < 0) begin
+	if (exp_result < $signed(10'b0)) begin
 		// Underflow
 		fp32_out = 32'b0;
-	else if (exp_result >= 256) begin
+	end else if (exp_result > $signed(10'hFF)) begin
 		// Overflow
 		fp32_out = 32'h7F800000; // Inf
-	else begin
+	end else begin
 		// Normal number
 		fp32_out = {sign_in, exp_result[7:0], man_in};
 	end

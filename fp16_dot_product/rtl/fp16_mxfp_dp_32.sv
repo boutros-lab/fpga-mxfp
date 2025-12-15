@@ -57,14 +57,34 @@ module fp16_mxfp_dp_32 #(
 		.fp32_out(fp32_dp_out)
 	);
 
-	// TODO: need to pipeline shared_exp_in_a/b
-	
+	// TODO: Find correct depth
+	// Currently estimate based on number of DSPs, this is an
+	// underestimate
+
+	logic [15:0] shared_exp;
+	logic [15:0] shared_exp_q;
+	logic [7:0]  shared_exp_a_q;
+	logic [7:0]  shared_exp_b_q;
+
+	assign shared_exp = {shared_exp_in_a, shared_exp_in_b};
+	assign {shared_exp_a_q, shared_exp_b_q} = shared_exp_q;
+
+	pipeline #(
+		.width(16), 
+		.depth(k/2)
+	) u_pipeline (
+		.clk(clk),
+		.rst(rst),
+		.data(shared_exp),
+		.data_q(shared_exp_q)
+	);
+
 	add_shared_exp 
 	u_add_shared_exp (
 		.fp32_in(fp32_dp_out),
-		.shared_exp_in_a(shared_exp_in_a),
-		.shared_exp_in_b(shared_exp_in_b),
-		.fp32_out(fp32_out),
+		.shared_exp_in_a(shared_exp_a_q),
+		.shared_exp_in_b(shared_exp_b_q),
+		.fp32_out(fp32_out)
 	);
 
 endmodule

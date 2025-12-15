@@ -42,13 +42,13 @@ generate
 		// Special subnormal handling required
 		always_comb begin
 			// Count leading zeros, always shift by at least 1
-			leding_zero_count = 1;
+			leading_zero_count = 'b1;
 		
 			for (int i = man_bits_i - 1; i > 0; i--) begin
 				if (man_i[i] == 1) begin
 					break;
 				end else begin
-					leading_zero_count = leading_zero_count + 1;
+					leading_zero_count = leading_zero_count + 'b1;
 				end
 			end
 		

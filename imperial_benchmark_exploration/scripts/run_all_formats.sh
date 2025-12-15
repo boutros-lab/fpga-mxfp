@@ -83,12 +83,12 @@ for ((i=0; i<${#projects[@]}; i++)); do
 		rm -rf ${proj_dirs[$i]}
 		
 		# Create Project
-		quartus_sh -t $PROJ_ROOT/quartus_tcl/dot_setup_2.tcl $PROJ_ROOT${proj_dirs[$i]} ${projects[$i]} ${projects[$i]} ${exp[$i]} ${man[$i]} $k $input_stages $dot_fp_stages $output_stages $mul_int
+		quartus_sh -t $PROJ_ROOT/quartus_tcl/dot_setup_2.tcl $PROJ_ROOT/${proj_dirs[$i]} ${projects[$i]} ${projects[$i]} ${exp[$i]} ${man[$i]} $k $input_stages $dot_fp_stages $output_stages $mul_int
 
 		# Run synthesis/placement/sta
-		quartus_sh -t $PROJ_ROOT/quartus_tcl/run_fit.tcl ${projects[$i]} $PROJ_ROOT${proj_dirs[$i]}
+		quartus_sh -t $PROJ_ROOT/quartus_tcl/run_fit.tcl ${projects[$i]} $PROJ_ROOT/${proj_dirs[$i]}
 	fi
 
 	# Extract results to $out
-	$PROJ_ROOT/scripts/extract_results.sh ${projects[$i]} $PROJ_ROOT${proj_dirs[$i]}/output_files/ >> $out
+	$PROJ_ROOT/scripts/extract_results.sh ${projects[$i]} $PROJ_ROOT/${proj_dirs[$i]}/output_files/ >> $out
 done
