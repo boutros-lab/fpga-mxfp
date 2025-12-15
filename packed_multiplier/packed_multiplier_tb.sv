@@ -1,9 +1,12 @@
+`timescale 1ns/1ns
+
 module packed_multiplier_tb;
 
 parameter tests = 1024;
 parameter op_width = 3;
 parameter mul_width = 18;
-parameter is_registered = 0;
+parameter registered_input = 0; // doesn't do anything yet !!!
+parameter registered_output = 0; // doesn't do anything yet !!!
 localparam num_ops = mul_width / 2 / op_width;
 
 logic clk;
@@ -27,7 +30,8 @@ DSP_2x18x18 dsp (
 packed_multiplier #(
     .op_width(op_width), 
     .mul_width(mul_width),
-    .is_registered(is_registered)
+    .registered_input(registered_input),
+    .registered_output(registered_output)
 ) dut_a (
     .clk(clk),
     .operands(operands_a),
@@ -41,7 +45,8 @@ packed_multiplier #(
 packed_multiplier #(
     .op_width(op_width), 
     .mul_width(mul_width),
-    .is_registered(is_registered)
+    .registered_input(registered_input),
+    .registered_output(registered_output)
 ) dut_b (
     .clk(clk),
     .operands(operands_b),

@@ -8,6 +8,7 @@ module DSP_2x18x18_tb;
     // DUT signals
     logic clk;
     logic [17:0] ax, ay, bx, by;
+    logic [35:0] expected_resulta, expected_resultb;
     logic [35:0] resulta, resultb;
 
     // Instantiate DUT
@@ -39,16 +40,19 @@ module DSP_2x18x18_tb;
             by = $random;
             #10;  // Wait one clock cycle (assuming 1-cycle latency)
 
+            expected_resulta = ax * ay;
+            expected_resultb = bx * by;
+
             // Check results
-            if (resulta !== ax * bx) begin
-                $display("Test %da FAILED (p1): ax=%d, bx=%d, expected=%d, got=%d", i, ax, bx, ax * bx, resulta);
+            if (resulta !== expected_resulta) begin
+                $display("Test %da FAILED (p1): ax=%d, ay=%d, expected=%d, got=%d", i, ax, ay, expected_resulta, resulta);
             end else begin
-                //$display("Test %da PASSED (p1): ax=%d, bx=%d, resulta=%d", i, ax, bx, resulta);
+                //$display("Test %da PASSED (p1): ax=%d, ay=%d, resulta=%d", i, ax, ay, resulta);
             end
-            if (resultb !== ay * by) begin
-                $display("Test %db FAILED (p2): ay=%d, by=%d, expected=%d, got=%d", i, ay, by, ay * by, resultb);
+            if (resultb !== expected_resultb) begin
+                $display("Test %db FAILED (p2): bx=%d, by=%d, expected=%d, got=%d", i, bx, by, expected_resultb, resultb);
             end else begin
-                //$display("Test %db PASSED (p2): ay=%d, by=%d, resultb=%d", i, ay, by, resultb);
+                //$display("Test %db PASSED (p2): bx=%d, by=%d, resultb=%d", i, bx, by, resultb);
             end
         end
 

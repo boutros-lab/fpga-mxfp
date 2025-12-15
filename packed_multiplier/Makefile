@@ -1,8 +1,8 @@
 DUT ?= packed_multiplier
 
 sim: 
-	vlog -sv DSP_sim.sv $(DUT).sv $(DUT)_tb.sv 
-	vsim -c $(DUT)_tb -do "run -all"
+	vlog -sv DSP_2x18x18.sv $(DUT).sv $(DUT)_tb.sv 
+	vsim -c $(DUT)_tb -do "run -all" -L tennm_ver
 
 synth:
 	quartus_sh --prepare -f Agilex $(DUT)

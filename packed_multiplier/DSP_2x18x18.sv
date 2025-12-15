@@ -15,7 +15,7 @@ tennm_mac tennm_mac_component (
     .by (by),
     .clr ({1'b0,1'b0}),
     .clk (clk),
-    .ena (1'b1),
+    .ena ({1'b1,1'b1,1'b1}),
     .resulta (resulta),
     .resultb (resultb));
     defparam
@@ -39,24 +39,24 @@ tennm_mac tennm_mac_component (
     tennm_mac_component.delay_scan_out_by = "false",
     tennm_mac_component.scan_out_width = 18,
     tennm_mac_component.ax_width = 18,
-    tennm_mac_component.ax_clken = "0",
+    tennm_mac_component.ax_clken = "no_reg", // E
     tennm_mac_component.bx_width = 18,
-    tennm_mac_component.bx_clken = "0",
+    tennm_mac_component.bx_clken = "no_reg", // E
     tennm_mac_component.cx_clken = "no_reg",
     tennm_mac_component.dx_clken = "no_reg",
     tennm_mac_component.ex_clken = "no_reg",
     tennm_mac_component.fx_clken = "no_reg",
     tennm_mac_component.ay_scan_in_width = 18,
-    tennm_mac_component.ay_scan_in_clken = "0",
+    tennm_mac_component.ay_scan_in_clken = "no_reg", // E
     tennm_mac_component.by_width = 18,
-    tennm_mac_component.by_clken = "0",
+    tennm_mac_component.by_clken = "no_reg", // E
     tennm_mac_component.cy_clken = "no_reg",
     tennm_mac_component.dy_clken = "no_reg",
     tennm_mac_component.ey_clken = "no_reg",
     tennm_mac_component.fy_clken = "no_reg",
-    tennm_mac_component.result_a_width = 37,
-    tennm_mac_component.result_b_width = 37,
-    tennm_mac_component.output_clken = "0",
+    tennm_mac_component.result_a_width = 36,
+    tennm_mac_component.result_b_width = 36,
+    tennm_mac_component.output_clken = "no_reg", // E
     tennm_mac_component.input_systolic_clken = "no_reg",
     tennm_mac_component.sub_systolic_reg = "no_reg",
     tennm_mac_component.negate_systolic_reg = "no_reg",
@@ -92,8 +92,8 @@ tennm_mac tennm_mac_component (
     tennm_mac_component.enable_double_accum = "false",
     tennm_mac_component.load_const_value = 0,
     tennm_mac_component.use_chainadder = "false",
-    tennm_mac_component.input_pipeline_clken = "0",
-    tennm_mac_component.second_pipeline_clken = "0",
+    tennm_mac_component.input_pipeline_clken = "no_reg",
+    tennm_mac_component.second_pipeline_clken = "no_reg",
     tennm_mac_component.accum_pipeline_clken = "no_reg",
     tennm_mac_component.accum_2nd_pipeline_clken = "no_reg",
     tennm_mac_component.load_const_pipeline_clken = "no_reg",
