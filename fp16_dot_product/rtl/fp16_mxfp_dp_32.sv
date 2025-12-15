@@ -13,11 +13,45 @@ module fp16_mxfp_dp_32 #(
 	output logic [31:0] fp32_out
 );
 	genvar i;
+
+	logic [bit_width-1:0] mxfp_in_a_q [k];
+	logic [bit_width-1:0] mxfp_in_b_q [k];
+	logic [7:0] shared_exp_in_a_q;
+	logic [7:0] shared_exp_in_b_q;
 	
 	logic [15:0] fp16_in_a [k];
 	logic [15:0] fp16_in_b [k];
 
 	logic [31:0] fp32_dp_out;
+	logic [31:0] fp32_sh_in;
+	logic [31:0] fp32_sh_out;
+
+	// Register inputs/outputs
+	always_ff @(posedge clk) begin
+		if (rst) begin
+			for (int i =0; i < k; i++) begin
+				mxfp_in_a_q[i] <= 'b0;
+				mxfp_in_b_q[i] <= 'b0;
+			end
+
+			shared_exp_in_a_q <= 8'b0;
+			shared_exp_in_b_q <= 8'b0;
+
+			fp32_sh_in <= 32'b0;
+			fp32_out   <= 32'b0;
+		end else begin
+			for (int i =0; i < k; i++) begin
+				mxfp_in_a_q[i] <= mxfp_in_a[i];
+				mxfp_in_b_q[i] <= mxfp_in_b[i];
+			end
+
+			shared_exp_in_a_q <= shared_exp_in_a;
+			shared_exp_in_b_q <= shared_exp_in_b;
+
+			fp32_sh_in <= fp32_dp_out;
+			fp32_out   <= fp32_sh_out;
+		end
+	end
 	
 	generate
 		for (i = 0; i < k; i++) begin
@@ -29,7 +63,7 @@ module fp16_mxfp_dp_32 #(
 			) u_mxfp_to_fp_a (
 				.clk(clk),
 				.rst(rst),
-				.i_mxfp(mxfp_in_a[i]),
+				.i_mxfp(mxfp_in_a_q[i]),
 				.o_fp(fp16_in_a[i])
 			);
 	
@@ -41,7 +75,7 @@ module fp16_mxfp_dp_32 #(
 			) u_mxfp_to_fp_b (
 				.clk(clk),
 				.rst(rst),
-				.i_mxfp(mxfp_in_b[i]),
+				.i_mxfp(mxfp_in_b_q[i]),
 				.o_fp(fp16_in_b[i])
 			);
 		end
@@ -63,11 +97,11 @@ module fp16_mxfp_dp_32 #(
 
 	logic [15:0] shared_exp;
 	logic [15:0] shared_exp_q;
-	logic [7:0]  shared_exp_a_q;
-	logic [7:0]  shared_exp_b_q;
+	logic [7:0]  shared_exp_in_a_q1;
+	logic [7:0]  shared_exp_in_b_q1;
 
-	assign shared_exp = {shared_exp_in_a, shared_exp_in_b};
-	assign {shared_exp_a_q, shared_exp_b_q} = shared_exp_q;
+	assign shared_exp = {shared_exp_in_a_q, shared_exp_in_b_q};
+	assign {shared_exp_in_a_q1, shared_exp_in_b_q1} = shared_exp_q;
 
 	pipeline #(
 		.width(16), 
@@ -81,10 +115,10 @@ module fp16_mxfp_dp_32 #(
 
 	add_shared_exp 
 	u_add_shared_exp (
-		.fp32_in(fp32_dp_out),
-		.shared_exp_in_a(shared_exp_a_q),
-		.shared_exp_in_b(shared_exp_b_q),
-		.fp32_out(fp32_out)
+		.fp32_in(fp32_sh_in),
+		.shared_exp_in_a(shared_exp_in_a_q1),
+		.shared_exp_in_b(shared_exp_in_b_q1),
+		.fp32_out(fp32_sh_out)
 	);
 
 endmodule

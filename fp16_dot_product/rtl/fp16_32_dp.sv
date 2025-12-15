@@ -33,14 +33,19 @@ module fp16_32_dp #(
 	// 	FP32 chainout is FP32 adder_a
 
 	always_comb begin
+		// DSP Result-input chaining
+		// TODO: currently not correct, needs to be fixed
+
 		// v2
 		fp32_input[1] = fp32_result[0]; // AB + CD + EF + GH
 		// v1
 		fp32_input[2] = fp32_result[2]; // IJ + KL + MN + OP
 		// v2
 		fp32_input[3] = fp32_result[1]; // AB + CD + EF + GH + IJ + KL + MN + OP
+		// v1
+		fp32_input[4] = fp32_result[5]; // QR + ST + UV + WX + YZ + ab + cd + ef
 
-		for (int i = 4; i < k/2; i++) begin
+		for (int i = 5; i < k/2; i++) begin
 			fp32_input[i] = fp32_result[i - 1];
 		end
 	end
