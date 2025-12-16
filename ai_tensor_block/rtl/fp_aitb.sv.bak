@@ -1,6 +1,4 @@
-module fp_aitb #(
-	parameter string CHAIN_MODE = "tensor_chain_output"
-) (
+module fp_aitb (
 input logic clk,
 input logic rst,
 input logic [1:0] acc_mode,
@@ -54,7 +52,7 @@ output logic [3:0]  fp32_flags
                         
 		    	tennm_dsp_prime_component.dsp_side_feed_ctrl = "data_feed_in",
                         
-		    	tennm_dsp_prime_component.dsp_chain_tensor = CHAIN_MODE,
+		    	tennm_dsp_prime_component.dsp_chain_tensor = "tensor_chain_output",
                         
 		    	tennm_dsp_prime_component.dsp_fp32_sub_en = "float_sub_disabled";
                         

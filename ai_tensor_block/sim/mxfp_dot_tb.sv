@@ -105,7 +105,8 @@ mxfp_dot #(
 	.E_SHARED(8),
 	.FP_BIAS(1), // MX-FP BIAS
 	.SH_BIAS(127), // Shared EXP bias
-	.DOT_LEN(DOT_LEN)
+	.DOT_LEN(DOT_LEN),
+	.PIPE(0)
 ) dut (
 
 	.clk(clk),
