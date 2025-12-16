@@ -1,8 +1,9 @@
-DUT ?= packed_multiplier
+DUT ?= packed_dot_product
 
 sim: 
-	vlog -sv DSP_2x18x18.sv $(DUT).sv $(DUT)_tb.sv 
+	vlog -sv *.sv 
 	vsim -c $(DUT)_tb -do "run -all" -L tennm_ver
+	python3 check.py
 
 synth:
 	quartus_sh --prepare -f Agilex $(DUT)
