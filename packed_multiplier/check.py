@@ -1,5 +1,5 @@
 print("")
-print("CHECK")
+print("CHECKING RESULTS FROM TRANSCRIPT")
 
 with open("transcript") as f:
     lines = f.readlines()
@@ -65,19 +65,44 @@ shared_operands = [mxfp_to_float(so) for so in shared_operands]
 operands = [[mxfp_to_float(operand) for operand in row] for row in operands]
 
 def fixed_to_float(fixed_str):
-    # sign + 2 * mantissa + max exponent shift + block sum
-    # fixed point format: 1 + 2(M+1) + 2^(E+1) + log2(B)
+    # fixed point is 1 sign bit, X int bits, 2*bias frac bits
     total_width = len(fixed_str)
-    int_width = total_width - (mantissa_width * 2 + 3) 
+    int_width = total_width - (2 * bias) - 1
     sign = int(fixed_str[0])
     int_part = int(fixed_str[1:1+int_width], 2)
-    frac_part = int(fixed_str[1+int_width:], 2) / (2 ** (total_width - 1 - int_width))
+    frac_part = int(fixed_str[1+int_width:], 2) / (2 ** (2 * bias))
     value = int_part + frac_part
     if sign == 1:
         value = -value
     return value
 
+results = [fixed_to_float(res) for res in results]
+
 print("")
 print("shared_operands (float)", shared_operands)
 print("operands (float)", operands)
+print("results (float)", results)
 
+# Compute expected results
+expected_results = []
+for op_idx in range(num_ops):
+    acc = 0.0
+    for block_idx in range(block_size):
+        a = operands[block_idx][op_idx]
+        b = shared_operands[block_idx]
+        acc += a * b
+    expected_results.append(acc)
+
+print("")
+print("expected_results (float)", expected_results)
+
+# Compare results
+tolerance = 0.1
+all_passed = True
+for i in range(num_ops):
+    diff = abs(results[i] - expected_results[i])
+    if diff <= tolerance:
+        print(f"Result {i} PASSED: got {results[i]}, expected {expected_results[i]}, diff {diff}")
+    else:
+        print(f"Result {i} FAILED: got {results[i]}, expected {expected_results[i]}, diff {diff}")
+        all_passed = False
