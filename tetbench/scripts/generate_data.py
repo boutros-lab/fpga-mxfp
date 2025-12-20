@@ -183,6 +183,7 @@ def dot_mxfp(vector_a, vector_b, exp_bits, man_bits, mult_bits, sum_bits):
 
     return result
 
+# Round to nearest even, return updated man and exp
 def round_to_even(man, exp, man_bits, trunc, trunc_bits):
     msb = (trunc >> (trunc_bits - 1)) & 0x1
 
@@ -262,6 +263,11 @@ def fixed_to_fp32(num, bits, point_position, shared_exp_a, shared_exp_b, rne=Tru
             trunc      = man & trunc_mask
 
             man_shifted, exp = round_to_even(man_shifted, exp, man_bits, trunc, man_shift)
+
+            if (exp >= 2**exp_bits):
+                # Overflow
+                exp         = 2**exp_bits - 1 # exp all 1's for inf/nan
+                man_shifted = 0 # sets man, 0 for inf, !=0 for nan
 
         man = man_shifted
 
