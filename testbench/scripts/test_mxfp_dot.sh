@@ -7,7 +7,7 @@ mkdir $TB_ROOT/sim
 
 cd $TB_ROOT/sim
 
-dut_dir=()
+rtl_dir=()
 dut_name=
 exp_width=2
 man_width=1
@@ -42,7 +42,7 @@ usage() {
 while getopts "r:d:e:m:k:l:fh" opt; do
     case ${opt} in
         r )
-		dut_dir+=("$OPTARG")
+		rtl_dir+=("$OPTARG")
 		;;
         d )
 		dut_name=$OPTARG
@@ -74,8 +74,8 @@ while getopts "r:d:e:m:k:l:fh" opt; do
     esac
 done
 
-if (( ${#dut_dir[@]} == 0 )); then
-	printf "ERROR: No RTL directories set, use -d to set required directories."
+if (( ${#rtl_dir[@]} == 0 )); then
+	printf "ERROR: No RTL directories set, use -r to set required directories."
 	usage
 	exit 2
 fi
@@ -83,7 +83,7 @@ fi
 vmap tennm_ver "/tools/altera/quartus-pro/25.3/questa_fse/intel/verilog/tennm_ver"
 
 # Add all files
-for dir in ${dut_dir[@]}; do
+for dir in ${rtl_dir[@]}; do
 	while IFS= read -r filename; do
 		vlog -sv filename
 	done < find $dir -type f -name "*.sv" -o -name "*.v" -o -name "*.h" -o -name "*.vh"

@@ -190,26 +190,32 @@ def round_to_even(man, exp, man_bits, trunc, trunc_bits):
     msb = (trunc >> (trunc_bits - 1)) & 0x1
 
     if (msb == 1):
+        # >= 0.5
         max_man = (1 << man_bits) - 1
 
         lsb_mask = (1 << (trunc_bits - 1)) -1
         lsb = trunc & lsb_mask
 
         if (lsb == 0):
+            # Exactly 0.5
+            # Round to nearest even
             man_lsb = man & 0x1
 
             if (man_lsb == 1):
                 man += 1
         else:
+            # > 0.5
             man += 1
 
         if (man > max_man):
-            man -= 1
+            # Mantissa overflow
+            man  = 0
             exp += 1
 
         return man, exp
 
     else:
+        # < 0.5
         return man, exp
 
 # Convert fixed point representation to FP32
@@ -232,6 +238,14 @@ def fixed_to_fp32(num, bits, point_position, shared_exp_a, shared_exp_b, rne=Tru
     # Bit position of leading 1
     leading_1_pos = math.floor(math.log2(num))
 
+    # Check for rounding in large numbers, 
+    # math.log2() result may be rounded, leading to incorrect 
+    # leading_1_pos, and a 2x larger number than expected
+    if (2 ** leading_1_pos > num):
+        # 2 ** leading_1_pos should always be <= num
+        # If it's greater, rounding occured, correct leading_1_pos
+        leading_1_pos -= 1
+
     exp = fp32_bias
 
     exp += leading_1_pos - point_position
@@ -253,7 +267,7 @@ def fixed_to_fp32(num, bits, point_position, shared_exp_a, shared_exp_b, rne=Tru
 
     if man_bits > leading_1_pos:
         man = man << (man_bits - leading_1_pos)
-    else:
+    elif man_bits < leading_1_pos:
         # More than 24 bits represented
         man_shift   = leading_1_pos - man_bits
         man_shifted = man >> man_shift
@@ -381,25 +395,42 @@ def main():
     # formats, does not take shared exponents into account,
     # MUST be used with -i/--ignore_shared_exp
     if args.self_check:
+        tolerance = 0.0
+        max_error = 0.0
+
+        if (exp_bits >= 4):
+            # Formats with E > 3 show noticeable error
+            # TODO, can we derive a tolerance based on format and k?
+            tolerance = 0.00001
+
         for a_vec, b_vec, fp32_orig in zip(vector_a_list, vector_b_list, fp32_result_list):
+            # TODO, Python float is FP64, could use numpy if we want to explicitly use FP32
             fp32_dot = 0.0
 
             for a, b in zip(a_vec, b_vec):
                 fp32_dot += mxfp_to_fp32(a, exp_bits, man_bits, bias) * mxfp_to_fp32(b, exp_bits, man_bits, bias)
 
             if (fp32_dot != fp32_orig):
-                print("ERROR: Mismatch!")
-                print(f"fp32_dot:  {fp32_dot:f}")
-                print(f"fp32_orig: {fp32_orig:f}")
+                error = ((fp32_orig - fp32_dot) / fp32_orig) * 100
 
-                for vec in [a_vec, b_vec]:
-                    print ("IN VEC: ", end="")
-                    for el in vec:
-                        print (f"{el:x} ", end="")
-                    print("")
+                if (abs(error) > tolerance):
+                    print("ERROR: Mismatch!")
+                    print(f"fp32_dot:  {fp32_dot:f}")
+                    print(f"fp32_orig: {fp32_orig:f}")
 
-                sys.exit(1)
+                    print(f"Error: {error:f}%")
 
+                    for vec in [a_vec, b_vec]:
+                        print ("IN VEC: ", end="")
+                        for el in vec:
+                            print (f"{el:x} ", end="")
+                        print("")
+
+                    sys.exit(1)
+
+                max_error = max(error, max_error)
+
+        print(f"Max Error: {max_error:f}%")
 
     # Write to output files
     write_vector_list_to_file(vector_a_list, shared_exp_a_list, vector_a_file, shared_exp_a_file)
