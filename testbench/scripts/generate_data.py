@@ -2,13 +2,15 @@
 #
 # Generate data for MXFP dot product circuits
 #
-# Generates the following inputs vectors:
-#   vector_a.hex - space seperated argument defined MXFP vector of length K, final value is an 8-bit shared exponent
-#   vector_b.hex - space seperated argument defined MXFP vector of length K, final value is an 8-bit shared exponent
+# Generates the following inputs:
+#   vector_a.hex     - space seperated argument defined MXFP vector of length K
+#   vector_b.hex     - space seperated argument defined MXFP vector of length K
+#   shared_exp_a.hex - shared exponent/scale for vector a
+#   shared_exp_b.hex - shared exponent/scale for vector b
 #
-# Generates the following output vectors:
-#   fixed_result.hex  - fixed point representation of dot product result, shared exponent not taken into account
-#   fp32_result.hex - fp32 representation of dot product result, shared exponent taken into account
+# Generates the following outputs:
+#   fixed_result.hex - fixed point representation of dot product result, shared exponent not taken into account
+#   fp32_result.hex  - fp32 representation of dot product result, shared exponent taken into account
 #
 # Usage:
 #   Example generating data for E3M2, vector length 32, 64 tests:

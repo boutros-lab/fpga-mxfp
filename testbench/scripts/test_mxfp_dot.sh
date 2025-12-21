@@ -80,6 +80,8 @@ if (( ${#dut_dir[@]} == 0 )); then
 	exit 2
 fi
 
+vmap tennm_ver "/tools/altera/quartus-pro/25.3/questa_fse/intel/verilog/tennm_ver"
+
 # Add all files
 for dir in ${dut_dir[@]}; do
 	while IFS= read -r filename; do
@@ -92,6 +94,6 @@ vlog -sv $TB_ROOT/tb/$tb_name.sv +define+DUT=$dut_name +define+EXP_WIDTH=$exp_wi
 	                            +define+K=$k +define+TESTS=$test_length +define+DATA_DIR=$TB_ROOT/data
 
 # Run tests
-vsim -c work.$tb_name -do "run -all"
+vsim -voptargs=+acc -L tennm_ver -c work.$tb_name -do "run -all"
 
 cd -
