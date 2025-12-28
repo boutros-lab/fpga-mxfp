@@ -293,6 +293,47 @@ def fixed_to_fp32(num, bits, point_position, shared_exp_a, shared_exp_b, rne=Tru
 
     return fp32_bits, fp32
 
+# Self check generated data vs FP32 operations
+# FP32 is inexact, so this is expected to mismatch for some
+# MXFP formats, does not take shared exponents into account
+def self_check(vector_a_list, vector_b_list, fp32_result_list, exp_bits, man_bits, bias, tolerance=0.0):
+    import numpy as np
+
+    max_error = 0.0
+    
+    for a_vec, b_vec, fp32_orig in zip(vector_a_list, vector_b_list, fp32_result_list):
+        # Use numpy for explicit FP32 operations
+        fp32_a   = np.zeros((1,1), dtype='float32')
+        fp32_b   = np.zeros((1,1), dtype='float32')
+        fp32_dot = np.zeros((1,1), dtype='float32')
+    
+        for a, b in zip(a_vec, b_vec):
+            fp32_a    = mxfp_to_fp32(a, exp_bits, man_bits, bias)
+            fp32_b    = mxfp_to_fp32(b, exp_bits, man_bits, bias)
+            fp32_dot += fp32_a * fp32_b
+    
+        if (fp32_dot != fp32_orig):
+            error = ((fp32_orig - fp32_dot[0][0]) / fp32_orig) * 100
+    
+            if (abs(error) > tolerance):
+                print("ERROR: Mismatch!")
+                print(f"fp32_dot:  {fp32_dot[0][0]:f}")
+                print(f"fp32_orig: {fp32_orig:f}")
+    
+                print(f"Error: {error:f}%")
+    
+                for vec in [a_vec, b_vec]:
+                    print ("IN VEC: ", end="")
+                    for el in vec:
+                        print (f"{el:x} ", end="")
+                    print("")
+    
+                sys.exit(1)
+    
+            max_error = max(error, max_error)
+    
+    print(f"Max FP32 Error: {max_error:f}%")
+
 # Write input vector to hex file
 def write_vector_list_to_file(vector_list, shared_exp_list, vector_file, shared_exp_file):
     with open(vector_file, 'w') as f:
@@ -314,15 +355,18 @@ def write_result_list_to_file(result_list, file):
 
 def main():
     parser = argparse.ArgumentParser(description='Generate MXFP Dot Product Data')
-    parser.add_argument('-e', '--exp_bits', type=int, default=2)
-    parser.add_argument('-m', '--man_bits', type=int, default=1)
-    parser.add_argument('-k', '--vector_length', type=int, default=8)
-    parser.add_argument('-t', '--test_length', type=int, default=256)
-    parser.add_argument('-i', '--ignore_shared_exp', action='store_true')
-    parser.add_argument('-n', '--no_subnormals', action='store_true')
-    parser.add_argument('-s', '--self_check', action='store_true')
+    parser.add_argument('-e', '--exp_bits', type=int, default=2, help="MXFP exponent bits, default: 2")
+    parser.add_argument('-m', '--man_bits', type=int, default=1, help="MXFP mantissa bits, default: 1")
+    parser.add_argument('-k', '--vector_length', type=int, default=32, help="Length of input vectors/dot product, default: 32")
+    parser.add_argument('-t', '--test_length', type=int, default=256, help="Number of test cases, default: 256")
+    parser.add_argument('-i', '--ignore_shared_exp', action='store_true', help="Ignore generated shared exponents in FP32 results")
+    parser.add_argument('-n', '--no_subnormals', action='store_true', help="Do not generate subnormals in input vectors")
+    parser.add_argument('-s', '--self_check', action='store_true', help="Self check against FP32 operaions, used only with ignore_shared_exp")
 
     args = parser.parse_args()
+
+    if (args.self_check and not args.ignore_shared_exp):
+        parser.error("Illegal Arguments: Cannot enable -s/--self_check without -i/--ignore_shared_exp")
 
     exp_bits        = args.exp_bits
     man_bits        = args.man_bits
@@ -343,6 +387,13 @@ def main():
 
     # Get exponent bias
     bias = 2**(exp_bits-1) - 1
+
+    print("MXFP Format Details:")
+    print(f"\tS: 1b,  E: {exp_bits}b,  M: {man_bits}b")
+    print(f"\tExponent Bias: {bias},  Emin: -{emin}")
+    print(f"\tMXFP fixed point length: {fixed_bits}b, fraction bits: {point_position}b")
+    print(f"\tFixed point mult length: {mult_bits}b, fraction bits: {mult_point_position}b")
+    print(f"\tFixed point result length: {sum_bits}b, fraction bits: {mult_point_position}b")
 
     # Set output paths
     PROJ_ROOT = os.environ['PROJ_ROOT']
@@ -390,47 +441,20 @@ def main():
         fp32_result_list.append(fp32)
         fp32_bits_result_list.append(fp32_bits)
 
-    # Self check generated data vs FP32 operations
-    # FP32 is inexact, so this is expected to fail for some
-    # formats, does not take shared exponents into account,
+    print("Generated Data Details:")
+    print(f"\tGenerated {test_length} {k} length E{exp_bits}M{man_bits} Input Vectors\n\t{sum_bits}b Fixed-Point Results, and FP32 Results")
+    print(f"\tOutput Directory: {OUTPUT_ROOT}")
+
     # MUST be used with -i/--ignore_shared_exp
     if args.self_check:
         tolerance = 0.0
-        max_error = 0.0
 
-        if (exp_bits >= 4):
+        if (exp_bits > 3):
             # Formats with E > 3 show noticeable error
             # TODO, can we derive a tolerance based on format and k?
-            tolerance = 0.00001
+            tolerance = 0.1
 
-        for a_vec, b_vec, fp32_orig in zip(vector_a_list, vector_b_list, fp32_result_list):
-            # TODO, Python float is FP64, could use numpy if we want to explicitly use FP32
-            fp32_dot = 0.0
-
-            for a, b in zip(a_vec, b_vec):
-                fp32_dot += mxfp_to_fp32(a, exp_bits, man_bits, bias) * mxfp_to_fp32(b, exp_bits, man_bits, bias)
-
-            if (fp32_dot != fp32_orig):
-                error = ((fp32_orig - fp32_dot) / fp32_orig) * 100
-
-                if (abs(error) > tolerance):
-                    print("ERROR: Mismatch!")
-                    print(f"fp32_dot:  {fp32_dot:f}")
-                    print(f"fp32_orig: {fp32_orig:f}")
-
-                    print(f"Error: {error:f}%")
-
-                    for vec in [a_vec, b_vec]:
-                        print ("IN VEC: ", end="")
-                        for el in vec:
-                            print (f"{el:x} ", end="")
-                        print("")
-
-                    sys.exit(1)
-
-                max_error = max(error, max_error)
-
-        print(f"Max Error: {max_error:f}%")
+        self_check(vector_a_list, vector_b_list, fp32_result_list, exp_bits, man_bits, bias, tolerance)
 
     # Write to output files
     write_vector_list_to_file(vector_a_list, shared_exp_a_list, vector_a_file, shared_exp_a_file)
