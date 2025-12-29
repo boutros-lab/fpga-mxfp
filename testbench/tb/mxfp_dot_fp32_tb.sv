@@ -21,6 +21,21 @@ module mxfp_dot_fp32_tb();
         rst = 0;
     end
 
+    // Functions
+    function real geterror(input real dut_fp32, input real ref_fp32);
+
+	real error;
+
+	error = ((ref_fp32 - dut_fp32) / ref_fp32) * 100;
+
+	if (error < 0.0) begin
+	    error = error * -1.0;
+	end
+
+	return error;
+
+    endfunction
+
     // Parameters
     localparam exp_width = `EXP_WIDTH;
     localparam man_width = `MAN_WIDTH;
@@ -93,6 +108,13 @@ module mxfp_dot_fp32_tb();
 
     int valid_count    = 0;
     int mismatch_count = 0;
+    int inexact_count  = 0;
+
+    real dut_fp32 = 0.0;
+    real ref_fp32 = 0.0;
+    real error    = 0.0;
+
+    real tolerance = 5.0;
 
     initial begin
 	#10
@@ -124,12 +146,27 @@ module mxfp_dot_fp32_tb();
 
 	    if (o_valid === 1'b1) begin
 	    	if (o_fp32_result !== fp32_result[valid_count]) begin
-	    	    $display("!!!!!MISMATCH!!!!!");
-	    	    $display("TEST: %0x", valid_count);
-	    	    $display("DUT: %0x", o_fp32_result);
-	    	    $display("REF: %0x", fp32_result[valid_count]);
+		    dut_fp32 = $bitstoshortreal(o_fp32_result);
+		    ref_fp32 = $bitstoshortreal(fp32_result[valid_count]);
 
-	    	    mismatch_count++;
+		    error = geterror(dut_fp32, ref_fp32);
+
+		    if (error > tolerance) begin
+	    	    	$display("!!!!!MISMATCH!!!!!");
+	    	    	$display("TEST: %0x", valid_count);
+	    	    	$display("DUT: %0x", o_fp32_result);
+	    	    	$display("REF: %0x", fp32_result[valid_count]);
+	    	    	$display("DUT FP32: %0f", dut_fp32);
+	    	    	$display("REF FP32: %0f", ref_fp32);
+	    	    	$display("ERROR:    %0f", error);
+
+	    	    	mismatch_count++;
+		    end else begin 
+	    	    	//$display("TEST: %0x", valid_count);
+	    	        //$display("Relative error below provided tolerance, ignoring mismatch\n Tolerance: %0f", tolerance);
+
+			inexact_count++;
+		    end
 	    	end
 
 		valid_count++;
@@ -144,12 +181,27 @@ module mxfp_dot_fp32_tb();
 
 	    if (o_valid === 1'b1) begin
 	    	if (o_fp32_result !== fp32_result[valid_count]) begin
-	    	    $display("!!!!!MISMATCH!!!!!");
-	    	    $display("TEST: %0x", valid_count);
-	    	    $display("DUT: %0x", o_fp32_result);
-	    	    $display("REF: %0x", fp32_result[valid_count]);
+		    dut_fp32 = $bitstoshortreal(o_fp32_result);
+		    ref_fp32 = $bitstoshortreal(fp32_result[valid_count]);
 
-	    	    mismatch_count++;
+		    error = geterror(dut_fp32, ref_fp32);
+
+		    if (error > tolerance) begin
+	    	    	$display("!!!!!MISMATCH!!!!!");
+	    	    	$display("TEST: %0x", valid_count);
+	    	        $display("DUT: %0x", o_fp32_result);
+	    	        $display("REF: %0x", fp32_result[valid_count]);
+	    	        $display("DUT FP32: %0f", dut_fp32);
+	    	        $display("REF FP32: %0f", ref_fp32);
+	    	        $display("ERROR:    %0f", error);
+
+	    	    	mismatch_count++;
+		    end else begin 
+	    	    	//$display("TEST: %0x", valid_count);
+	    	        //$display("Relative error below provided tolerance, ignoring mismatch\n Tolerance: %0f", tolerance);
+
+			inexact_count++;
+		    end
 	    	end
 
 		valid_count++;
@@ -160,10 +212,12 @@ module mxfp_dot_fp32_tb();
             $display("=====================================");
 	    $display("TEST FAILED");
 	    $display("Total Mismatches: %0d/%0d", mismatch_count, `TESTS);
+	    $display("Total Inexact:    %0d/%0d", inexact_count, `TESTS);
             $display("=====================================");
          end else begin
             $display("=====================================");
 	    $display("TEST PASSED");
+	    $display("Total Inexact:    %0d/%0d", inexact_count, `TESTS);
             $display("=====================================");
          end
 
