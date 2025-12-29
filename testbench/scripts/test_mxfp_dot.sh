@@ -19,12 +19,13 @@ tb_name="mxfp_dot_fixed_tb"
 usage() {
     echo "Run tests for a specified DUT, MXFP format, and dot product length"
     echo
-    echo "Usage: $0 [options]"
+    echo "Usage: $0 -r RTL_DIR -d DUT_NAME [options]"
     echo
-    echo "Options:"
-    echo "  -r <value>  RTL directory, all .sv|.v|.h|.vh files will be added, required"
+    echo "Required:"
+    echo "  -r <value>  RTL directory, all .sv|.v|.h|.vh files will be added"
     echo "              Can be used multiple times to add several directories"
-    echo "  -d <value>  DUT name, required"
+    echo "  -d <value>  DUT name"
+    echo "Options:"
     echo "  -e <value>  Exponent Width, default: 2"
     echo "  -m <value>  Mantissa Width, default: 1"
     echo "  -k <value>  Dot product length, default: 8"
@@ -80,13 +81,13 @@ if (( ${#rtl_dir[@]} == 0 )); then
 	exit 2
 fi
 
-vmap tennm_ver "/tools/altera/quartus-pro/25.3/questa_fse/intel/verilog/tennm_ver"
+vmap tennm "/tools/altera/quartus-pro/25.3/questa_fse/intel/verilog/tennm"
 
 # Add all files
 for dir in ${rtl_dir[@]}; do
-	while IFS= read -r filename; do
-		vlog -sv filename
-	done < find $dir -type f -name "*.sv" -o -name "*.v" -o -name "*.h" -o -name "*.vh"
+	find $dir -type f -name "*.sv" -o -name "*.v" -o -name "*.h" -o -name "*.vh" | while IFS= read -r filename; do
+		vlog -sv $filename || exit 1
+	done
 done
 
 # Define macros
@@ -94,6 +95,6 @@ vlog -sv $TB_ROOT/tb/$tb_name.sv +define+DUT=$dut_name +define+EXP_WIDTH=$exp_wi
 	                            +define+K=$k +define+TESTS=$test_length +define+DATA_DIR=$TB_ROOT/data
 
 # Run tests
-vsim -voptargs=+acc -L tennm_ver -c work.$tb_name -do "run -all"
+vsim -voptargs=+acc -L tennm -c work.$tb_name -do "run -all"
 
 cd -
