@@ -1,5 +1,5 @@
 module fp16_dp #(
-	parameter k = 4
+	parameter k = 2
 ) (
 	input logic clk,
 	input logic rst,

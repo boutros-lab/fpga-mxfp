@@ -39,9 +39,9 @@ set_global_assignment -name ORIGINAL_QUARTUS_VERSION 25.3.0
 set_global_assignment -name LAST_QUARTUS_VERSION "25.3.0 Pro Edition"
 
 # Get Verilog files and SDC file
-set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/fp16_mxfp_dp_32.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/fp16_mxfp_dp.sv]
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/mxfp_to_fp.sv]
-set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/fp16_32_dp.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/direct_vector_dp.sv]
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/add_shared_exp.sv]
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/pipeline.sv]
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/ip/sum_of_two.v]

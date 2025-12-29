@@ -7,6 +7,8 @@ module mxfp_dot_fp32_tb();
     logic clk;
     logic rst;
 
+    int cycle_count = 0;
+
     initial begin
         clk = 0;
         forever
@@ -14,9 +16,9 @@ module mxfp_dot_fp32_tb();
     end
 
     initial begin
-        rst = 0;
-        #10
         rst = 1;
+        #10
+        rst = 0;
     end
 
     // Parameters
@@ -62,8 +64,14 @@ module mxfp_dot_fp32_tb();
     end
 
     // DUT
+    logic i_valid;
+    logic o_valid;
+
     logic [bit_width-1:0] i_mxfp_vec_a [k];
     logic [bit_width-1:0] i_mxfp_vec_b [k];
+
+    logic [7:0] i_shared_exp_a;
+    logic [7:0] i_shared_exp_b;
 
     logic [31:0] o_fp32_result;
 
@@ -78,6 +86,8 @@ module mxfp_dot_fp32_tb();
 	.o_valid(o_valid),
         .i_vec_a(i_mxfp_vec_a),
         .i_vec_b(i_mxfp_vec_b),
+	.i_shared_exp_a(i_shared_exp_a),
+	.i_shared_exp_b(i_shared_exp_b),
         .o_result(o_fp32_result)
     );
 
@@ -94,11 +104,23 @@ module mxfp_dot_fp32_tb();
         $display("=====================================");
 
 	for (int i = 0; i < `TESTS; i = i + 1) begin
-	    i_valid      = 1'b1;
-	    i_mxfp_vec_a = vector_a[i];
-	    i_mxfp_vec_b = vector_b[i];
+	    i_valid        = 1'b1;
+	    i_mxfp_vec_a   = vector_a[i];
+	    i_mxfp_vec_b   = vector_b[i];
+            i_shared_exp_a = shared_exp_a[i];
+            i_shared_exp_b = shared_exp_b[i];
 
             #10;
+	    
+	    /* TODO, cleanup
+	    $display("========================");
+	    $display("TEST: %0x", i);
+	    $display("A0 MXFP: %4b  FP16: %4x", i_mxfp_vec_a[0], u_dot.u_fp16_mxfp_dp_k2.fp16_in_a[0]);
+	    $display("A1 MXFP: %4b  FP16: %4x", i_mxfp_vec_a[1], u_dot.u_fp16_mxfp_dp_k2.fp16_in_a[1]);
+	    $display("B0 MXFP: %4b  FP16: %4x", i_mxfp_vec_b[0], u_dot.u_fp16_mxfp_dp_k2.fp16_in_b[0]);
+	    $display("B1 MXFP: %4b  FP16: %4x", i_mxfp_vec_b[1], u_dot.u_fp16_mxfp_dp_k2.fp16_in_b[1]);
+	    $display("========================");
+            */
 
 	    if (o_valid === 1'b1) begin
 	    	if (o_fp32_result !== fp32_result[valid_count]) begin
@@ -113,6 +135,8 @@ module mxfp_dot_fp32_tb();
 		valid_count++;
 	    end
 	end
+	
+	i_valid = 1'b0;
 
 	// Check remaining outputs
 	while (valid_count < `TESTS) begin

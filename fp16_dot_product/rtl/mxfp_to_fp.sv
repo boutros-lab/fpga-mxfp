@@ -59,7 +59,7 @@ generate
 			if (exp_i == 0) begin
 				// Subnormal number
 				sign_o = sign_i;
-				exp_o  = exp_i + bias_c + leading_zero_count;
+				exp_o  = (man_i == 0) ? 'b0 : (exp_i + bias_c - leading_zero_count + 1);
 				man_o  = {man_shifted, {(man_bits_o - man_bits_i){1'b0}}};
 			end else begin
 				// Normal nuber
@@ -72,7 +72,7 @@ generate
 		// No special subnormal handling when source and target
 		// formats have equal exponent bits
 		assign sign_o = sign_i;
-		assign exp_o  = exp_i + bias_c + leading_zero_count;
+		assign exp_o  = exp_i;
 		assign man_o  = {man_i, {(man_bits_o - man_bits_i){1'b0}}};
 	end
 endgenerate

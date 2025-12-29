@@ -1,5 +1,0 @@
-
-DEFINE                     work                                 ./../libraries/work/                                
-DEFINE                     agilex_native_floating_point_dsp_100 ./../libraries/agilex_native_floating_point_dsp_100/
-INCLUDE simulator.cds.lib                                                                                           
-SOFTINCLUDE device.cds.lib                                                                                          
