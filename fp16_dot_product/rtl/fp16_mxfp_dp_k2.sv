@@ -24,7 +24,7 @@ module fp16_mxfp_dp_k2 #(
 	logic [31:0] fp32_dp_out;
 	
 	generate
-		for (i = 0; i < k; i++) begin
+		for (i = 0; i < k; i++) begin : mxfp_to_fp16_loop
 			mxfp_to_fp #(
 				.exp_bits_i(exp_width), 
 				.man_bits_i(man_width), 

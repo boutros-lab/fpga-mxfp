@@ -31,8 +31,8 @@ logic [exp_bits_o-1:0] exp_o;
 logic [man_bits_o-1:0] man_o;
 
 // Subnormal handling
-logic [$clog2(man_bits_i) - 1:0] leading_zero_count;
-logic [man_bits_i-1:0]           man_shifted;
+logic [$clog2(man_bits_i):0] leading_zero_count;
+logic [man_bits_i-1:0]       man_shifted;
 
 // Breakout MXFP components
 assign {sign_i, exp_i, man_i} = i_mxfp;

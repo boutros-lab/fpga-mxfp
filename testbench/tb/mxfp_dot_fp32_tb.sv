@@ -36,6 +36,8 @@ module mxfp_dot_fp32_tb();
 
     endfunction
 
+    let max(a, b) = (a > b) ? a : b;
+
     // Parameters
     localparam exp_width = `EXP_WIDTH;
     localparam man_width = `MAN_WIDTH;
@@ -114,6 +116,7 @@ module mxfp_dot_fp32_tb();
     real ref_fp32 = 0.0;
     real error    = 0.0;
 
+    real max_error = 0.0;
     real tolerance = 5.0;
 
     initial begin
@@ -134,22 +137,30 @@ module mxfp_dot_fp32_tb();
 
             #10;
 	    
-	    /* TODO, cleanup
-	    $display("========================");
+	    // TODO, cleanup
+	    /*$display("========================");
 	    $display("TEST: %0x", i);
-	    $display("A0 MXFP: %4b  FP16: %4x", i_mxfp_vec_a[0], u_dot.u_fp16_mxfp_dp_k2.fp16_in_a[0]);
-	    $display("A1 MXFP: %4b  FP16: %4x", i_mxfp_vec_a[1], u_dot.u_fp16_mxfp_dp_k2.fp16_in_a[1]);
-	    $display("B0 MXFP: %4b  FP16: %4x", i_mxfp_vec_b[0], u_dot.u_fp16_mxfp_dp_k2.fp16_in_b[0]);
-	    $display("B1 MXFP: %4b  FP16: %4x", i_mxfp_vec_b[1], u_dot.u_fp16_mxfp_dp_k2.fp16_in_b[1]);
-	    $display("========================");
-            */
+	    //$display("A0 MXFP: %4b  FP16: %4x", i_mxfp_vec_a[0], u_dot.u_fp16_mxfp_dp_k2.fp16_in_a[0]);
+	    //$display("A1 MXFP: %4b  FP16: %4x", i_mxfp_vec_a[1], u_dot.u_fp16_mxfp_dp_k2.fp16_in_a[1]);
+	    //$display("B0 MXFP: %4b  FP16: %4x", i_mxfp_vec_b[0], u_dot.u_fp16_mxfp_dp_k2.fp16_in_b[0]);
+	    //$display("B1 MXFP: %4b  FP16: %4x", i_mxfp_vec_b[1], u_dot.u_fp16_mxfp_dp_k2.fp16_in_b[1]);
+	    $display("SHARED EXP A: %0x", u_dot.u_fp16_mxfp_dp_k2.u_add_shared_exp.shared_exp_in_a);
+	    $display("SHARED EXP B: %0x", u_dot.u_fp16_mxfp_dp_k2.u_add_shared_exp.shared_exp_in_b);
+	    $display("EXP IN:       %0x", u_dot.u_fp16_mxfp_dp_k2.u_add_shared_exp.exp_in);
+	    $display("EXP RESULT:   %0x", u_dot.u_fp16_mxfp_dp_k2.u_add_shared_exp.exp_result);
+	    $display("TEST      :   %0x", u_dot.u_fp16_mxfp_dp_k2.u_add_shared_exp.test);
+	    //$display("B0 LZC: %0x", u_dot.u_fp16_mxfp_dp_k2.mxfp_to_fp16_loop[0].u_mxfp_to_fp_b.leading_zero_count);
+	    //$display("B0 man_i: %0x", u_dot.u_fp16_mxfp_dp_k2.mxfp_to_fp16_loop[0].u_mxfp_to_fp_b.man_i);
+	    //$display("B0 man_s: %0x", u_dot.u_fp16_mxfp_dp_k2.mxfp_to_fp16_loop[0].u_mxfp_to_fp_b.man_shifted);
+	    $display("========================");*/
 
 	    if (o_valid === 1'b1) begin
 	    	if (o_fp32_result !== fp32_result[valid_count]) begin
 		    dut_fp32 = $bitstoshortreal(o_fp32_result);
 		    ref_fp32 = $bitstoshortreal(fp32_result[valid_count]);
 
-		    error = geterror(dut_fp32, ref_fp32);
+		    error     = geterror(dut_fp32, ref_fp32);
+		    max_error = max(error, max_error);
 
 		    if (error > tolerance) begin
 	    	    	$display("!!!!!MISMATCH!!!!!");
@@ -184,7 +195,8 @@ module mxfp_dot_fp32_tb();
 		    dut_fp32 = $bitstoshortreal(o_fp32_result);
 		    ref_fp32 = $bitstoshortreal(fp32_result[valid_count]);
 
-		    error = geterror(dut_fp32, ref_fp32);
+		    error     = geterror(dut_fp32, ref_fp32);
+		    max_error = max(error, max_error);
 
 		    if (error > tolerance) begin
 	    	    	$display("!!!!!MISMATCH!!!!!");
@@ -213,11 +225,13 @@ module mxfp_dot_fp32_tb();
 	    $display("TEST FAILED");
 	    $display("Total Mismatches: %0d/%0d", mismatch_count, `TESTS);
 	    $display("Total Inexact:    %0d/%0d", inexact_count, `TESTS);
+	    $display("Max Error:        %0f", max_error);
             $display("=====================================");
          end else begin
             $display("=====================================");
 	    $display("TEST PASSED");
 	    $display("Total Inexact:    %0d/%0d", inexact_count, `TESTS);
+	    $display("Max Error:        %0f %%", max_error);
             $display("=====================================");
          end
 

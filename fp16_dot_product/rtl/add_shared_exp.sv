@@ -25,6 +25,10 @@ assign signed_exp_b = $signed({2'b0, shared_exp_in_b});
 // 254 = exp_bias * 2
 assign exp_result = signed_exp_i + signed_exp_a + signed_exp_b - 10'd254;
 
+// TODO: Need special handling for:
+// 	Zero: ignore shared exponent
+// 	Subnormal Input: need to adjust mantissa
+// 	Subnormal output: idek
 always_comb begin
 	if (exp_result < $signed(10'b0)) begin
 		// Underflow
