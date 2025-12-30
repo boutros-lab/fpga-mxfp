@@ -40,6 +40,8 @@ fp16_mxfp_dp_k2 #(
 	.rst(rst),
 	.mxfp_in_a(i_vec_a),
 	.mxfp_in_b(i_vec_b),
+	.shared_exp_in_a(i_shared_exp_a),
+	.shared_exp_in_b(i_shared_exp_b),
 	.fp32_out(o_result)
 );
 

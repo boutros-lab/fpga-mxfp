@@ -10,13 +10,18 @@ module fp16_mxfp_dp_k2 #(
 	input logic rst,
 	input logic [bit_width-1:0] mxfp_in_a [k],
 	input logic [bit_width-1:0] mxfp_in_b [k],
+	input logic [7:0] shared_exp_in_a,
+	input logic [7:0] shared_exp_in_b,
 	output logic [31:0] fp32_out
 );
+	localparam latency = 6;
 
 	genvar i;
 	
 	logic [15:0] fp16_in_a [k];
 	logic [15:0] fp16_in_b [k];
+
+	logic [31:0] fp32_dp_out;
 	
 	generate
 		for (i = 0; i < k; i++) begin
@@ -56,7 +61,35 @@ module fp16_mxfp_dp_k2 #(
 		.clr1            (rst),            //   input,   width = 1,            clr1.reset
 		.clk             (clk),             //   input,   width = 1,             clk.clk
 		.ena             (3'b111),             //   input,   width = 3,             ena.ena
-		.fp32_result     (fp32_out)      //  output,  width = 32,     fp32_result.fp32_result
+		.fp32_result     (fp32_dp_out)      //  output,  width = 32,     fp32_result.fp32_result
+	);
+
+	//assign fp32_out = fp32_dp_out;
+
+	logic [15:0] shared_exp;
+	logic [15:0] shared_exp_q;
+	logic [7:0]  shared_exp_in_a_q;
+	logic [7:0]  shared_exp_in_b_q;
+
+	assign shared_exp = {shared_exp_in_a, shared_exp_in_b};
+	assign {shared_exp_in_a_q, shared_exp_in_b_q} = shared_exp_q;
+
+	pipeline #(
+		.width(16), 
+		.depth(latency)
+	) u_pipeline (
+		.clk(clk),
+		.rst(rst),
+		.data(shared_exp),
+		.data_q(shared_exp_q)
+	);
+
+	add_shared_exp 
+	u_add_shared_exp (
+		.fp32_in(fp32_dp_out),
+		.shared_exp_in_a(shared_exp_in_a_q),
+		.shared_exp_in_b(shared_exp_in_b_q),
+		.fp32_out(fp32_out)
 	);
 
 endmodule
