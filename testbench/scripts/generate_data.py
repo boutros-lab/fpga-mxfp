@@ -39,7 +39,11 @@ def generate_mxfp(exp_bits, man_bits, no_subnormals=False):
     return mxfp
 
 # Create a random shared exponent
-def generate_shared_exponent(exp_bits):
+def generate_shared_exponent(exp_bits, return_bias=False):
+    if return_bias:
+        # Return exponent bias, has no effect on final value
+        return (2 ** (exp_bits - 1)) - 1
+
     return random.getrandbits(exp_bits)
 
 # Create a k length vector of MXFP numbers
@@ -423,8 +427,8 @@ def main():
         vector_a_list.append(generate_mxfp_vector(exp_bits, man_bits, k, args.no_subnormals))
         vector_b_list.append(generate_mxfp_vector(exp_bits, man_bits, k, args.no_subnormals))
 
-        shared_exp_a_list.append(generate_shared_exponent(shared_exp_bits))
-        shared_exp_b_list.append(generate_shared_exponent(shared_exp_bits))
+        shared_exp_a_list.append(generate_shared_exponent(shared_exp_bits, args.ignore_shared_exp))
+        shared_exp_b_list.append(generate_shared_exponent(shared_exp_bits, args.ignore_shared_exp))
 
     # Find Fixed-point dot product results
     for vector_a, vector_b in zip(vector_a_list, vector_b_list):
@@ -432,11 +436,7 @@ def main():
 
     # Convert fixed-point results to fp32 and apply shared exponents
     for fixed_result, shared_exp_a, shared_exp_b in zip(fixed_result_list, shared_exp_a_list, shared_exp_b_list):
-        if args.ignore_shared_exp:
-            # Set shared exponent to fp32 bias value, effectively 0
-            fp32_bits, fp32 = fixed_to_fp32(fixed_result, sum_bits, mult_point_position, 127, 127)
-        else:
-            fp32_bits, fp32 = fixed_to_fp32(fixed_result, sum_bits, mult_point_position, shared_exp_a, shared_exp_b)
+        fp32_bits, fp32 = fixed_to_fp32(fixed_result, sum_bits, mult_point_position, shared_exp_a, shared_exp_b)
 
         fp32_result_list.append(fp32)
         fp32_bits_result_list.append(fp32_bits)
