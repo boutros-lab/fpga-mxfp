@@ -231,13 +231,21 @@ def fixed_to_fp32(num, bits, point_position, shared_exp_a, shared_exp_b, rne=Tru
 
     sign = (num >> (bits - 1)) & 1
 
-    if sign == 1:
-        # two's complement function provides result as bit + 1
-        # We want to maintain the number of bits
-        num = get_twos_complement(sign, num, (bits - 1))
-
     if num == 0:
         return 0, 0.0
+
+    # two's complement function provides result as bits + 1
+    # We want to maintain the number of bits, provide bits - 1
+    num = get_twos_complement(sign, num, (bits - 1))
+
+    # TODO, check
+    # magnitude is representable in (fixed_bits - 1), extra bit for sign
+    # mult_bits multiplies fixed_bits by 2, adds the extra bit for the sign again, this extra bit is unneeded
+    # sum_bits just adds log2(k) to mult_bits
+    # so the magnitude should be representable in (sum_bits - 2)
+    # this is what will ultimately be in the mantissa and implied 1
+    # so, maximum sum_bits for 0-error FP32 is 26 (23 man, 1 implied = 24, + 2 = 26)
+    assert (num < (1 << (bits - 2))), "ERROR: Number exceeds expected bounds."
 
     # Bit position of leading 1
     leading_1_pos = math.floor(math.log2(num))
@@ -317,9 +325,9 @@ def self_check(vector_a_list, vector_b_list, fp32_result_list, exp_bits, man_bit
             fp32_dot += fp32_a * fp32_b
     
         if (fp32_dot != fp32_orig):
-            error = ((fp32_orig - fp32_dot[0][0]) / fp32_orig) * 100
+            error = abs((fp32_orig - fp32_dot[0][0]) / fp32_orig) * 100
     
-            if (abs(error) > tolerance):
+            if (error > tolerance):
                 print("ERROR: Mismatch!")
                 print(f"fp32_dot:  {fp32_dot[0][0]:f}")
                 print(f"fp32_orig: {fp32_orig:f}")
@@ -336,7 +344,8 @@ def self_check(vector_a_list, vector_b_list, fp32_result_list, exp_bits, man_bit
     
             max_error = max(error, max_error)
     
-    print(f"Max FP32 Error: {max_error:f}%")
+    print(f"Error Tolerance: {tolerance:f}%")
+    print(f"Max FP32 Error:  {max_error:f}%")
 
 # Write input vector to hex file
 def write_vector_list_to_file(vector_list, shared_exp_list, vector_file, shared_exp_file):
