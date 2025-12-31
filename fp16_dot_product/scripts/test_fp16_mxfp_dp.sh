@@ -63,8 +63,8 @@ test="$PROJ_ROOT/data"
 vmap tennm "/tools/altera/quartus-pro/25.3/questa_fse/intel/verilog/tennm"
 
 vlog -sv $TB_ROOT/fp16_mxfp_dp_tb.sv $RTL_ROOT/fp16_mxfp_dp.sv $RTL_ROOT/mxfp_to_fp.sv \
-	$IP_ROOT/sum_of_two/agilex_native_floating_point_dsp_100/synth/sum_of_two_agilex_native_floating_point_dsp_100_pmzaffa.v \
-	$IP_ROOT/sum_of_two/synth/sum_of_two.v \
+	$RTL_ROOT/add_shared_exp.sv $RTL_ROOT/pipeline.sv $RTL_ROOT/direct_vector_dp.sv \
+	$IP_ROOT/sum_of_two.v $IP_ROOT/vector_one.v $IP_ROOT/vector_two.v \
 	+define+EXP_WIDTH=$exp_width +define+MAN_WIDTH=$man_width \
 	+define+K=$k +define+INPUT_STAGES=$input_stages +define+OUTPUT_STAGES=$output_stages +define+TESTS=$test_length +define+DATA_DIR=$test
 

@@ -9,6 +9,10 @@ module direct_vector_dp #(
 	input logic [15:0] fp16_in_b [k],
 	output logic [31:0] fp32_out
 );
+	initial begin
+		assert ((k % 4) == 0) else 
+			$fatal ("ERROR: Direct vector dp K value must be a multiple of 4");
+	end
 
 	logic [31:0] fp32_input  [k/2];
 	logic [31:0] fp32_result [k/2];
@@ -17,11 +21,8 @@ module direct_vector_dp #(
 	// No chain in to final DSP
 	assign fp32_chain[k/2 - 1] = 'b0;
 
-	// DSP 0 is sum_of_two, does not accept FP32 adder input, this signal
-	// will go unused
-	assign fp32_input[0] = 'b0;
-
-	assign fp32_out = fp32_result[3];
+	// Final result in dsp[1]
+	assign fp32_out = fp32_result[1];
 
 	// Sum of Two mode:
 	// 	FP32 result is sum of FP32 chainin and FP16 products
@@ -31,24 +32,24 @@ module direct_vector_dp #(
 	// 	Fp32 chain out is sum of FP16 products
 	//
 	// Vector One mode:
-	// 	Fp32 result is sum of FP16 products and FP32 adder_a
+	// 	FP32 result is sum of FP32 chainin and FP16 products
 	// 	FP32 chainout is FP32 adder_a
 
 	always_comb begin
 		// DSP Result-input chaining
-		// TODO: currently not correct, needs to be fixed
+		// This chaining only works k values which are multiples 
+		// of 4 - special handling is required if they're not,
+		// not implemented here
 
-		// v2
-		fp32_input[1] = fp32_result[0]; // AB + CD + EF + GH
-		// v1
-		fp32_input[2] = fp32_result[2]; // IJ + KL + MN + OP
-		// v2
-		fp32_input[3] = fp32_result[1]; // AB + CD + EF + GH + IJ + KL + MN + OP
-		// v1
-		fp32_input[4] = fp32_result[5]; // QR + ST + UV + WX + YZ + ab + cd + ef
-
-		for (int i = 5; i < k/2; i++) begin
-			fp32_input[i] = fp32_result[i - 1];
+		for (int i = 0; i < k; i = i + 4) begin
+			// [i] will be unused for the first chunk (sum_of_two)
+			// For later chunks it will propagate the result of
+			// that chunk ([i + 1]) to [i + 3]/the previous chunk
+			// Results then cascade, final result in dsp[1]
+			fp32_input[i]     = fp32_result[i + 1];
+			fp32_input[i + 1] = fp32_result[i + 3];
+			fp32_input[i + 2] = fp32_result[i + 2];
+			fp32_input[i + 3] = fp32_result[i];
 		end
 	end
 
@@ -106,7 +107,7 @@ module direct_vector_dp #(
 			end else begin
 				// Vector one
 				if (i != (k/2 -1)) begin
-					vector_two u_vector_two_0 (
+					vector_one u_vector_one_0 (
 						.fp16_mult_top_a (fp16_in_a[i*2]), //   input,  width = 16, fp16_mult_top_a.fp16_mult_top_a
 						.fp16_mult_top_b (fp16_in_b[i*2]), //   input,  width = 16, fp16_mult_top_b.fp16_mult_top_b
 						.fp16_mult_bot_a (fp16_in_a[i*2 + 1]), //   input,  width = 16, fp16_mult_bot_a.fp16_mult_bot_a
@@ -122,7 +123,7 @@ module direct_vector_dp #(
 					);
 				end else begin
 					// Terminal DSP has no chain in
-					vector_two_no_chainin u_vector_two_no_chainin (
+					vector_one_no_chainin u_vector_one_no_chainin (
 						.fp16_mult_top_a (fp16_in_a[i*2]), //   input,  width = 16, fp16_mult_top_a.fp16_mult_top_a
 						.fp16_mult_top_b (fp16_in_b[i*2]), //   input,  width = 16, fp16_mult_top_b.fp16_mult_top_b
 						.fp16_mult_bot_a (fp16_in_a[i*2 + 1]), //   input,  width = 16, fp16_mult_bot_a.fp16_mult_bot_a
