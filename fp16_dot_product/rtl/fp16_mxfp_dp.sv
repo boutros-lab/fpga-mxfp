@@ -109,7 +109,7 @@ module fp16_mxfp_dp #(
 
 	pipeline #(
 		.width(16), 
-		.depth(k/2)
+		.depth(40) // TODO, this is for K=32, derive from K
 	) u_pipeline (
 		.clk(clk),
 		.rst(rst),
@@ -120,10 +120,8 @@ module fp16_mxfp_dp #(
 	add_shared_exp 
 	u_add_shared_exp (
 		.fp32_in(fp32_sh_in),
-		//.shared_exp_in_a(shared_exp_in_a_q1), TODO
-		//.shared_exp_in_b(shared_exp_in_b_q1),
-		.shared_exp_in_a(8'h7f),
-		.shared_exp_in_b(8'h7f),
+		.shared_exp_in_a(shared_exp_in_a_q1),
+		.shared_exp_in_b(shared_exp_in_b_q1),
 		.fp32_out(fp32_sh_out)
 	);
 

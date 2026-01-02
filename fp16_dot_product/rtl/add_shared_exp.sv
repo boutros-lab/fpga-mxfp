@@ -30,12 +30,14 @@ assign exp_result = signed_exp_i + signed_exp_a + signed_exp_b - 10'd254;
 // 	Subnormal Input: need to adjust mantissa
 // 	Subnormal output: idek
 always_comb begin
-	if (exp_result < $signed(10'b0)) begin
-		// Underflow
+	if ((exp_result < $signed(10'b0)) || (exp_in == 8'b0)) begin
+		// Underflow and zero input
+		// TODO: Currently will just flush subnormals, need special
+		// handling
 		fp32_out = 32'b0;
 	end else if (exp_result > $signed(10'hFF)) begin
 		// Overflow
-		fp32_out = 32'h7F800000; // Inf
+		fp32_out = {sign_in, 31'h7F800000}; // +/-Inf
 	end else begin
 		// Normal number
 		fp32_out = {sign_in, exp_result[7:0], man_in};

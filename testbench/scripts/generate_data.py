@@ -17,7 +17,8 @@
 #     ./generate_data.py -e 3 -m 2 -k 32 -t 64
 #
 #     Use -n to disable subnormal generation
-#     Use -i to disable shared exponent (file will still be generated but will not reflect in fp32 result)
+#     Use -i to disable shared exponent (file will still be generated, shared exponents will be equal to bias)
+#     Use --no_infnan to disable Inf/NaN generation (for MXFP8 E5M2)
 #     Use -s with -i to self-check generated data with FP32 operations, this is expected to fail for larger formats
 
 import os
@@ -28,12 +29,14 @@ import struct
 import argparse
 
 # Create a random MXFP number
-def generate_mxfp(exp_bits, man_bits, no_subnormals=False):
+def generate_mxfp(exp_bits, man_bits, no_subnormals=False, no_infnan=False):
+    max_exp = (1 << exp_bits) - 1
+
     while True:
         mxfp = random.getrandbits(1 + exp_bits + man_bits)
         exp = (mxfp >> man_bits) & ((1 << exp_bits) - 1)
 
-        if (exp != 0) or (no_subnormals == False):
+        if ((exp != 0) or (no_subnormals == False)) and ((exp < max_exp) or (no_infnan == False)):
             break
 
     return mxfp
@@ -47,11 +50,11 @@ def generate_shared_exponent(exp_bits, return_bias=False):
     return random.getrandbits(exp_bits)
 
 # Create a k length vector of MXFP numbers
-def generate_mxfp_vector(exp_bits, man_bits, k, no_subnormals=False):
+def generate_mxfp_vector(exp_bits, man_bits, k, no_subnormals=False, no_infnan=False):
     vector = []
 
     for i in range(k):
-        vector.append(generate_mxfp(exp_bits, man_bits, no_subnormals))
+        vector.append(generate_mxfp(exp_bits, man_bits, no_subnormals, no_infnan))
 
     return vector
 
@@ -374,12 +377,18 @@ def main():
     parser.add_argument('-t', '--test_length', type=int, default=256, help="Number of test cases, default: 256")
     parser.add_argument('-i', '--ignore_shared_exp', action='store_true', help="Ignore generated shared exponents in FP32 results")
     parser.add_argument('-n', '--no_subnormals', action='store_true', help="Do not generate subnormals in input vectors")
+    parser.add_argument('--no_infnan', action='store_true', help="Do not generate Inf/NaN inputs, applicable to MXFP8 E5M2")
     parser.add_argument('-s', '--self_check', action='store_true', help="Self check against FP32 operaions, used only with ignore_shared_exp")
 
     args = parser.parse_args()
 
     if (args.self_check and not args.ignore_shared_exp):
         parser.error("Illegal Arguments: Cannot enable -s/--self_check without -i/--ignore_shared_exp")
+
+    # TODO: extend this for scale/shared_exp
+    # Only E5M2 supports Inf and NaN encodings
+    if ((args.exp_bits != 5) and args.no_infnan):
+        parser.error("Illegal Arguments: No Inf/NaN set for MX format without Inf/NaN encoding")
 
     exp_bits        = args.exp_bits
     man_bits        = args.man_bits
@@ -433,8 +442,8 @@ def main():
 
     # Generate input vectors
     for i in range(test_length):
-        vector_a_list.append(generate_mxfp_vector(exp_bits, man_bits, k, args.no_subnormals))
-        vector_b_list.append(generate_mxfp_vector(exp_bits, man_bits, k, args.no_subnormals))
+        vector_a_list.append(generate_mxfp_vector(exp_bits, man_bits, k, args.no_subnormals, args.no_infnan))
+        vector_b_list.append(generate_mxfp_vector(exp_bits, man_bits, k, args.no_subnormals, args.no_infnan))
 
         shared_exp_a_list.append(generate_shared_exponent(shared_exp_bits, args.ignore_shared_exp))
         shared_exp_b_list.append(generate_shared_exponent(shared_exp_bits, args.ignore_shared_exp))

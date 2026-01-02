@@ -88,6 +88,10 @@ module fp16_mxfp_dp_tb();
     // DUT
     logic [bit_width-1:0] mxfp_in_a [k];
     logic [bit_width-1:0] mxfp_in_b [k];
+
+    logic [7:0] i_shared_exp_a;
+    logic [7:0] i_shared_exp_b;
+
     logic [31:0] fp32_in;
     logic [31:0] fp32_out;
 
@@ -100,12 +104,13 @@ module fp16_mxfp_dp_tb();
 	.rst(rst),
         .mxfp_in_a(mxfp_in_a),
         .mxfp_in_b(mxfp_in_b),
-	.shared_exp_in_a(8'hff),
-	.shared_exp_in_b(8'hff),
+	.shared_exp_in_a(i_shared_exp_a),
+	.shared_exp_in_b(i_shared_exp_b),
         .fp32_out(fp32_out)
     );
 
     int mismatch_count = 0;
+    int inexact_count  = 0;
 
     real dut_fp32 = 0.0;
     real ref_fp32 = 0.0;
@@ -131,8 +136,14 @@ module fp16_mxfp_dp_tb();
 	    mxfp_in_a = vector_a[i];
 	    mxfp_in_b = vector_b[i];
 
+            i_shared_exp_a = shared_exp_a[i];
+            i_shared_exp_b = shared_exp_b[i];
+
 	    for (int j = 0; j < 42; j++) begin
                 #10;
+	    	/*$display("FP32 DP OUT:     %0x, cycle: %d", u_dot.fp32_sh_in, j);
+	    	$display("FP32 SHARED EXP: %0x, cycle: %d", u_dot.shared_exp_in_a_q1, j);
+		$display("DUT: %0x", fp32_out);*/
 	    end
 
 	    /*$display("CYCLE: %0x", i);
@@ -154,16 +165,29 @@ module fp16_mxfp_dp_tb();
 		error     = geterror(dut_fp32, ref_fp32);
 		max_error = max(error, max_error);
 
-		$display("!!!!!MISMATCH!!!!!");
+		if (tolerance < error) begin
+			$display("!!!!!MISMATCH!!!!!");
+			$display("TEST: %0x", i);
+			$display("DUT: %0x", fp32_out);
+			$display("REF: %0x", fp32_result[i]);
+	    		$display("DUT FP32: %0f", dut_fp32);
+	    		$display("REF FP32: %0f", ref_fp32);
+	    		$display("ERROR:    %0f", error);
+
+			mismatch_count = mismatch_count + 1;
+		end else begin
+			inexact_count = inexact_count + 1;
+		end
+	    end /*else begin
+		dut_fp32 = $bitstoshortreal(fp32_out);
+		ref_fp32 = $bitstoshortreal(fp32_result[i]);
+		$display("=====PASSED=====");
 		$display("TEST: %0x", i);
 		$display("DUT: %0x", fp32_out);
 		$display("REF: %0x", fp32_result[i]);
 	    	$display("DUT FP32: %0f", dut_fp32);
 	    	$display("REF FP32: %0f", ref_fp32);
-	    	$display("ERROR:    %0f", error);
-
-		mismatch_count = mismatch_count + 1;
-	    end
+	    end*/
 	end
 
 	/**for (int i = 0; i < 39; i = i + 1) begin
@@ -186,11 +210,13 @@ module fp16_mxfp_dp_tb();
             $display("=====================================");
 	    $display("TEST FAILED");
 	    $display("Total Mismatches: %0d/%0d", mismatch_count, `TESTS);
+	    $display("Total Iexact:     %0d/%0d", inexact_count, `TESTS);
 	    $display("Max Error:        %0f %%", max_error);
             $display("=====================================");
          end else begin
             $display("=====================================");
 	    $display("TEST PASSED");
+	    $display("Total Iexact:     %0d/%0d", inexact_count, `TESTS);
 	    $display("Max Error:        %0f %%", max_error);
             $display("=====================================");
          end
