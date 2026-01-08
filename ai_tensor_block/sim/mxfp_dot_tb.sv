@@ -33,7 +33,7 @@ end
 
 initial begin
 	shared_exp1 = 127;
-	shared_exp2 = 127;
+	shared_exp2 = 126;
 	for (int i = 0; i < DOT_LEN; i++) begin
 		data_in1_MX[i] = $random;
 		data_in2_MX[i] = $random;
@@ -127,7 +127,7 @@ function automatic shortreal dot (shortreal vec1[], shortreal vec2[], byte share
 
 	foreach (vec1[i])
 		dot += vec1[i] * vec2[i]; 
-	//dot = shortreal'(dot * (2.0 ** (corrected_exp))); // 127 is exponent bias from OCP-MX Standard
+	dot = shortreal'(dot * (2.0 ** (corrected_exp))); // 127 is exponent bias from OCP-MX Standard
 endfunction
 
 function automatic shortreal to_fp32 (int fp_bits);
