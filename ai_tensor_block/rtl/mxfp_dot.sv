@@ -102,7 +102,7 @@ always_comb begin
 	end
 end
 generate
-		for (genvar j = 0; j < 20; j++) begin
+		for (genvar j = 10; j < 20; j++) begin
 			pipeline #(.W(8), .STAGES(2)) DOT1_M_PIPE (
 				.clk(clk),
 				.rst(rst),
