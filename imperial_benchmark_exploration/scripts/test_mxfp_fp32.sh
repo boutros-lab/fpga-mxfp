@@ -13,6 +13,7 @@ k=32
 input_stages=1
 dot_fp_stages=1
 pipeline_add=1
+pipeline_flopoco=1
 fp32_stages=1
 output_stages=1
 test_length=256
@@ -28,6 +29,7 @@ usage() {
     echo "  -i <value>  Input Register Stages, default: 1"
     echo "  -d <value>  Dot FP Register Stages, default: 1"
     echo "  -a <value>  Pipeline adder tree, default: 1"
+    echo "  -p <value>  Use pipelined fix2fp, default: 1"
     echo "  -f <value>  FP Register Stages, default: 1"
     echo "  -o <value>  Output Register Stages, default: 1"
     echo "  -t <value>  Test Length, default: 256"
@@ -41,7 +43,7 @@ usage() {
 }
 
 # Parse command line arguments
-while getopts "e:m:k:i:d:a:f:o:t:h" opt; do
+while getopts "e:m:k:i:d:a:p:f:o:t:h" opt; do
     case ${opt} in
         e )
             exp_width=$OPTARG
@@ -61,6 +63,9 @@ while getopts "e:m:k:i:d:a:f:o:t:h" opt; do
         a )
 	    pipeline_add=$OPTARG
             ;;
+        p )
+	    pipeline_flopoco=$OPTARG
+            ;;
         f )
             fp32_stages=$OPTARG
             ;;
@@ -79,12 +84,17 @@ done
 test="$PROJ_ROOT/data"
 
 # Add Flopoco file
-vcom $FL_ROOT/mxfp_e${exp_width}m${man_width}_to_fp32.vhdl
+if [ $pipeline_flopoco -eq 1 ] 
+then
+	vcom $FL_ROOT/pipelined/mxfp_e${exp_width}m${man_width}_to_fp32.vhdl
+else
+	vcom $FL_ROOT/combinational/mxfp_e${exp_width}m${man_width}_to_fp32.vhdl
+fi
 
 vlog -sv $TB_ROOT/mxfp_dot_fp32_tb.sv $RTL_ROOT/dot_fp_fp32.sv $RTL_ROOT/pipeline.sv $RTL_ROOT/dot_fp.sv $MX_ROOT/src/util/arith/vec_mul_fp.sv \
 	$RTL_ROOT/vec_sum_int.sv $MX_ROOT/src/util/arith/mul_fp.sv $mul_int +define+EXP_WIDTH=$exp_width +define+MAN_WIDTH=$man_width \
 	+define+K=$k +define+INPUT_STAGES=$input_stages +define+DOT_FP_STAGES=$dot_fp_stages +define+PIPELINE_ADD=$pipeline_add +define+FP32_STAGES=$fp32_stages \
-	+define+OUTPUT_STAGES=$output_stages +define+TESTS=$test_length +define+DATA_DIR=$test
+	+define+OUTPUT_STAGES=$output_stages +define+TESTS=$test_length +define+DATA_DIR=$test +define+PIPELINE_FLOPOCO=$pipeline_flopoco
 
 vsim -c work.mxfp_dot_tb -do "run -all"
 

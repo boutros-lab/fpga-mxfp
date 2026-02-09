@@ -33,6 +33,14 @@ module mxfp_dot_tb();
 
     localparam tree_add_reg_stages = pipeline_add ? $clog2(k) - 1 : 0;
 
+    localparam fix2fp_stages = `PIPELINE_FLOPOCO == 1 ? 
+            					      ((exp_width == 5 && man_width == 2) ? 14 :
+            		                               (exp_width == 4 && man_width == 3) ? 11 :
+            		                               (exp_width == 3 && man_width == 2) ?  6 :
+            		                               (exp_width == 2 && man_width == 3) ?  6 :
+            		                               (exp_width == 2 && man_width == 1) ?  5 :
+        		                               0) : 0;
+
     logic signed [bit_width-1:0] vector_a[`TESTS][k];
     logic signed [bit_width-1:0] vector_b[`TESTS][k];
 
@@ -105,7 +113,10 @@ module mxfp_dot_tb();
         $display("Input Stages:  %d", input_stages);
         $display("Dot FP Stages: %d", dot_fp_stages);
         $display("Pipeline Add:  %d", pipeline_add);
+        $display("Tree Stages:   %d", tree_add_reg_stages);
+        $display("Pipeline Add:  %d", pipeline_add);
         $display("FP32 Stages:   %d", fp32_stages);
+        $display("Fix2FP Stages: %d", fix2fp_stages);
         $display("Output Stages: %d", output_stages);
         $display("=====================================");
 
@@ -113,7 +124,7 @@ module mxfp_dot_tb();
 	    i_op0 = vector_a[i];
 	    i_op1 = vector_b[i];
 
-	    for (int j = 0; j < (input_stages + dot_fp_stages + tree_add_reg_stages + fp32_stages + output_stages); j++) begin
+	    for (int j = 0; j < (input_stages + dot_fp_stages + tree_add_reg_stages + fix2fp_stages + fp32_stages + output_stages); j++) begin
                 #10;
 	    end
 

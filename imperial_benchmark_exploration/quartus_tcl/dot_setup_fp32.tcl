@@ -34,6 +34,8 @@ set FP32_STAGES   [lindex $argv 9]
 set OUTPUT_STAGES [lindex $argv 10]
 set MULT_INT      [lindex $argv 11]
 
+set PIPELINE_FLOPOCO [lindex $argv 12]
+
 
 if {[project_exists $PROJ]} {
 		project_open -revision $REV $PROJ
@@ -50,7 +52,11 @@ set_global_assignment -name ORIGINAL_QUARTUS_VERSION 25.3.0
 set_global_assignment -name LAST_QUARTUS_VERSION "25.3.0 Pro Edition"
 
 # Add flopoco circuit
-set_global_assignment -name VHDL_FILE [file normalize $ROOT/fx2fp_flopoco/mxfp_e${EXP_WIDTH}m${MAN_WIDTH}_to_fp32.vhdl]
+if { $PIPELINE_FLOPOCO == 1 } {
+	set_global_assignment -name VHDL_FILE [file normalize $ROOT/fx2fp_flopoco/pipelined/mxfp_e${EXP_WIDTH}m${MAN_WIDTH}_to_fp32.vhdl]
+} else {
+	set_global_assignment -name VHDL_FILE [file normalize $ROOT/fx2fp_flopoco/combinational/mxfp_e${EXP_WIDTH}m${MAN_WIDTH}_to_fp32.vhdl]
+}
 
 # Get Verilog files and SDC file
 # mul_int will be changed based on current run (dsp, logic, etc.)

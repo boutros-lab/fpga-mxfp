@@ -4,6 +4,7 @@ k=32
 input_stages=1
 dot_fp_stages=1
 pipeline_add=1
+pipeline_flopoco=1
 fp32_stages=1
 output_stages=1
 mul_int="$RTL_ROOT/mul_int.sv"
@@ -19,6 +20,7 @@ usage() {
     echo "  -i <value>  Input register stages, default: 1"
     echo "  -d <value>  Dot FP register stages, default: 1"
     echo "  -a <value>  Pipeline adder tree, default: 1"
+    echo "  -p <value>  Use pipelined fix2fp, default: 1"
     echo "  -f <value>  FP32 register stages, default: 1"
     echo "  -o <value>  Output register stages, default: 1"
     echo "  -m <path>   Path to mul_int.sv, default: $RTL_ROOT/mul_int.sv"
@@ -33,7 +35,7 @@ usage() {
 }
 
 # Parse command line arguments
-while getopts "k:i:d:a:f:o:m:t:sh" opt; do
+while getopts "k:i:d:a:p:f:o:m:t:sh" opt; do
     case ${opt} in
         k )
             k=$OPTARG
@@ -47,6 +49,9 @@ while getopts "k:i:d:a:f:o:m:t:sh" opt; do
 	a )
 	    pipeline_add=$OPTARG
 	    ;;
+        p )
+	    pipeline_flopoco=$OPTARG
+            ;;
 	f )
 	    fp32_stages=$OPTARG
 	    ;;
@@ -93,7 +98,7 @@ for ((i=0; i<${#projects[@]}; i++)); do
 		rm -rf ${proj_dirs[$i]}
 		
 		# Create Project
-		quartus_sh -t $PROJ_ROOT/quartus_tcl/dot_setup_fp32.tcl $PROJ_ROOT/${proj_dirs[$i]} ${projects[$i]} ${projects[$i]} ${exp[$i]} ${man[$i]} $k $input_stages $dot_fp_stages $pipeline_add $fp32_stages $output_stages $mul_int
+		quartus_sh -t $PROJ_ROOT/quartus_tcl/dot_setup_fp32.tcl $PROJ_ROOT/${proj_dirs[$i]} ${projects[$i]} ${projects[$i]} ${exp[$i]} ${man[$i]} $k $input_stages $dot_fp_stages $pipeline_add $fp32_stages $output_stages $mul_int $pipeline_flopoco
 
 		# Run synthesis/placement/sta
 		quartus_sh -t $PROJ_ROOT/quartus_tcl/run_fit.tcl ${projects[$i]} $PROJ_ROOT/${proj_dirs[$i]}

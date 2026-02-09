@@ -7,11 +7,12 @@ module dot_fp_fp32 #(
    	parameter bit_width = 1 + exp_width + man_width,
    	parameter out_width = 2 * ((1<<exp_width) + man_width) + $clog2(k),
 
-	parameter input_stages  = 1,
-	parameter dot_fp_stages = 1,
-	parameter pipeline_add  = 1,
-	parameter fp32_stages   = 1,
-	parameter output_stages = 1
+	parameter input_stages    = 1,
+	parameter dot_fp_stages   = 1,
+	parameter pipeline_add    = 1,
+	parameter fp32_stages     = 1,
+	parameter pipeline_fix2fp = 1,
+	parameter output_stages   = 1
 )(
 	input  logic clk,
 	input  logic rst,
@@ -67,35 +68,80 @@ module dot_fp_fp32 #(
 
 	generate
 		if (exp_width == 2 && man_width == 1) begin
-			MXFP_E2M1_to_FP32 
-			fix_to_fp32 (
-				.I(o_dp_q), 
-				.O(o_fp32)
-			);
+			if (pipeline_fix2fp == 1) begin
+				MXFP_E2M1_to_FP32 
+				fix_to_fp32 (
+					.clk(clk),
+					.I(o_dp_q), 
+					.O(o_fp32)
+				);
+			end else begin
+				MXFP_E2M1_to_FP32 
+				fix_to_fp32 (
+					.I(o_dp_q), 
+					.O(o_fp32)
+				);
+			end
 		end else if (exp_width == 2 && man_width == 3) begin
-			MXFP_E2M3_to_FP32 
-			fix_to_fp32 (
-				.I(o_dp_q), 
-				.O(o_fp32)
-			);
+			if (pipeline_fix2fp == 1) begin
+				MXFP_E2M3_to_FP32 
+				fix_to_fp32 (
+					.clk(clk),
+					.I(o_dp_q), 
+					.O(o_fp32)
+				);
+			end else begin
+				MXFP_E2M3_to_FP32 
+				fix_to_fp32 (
+					.I(o_dp_q), 
+					.O(o_fp32)
+				);
+			end
 		end else if (exp_width == 3 && man_width == 2) begin
-			MXFP_E3M2_to_FP32 
-			fix_to_fp32 (
-				.I(o_dp_q[23:0]), 
-				.O(o_fp32)
-			);
+			if (pipeline_fix2fp == 1) begin
+				MXFP_E3M2_to_FP32 
+				fix_to_fp32 (
+					.clk(clk),
+					.I(o_dp_q[23:0]), 
+					.O(o_fp32)
+				);
+			end else begin
+				MXFP_E3M2_to_FP32 
+				fix_to_fp32 (
+					.I(o_dp_q[23:0]), 
+					.O(o_fp32)
+				);
+			end
 		end else if (exp_width == 4 && man_width == 3) begin
-			MXFP_E4M3_to_FP32 
-			fix_to_fp32 (
-				.I(o_dp_q), 
-				.O(o_fp32)
-			);
+			if (pipeline_fix2fp == 1) begin
+				MXFP_E4M3_to_FP32 
+				fix_to_fp32 (
+					.clk(clk),
+					.I(o_dp_q), 
+					.O(o_fp32)
+				);
+			end else begin
+				MXFP_E4M3_to_FP32 
+				fix_to_fp32 (
+					.I(o_dp_q), 
+					.O(o_fp32)
+				);
+			end
 		end else if (exp_width == 5 && man_width == 2) begin
-			MXFP_E5M2_to_FP32 
-			fix_to_fp32 (
-				.I(o_dp_q), 
-				.O(o_fp32)
-			);
+			if (pipeline_fix2fp == 1) begin
+				MXFP_E5M2_to_FP32 
+				fix_to_fp32 (
+					.clk(clk),
+					.I(o_dp_q), 
+					.O(o_fp32)
+				);
+			end else begin
+				MXFP_E5M2_to_FP32 
+				fix_to_fp32 (
+					.I(o_dp_q), 
+					.O(o_fp32)
+				);
+			end
 		end else begin
 			$fatal("ERROR: Illegal MXFP Format");
 		end
