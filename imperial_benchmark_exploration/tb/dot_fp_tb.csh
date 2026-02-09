@@ -13,7 +13,7 @@ set TB_ROOT="/home/msmekhem/lp_dsp/tb"
 set mul_int="$RTL_ROOT/mul_int.sv"
 
 set exp_width     = 2
-set man_width     = 2
+set man_width     = 1
 set k             = 8
 set input_stages  = 1
 set output_stages = 1

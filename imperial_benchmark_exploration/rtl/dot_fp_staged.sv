@@ -8,6 +8,7 @@ module dot_fp_staged #(
    	parameter out_width = 2 * ((1<<exp_width) + man_width) + $clog2(k),
 
 	parameter input_stages  = 1,
+	parameter dot_fp_stages = 1,
 	parameter output_stages = 1
 )(
 	input logic clk,
@@ -49,8 +50,11 @@ module dot_fp_staged #(
 	dot_fp #(
 		.exp_width(exp_width), 
 		.man_width(man_width), 
-		.k(k)
+		.k(k),
+		.pipeline_stages(dot_fp_stages)
 	) u_dot_fp (
+		.clk(clk),
+		.rst(rst),
 		.i_vec_a(i_vec_a_q),
 		.i_vec_b(i_vec_b_q),
 		.o_dp(o_dp)

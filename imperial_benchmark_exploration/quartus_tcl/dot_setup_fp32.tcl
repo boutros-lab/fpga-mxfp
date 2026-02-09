@@ -29,8 +29,10 @@ set MAN_WIDTH     [lindex $argv 4]
 set K             [lindex $argv 5]
 set INPUT_STAGES  [lindex $argv 6]
 set DOT_FP_STAGES [lindex $argv 7]
-set OUTPUT_STAGES [lindex $argv 8]
-set MULT_INT      [lindex $argv 9]
+set PIPELINE_ADD  [lindex $argv 8]
+set FP32_STAGES   [lindex $argv 9]
+set OUTPUT_STAGES [lindex $argv 10]
+set MULT_INT      [lindex $argv 11]
 
 
 if {[project_exists $PROJ]} {
@@ -47,35 +49,43 @@ set_global_assignment -name DEVICE $DEVICE
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 25.3.0
 set_global_assignment -name LAST_QUARTUS_VERSION "25.3.0 Pro Edition"
 
+# Add flopoco circuit
+set_global_assignment -name VHDL_FILE [file normalize $ROOT/fx2fp_flopoco/mxfp_e${EXP_WIDTH}m${MAN_WIDTH}_to_fp32.vhdl]
+
 # Get Verilog files and SDC file
 # mul_int will be changed based on current run (dsp, logic, etc.)
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $MXROOT/util/arith/vec_mul_fp.sv]
-set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $MXROOT/util/arith/vec_sum_int.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/vec_sum_int.sv]
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $MXROOT/util/arith/mul_fp.sv]
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $MULT_INT]
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/dot_fp.sv]
-set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/dot_fp_staged_temp.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/dot_fp_fp32.sv]
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/pipeline.sv]
 set_global_assignment -name SDC_FILE [file normalize $SDC_FILE]
 
 # Set number of processors and top design
-set_global_assignment -name TOP_LEVEL_ENTITY dot_fp_staged
+set_global_assignment -name TOP_LEVEL_ENTITY dot_fp_fp32
 set_global_assignment -name NUM_PARALLEL_PROCESSORS 24
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY "output_files"
 
 # Set virtual pins
-set_instance_assignment -name VIRTUAL_PIN ON -to rst -entity dot_fp_staged
-set_instance_assignment -name VIRTUAL_PIN ON -to i_vec_a -entity dot_fp_staged
-set_instance_assignment -name VIRTUAL_PIN ON -to i_vec_b -entity dot_fp_staged
-set_instance_assignment -name VIRTUAL_PIN ON -to o_dp_q -entity dot_fp_staged
+set_instance_assignment -name VIRTUAL_PIN ON -to rst -entity dot_fp_fp32
+set_instance_assignment -name VIRTUAL_PIN ON -to i_vec_a -entity dot_fp_fp32
+set_instance_assignment -name VIRTUAL_PIN ON -to i_vec_b -entity dot_fp_fp32
+set_instance_assignment -name VIRTUAL_PIN ON -to o_fp32_q -entity dot_fp_fp32
 
 # Set parameters
 set_parameter -name exp_width     $EXP_WIDTH
 set_parameter -name man_width     $MAN_WIDTH
 set_parameter -name k             $K
 set_parameter -name input_stages  $INPUT_STAGES
-set_parameter -name dot_fp_stages  $INPUT_STAGES
+set_parameter -name dot_fp_stages $DOT_FP_STAGES
+set_parameter -name pipeline_add  $PIPELINE_ADD
+set_parameter -name fp32_stages   $FP32_STAGES
 set_parameter -name output_stages $OUTPUT_STAGES
+
+# Disable retiming
+set_global_assignment -name ALLOW_REGISTER_RETIMING OFF
 
 # Other Assignments
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0

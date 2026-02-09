@@ -7,7 +7,8 @@ module dot_fp #(
     parameter prd_width = 2 * ((1<<exp_width) + man_width),
     parameter out_width = prd_width + $clog2(k),
 
-    parameter pipeline_stages = 0
+    parameter pipeline_stages = 0,
+    parameter pipeline_add = 0
 )(
     input  logic clk,
     input  logic rst,
@@ -37,7 +38,7 @@ module dot_fp #(
             pipeline #(
     	        .width(prd_width), 
     	        .depth(pipeline_stages)
-            ) u_pipeline (
+            ) u_pipeline_dot_fp (
     	        .clk(clk), 
     	        .rst(rst), 
     	        .data(p0_prd[i]), 
@@ -51,8 +52,11 @@ module dot_fp #(
 
     vec_sum_int #(
         .bit_width(prd_width),
-        .length(k)
+        .length(k),
+	.pipeline(pipeline_add)
     ) u_tree_add (
+	.clk(clk),
+	.rst(rst),
         .i_vec(p0_prd_q),
         .o_sum(p0_sum)
     );
