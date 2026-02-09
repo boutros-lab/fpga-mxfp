@@ -5,8 +5,9 @@
 # 4: Mantissa Width
 # 5: K
 # 6: Input Register Stages
-# 7: Output Register Stages
-# 8: mult_int.sv, in order to use versions with different synthesis directives
+# 7: Dot FP Register Stages
+# 8: Output Register Stages
+# 9: mult_int.sv, in order to use versions with different synthesis directives
 
 package require ::quartus::project
 
@@ -27,8 +28,9 @@ set EXP_WIDTH     [lindex $argv 3]
 set MAN_WIDTH     [lindex $argv 4]
 set K             [lindex $argv 5]
 set INPUT_STAGES  [lindex $argv 6]
-set OUTPUT_STAGES [lindex $argv 7]
-set MULT_INT      [lindex $argv 8]
+set DOT_FP_STAGES [lindex $argv 7]
+set OUTPUT_STAGES [lindex $argv 8]
+set MULT_INT      [lindex $argv 9]
 
 
 if {[project_exists $PROJ]} {
@@ -51,7 +53,7 @@ set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $MXROOT/util/arit
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $MXROOT/util/arith/vec_sum_int.sv]
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $MXROOT/util/arith/mul_fp.sv]
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $MULT_INT]
-set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $MXROOT/dot/dot_fp.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/dot_fp.sv]
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/dot_fp_staged.sv]
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/pipeline.sv]
 set_global_assignment -name SDC_FILE [file normalize $SDC_FILE]
@@ -72,6 +74,7 @@ set_parameter -name exp_width     $EXP_WIDTH
 set_parameter -name man_width     $MAN_WIDTH
 set_parameter -name k             $K
 set_parameter -name input_stages  $INPUT_STAGES
+set_parameter -name dot_fp_stages $DOT_FP_STAGES
 set_parameter -name output_stages $OUTPUT_STAGES
 
 # Other Assignments
