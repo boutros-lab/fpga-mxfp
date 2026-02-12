@@ -9,35 +9,40 @@ module aitb_top #(
 	input logic load_bb_one,
 	input logic load_bb_two,
 	input logic load_buf_sel,
-	input logic [DATA_WIDTH-1:0] data_in [0:DOT_LENGTH-1],
+	input logic signed [DATA_WIDTH-1:0] data_in [0:DOT_LENGTH-1],
 	input logic [7:0] shared_exponent,
 	input logic [31:0] fp32_cascade_in,
 
-	output logic [31:0] fp32_dot_out,
+	output logic [31:0] fp32_dot_out_col1,
+	output logic [31:0] fp32_dot_out_col2,
 	output logic [31:0] fp32_cascade_out,
 	output logic [3:0]  fp32_flags
 );
 
 
-logic [DATA_WIDTH-1:0] data_in_pipe [0:DOT_LENGTH-1];
+logic signed [DATA_WIDTH-1:0] data_in_pipe [0:DOT_LENGTH-1];
 logic [DATA_WIDTH-1:0] data_in_sh_exp_pipe;
-logic [DATA_WIDTH-1:0] w_reg_c1 [0:DOT_LENGTH-1];
+logic signed [DATA_WIDTH-1:0] w_reg_c1 [0:DOT_LENGTH-1];
 logic [DATA_WIDTH-1:0] w_reg_c1_sh_exp;
-logic [DATA_WIDTH-1:0] w_reg_c2 [0:DOT_LENGTH-1];
+logic signed [DATA_WIDTH-1:0] w_reg_c2 [0:DOT_LENGTH-1];
 logic [DATA_WIDTH-1:0] w_reg_c2_sh_exp;
-logic [DOT_OUT_WIDTH-1:0] dot_out_col1;
+logic signed [DOT_OUT_WIDTH-1:0] dot_out_col1;
 logic [7:0] dot_out_col1_sh_exp;
-logic [DOT_OUT_WIDTH-1:0] dot_out_col2;
+logic signed [DOT_OUT_WIDTH-1:0] dot_out_col2;
 logic [7:0] dot_out_col2_sh_exp;
-logic [DOT_OUT_WIDTH-1:0] dot_out_col1_pipe;
+logic signed [DOT_OUT_WIDTH-1:0] dot_out_col1_pipe;
 logic [7:0] dot_out_col1_sh_exp_pipe;
-logic [DOT_OUT_WIDTH-1:0] dot_out_col2_pipe;
+logic signed [DOT_OUT_WIDTH-1:0] dot_out_col2_pipe;
 logic [7:0] dot_out_col2_sh_exp_pipe;
-logic [DOT_OUT_WIDTH-1:0] adder_out_col1;
-logic [DOT_OUT_WIDTH-1:0] adder_out_col2;
+logic signed [DOT_OUT_WIDTH-1:0] adder_out_col1;
+logic signed [DOT_OUT_WIDTH-1:0] adder_out_col2;
+logic signed [DOT_OUT_WIDTH-1:0] fix2float_out_col1;
+logic signed [DOT_OUT_WIDTH-1:0] fix2float_out_col2;
+logic signed [DOT_OUT_WIDTH-1:0] fix2float_out_col1_pipe;
+logic signed [DOT_OUT_WIDTH-1:0] fix2float_out_col2_pipe;
 
 // Input register bank
-in_reg_bank (
+in_reg_bank in_reg_bank (
 	.clk(clk),
 	.rst(rst),
 	.data_in(data_in),
@@ -89,7 +94,7 @@ dot dot_col2 (
 );
 
 // Pipe 2 (out: 32b extended from the 20b) ?
-pipeline #(.W(DOT_LENGTH), .STAGES(1)) PIPE_2_dot_col1 (
+pipeline #(.W(DOT_OUT_WIDTH), .STAGES(1)) PIPE_2_dot_col1 (
 	.clk(clk),
 	.rst(rst),
 	.pipe_in(dot_out_col1),
@@ -102,7 +107,7 @@ pipeline #(.W(8), .STAGES(1)) PIPE_2_dot_sh_exp_col1 (
 	.pipe_out(dot_out_col1_sh_exp_pipe)
 );
 
-pipeline #(.W(DOT_LENGTH), .STAGES(1)) PIPE_2_dot_col2 (
+pipeline #(.W(DOT_OUT_WIDTH), .STAGES(1)) PIPE_2_dot_col2 (
 	.clk(clk),
 	.rst(rst),
 	.pipe_in(dot_out_col2),
@@ -119,10 +124,26 @@ pipeline #(.W(8), .STAGES(1)) PIPE_2_dot_sh_exp_col2 (
 assign adder_out_col1 = dot_out_col1_pipe + '0;
 assign adder_out_col2 = dot_out_col2_pipe + '0;
 
+
 // FXP to FP32
-
+assign fix2float_out_col1 = dot_out_col1_pipe;
+assign fix2float_out_col2 = dot_out_col2_pipe;
 // PIPE 3
+pipeline #(.W(DOT_OUT_WIDTH), .STAGES(1)) PIPE_3_fix2float_col1 (
+	.clk(clk),
+	.rst(rst),
+	.pipe_in(fix2float_out_col1),
+	.pipe_out(fix2float_out_col1_pipe)
+);
+pipeline #(.W(DOT_OUT_WIDTH), .STAGES(1)) PIPE_3_fix2float_col2 (
+	.clk(clk),
+	.rst(rst),
+	.pipe_in(fix2float_out_col2),
+	.pipe_out(fix2float_out_col2_pipe)
+);
 
+assign fp32_dot_out_col1 = fix2float_out_col1_pipe;
+assign fp32_dot_out_col2 = fix2float_out_col2_pipe;
 // FP32 ALU
 
 endmodule 
