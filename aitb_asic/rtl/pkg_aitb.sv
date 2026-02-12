@@ -7,7 +7,7 @@ package pkg_aitb;
 	//---- params ----//
 	parameter DATA_WIDTH = 8;
 	parameter DOT_LENGTH = 10;
-	parameter DOT_OUT_WIDTH = 32;
+	parameter DOT_OUT_WIDTH = 20;
 
 	//---- tasks ----//
 

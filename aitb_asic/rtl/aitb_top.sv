@@ -1,8 +1,6 @@
 import pkg_aitb::*;
 
-module aitb_top #(
-	parameter string CHAIN_MODE = "tensor_chain_output"
-) (
+module aitb_top (
 	input logic clk,
 	input logic rst,
 	input logic [1:0] acc_mode,
