@@ -22,7 +22,7 @@ always_comb begin
 		dot_out += data_in[i] * w_reg[i];
 	end	
 
-	sh_exp_sum = data_in_sh_exp + w_reg_sh_exp;
+	sh_exp_sum = data_in_sh_exp + w_reg_sh_exp - 127;
 	sh_exp_out = sh_exp_sum[7:0];
 end
 
