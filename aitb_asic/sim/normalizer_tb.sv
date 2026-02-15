@@ -35,7 +35,7 @@ end
 normalizer #(.IN_WIDTH(OUT_WIDTH), .INTERNAL_WIDTH(INTERNAL_WIDTH), .OUT_WIDTH(OUT_WIDTH)) dut (
 	.shift_in({4'd0, shift_in}),
 	.shift_out(shift_out),
-	.lead_zero_pos(shift_amount)
+	.lead_zero_count(shift_amount)
 
 );
 

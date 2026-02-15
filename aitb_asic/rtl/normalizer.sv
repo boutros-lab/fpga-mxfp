@@ -8,7 +8,7 @@ module normalizer #(
 ) (
 	input logic [IN_WIDTH-1:0] shift_in,
 	output logic [OUT_WIDTH-1:0] shift_out,
-	output logic [$clog2(INTERNAL_WIDTH)-1:0] lead_zero_pos // Sarting at MSB indexed at 0
+	output logic [$clog2(INTERNAL_WIDTH)-1:0] lead_zero_count 
 );
 
 localparam STAGES = $clog2(INTERNAL_WIDTH);
@@ -33,7 +33,7 @@ generate
  	end
 endgenerate
 
-assign lead_zero_pos = /*(shift_amount > MAX_SHIFT) ? MAX_SHIFT :*/ shift_amount-PAD;
+assign lead_zero_count = /*(shift_amount > MAX_SHIFT) ? MAX_SHIFT :*/ shift_amount-PAD;
 //assign shift_out = {stage[STAGES][1 +: OUT_WIDTH-1], 1'b0};
 //assign shift_out = stage[STAGES][OUT_WIDTH-1:0];
 assign shift_out = stage[STAGES][INTERNAL_WIDTH-1 -: OUT_WIDTH];
