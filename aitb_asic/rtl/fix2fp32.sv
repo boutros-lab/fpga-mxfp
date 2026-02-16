@@ -1,7 +1,7 @@
 import pkg_aitb::*;
 
 module fix2fp32 (
-	input logic [DOT_OUT_WIDTH-1:0] fix_in,
+	input logic signed [DOT_OUT_WIDTH-1:0] fix_in,
 	input logic [DATA_WIDTH-1:0] shared_exp,
 	output logic [31:0] fp32_out
 );
@@ -41,7 +41,7 @@ always_comb begin
 	exp_adj = (shared_exp + DOT_OUT_WIDTH - lead_zero_count - 1);
 	mant = {normalized_mant[21:0], 1'b0};
 
-	fp32_out = {sign, exp_adj, mant};
+	fp32_out = (|mag == 1'b0) ? '0 : {sign, exp_adj, mant};
 
 end
 
