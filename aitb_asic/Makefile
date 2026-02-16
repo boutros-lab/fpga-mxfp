@@ -1,11 +1,12 @@
 E ?= 2
 M ?= 1
 PIPE ?= 1
+DUT=normalizer
 
 .PHONY: sim fit syn
 
 sim:
-	vsim -c -do "set M $M" -do "set E $E" -do "do sim/run_dot_aitb.tcl"
+	vsim -c -do "do sim/${DUT}_run.tcl"
 
 syn:
 	quartus_sh -t syn/setup.tcl mxfp_dot_cli E$E_M$M $E $M ${PIPE}
