@@ -23,7 +23,7 @@ module fix2fp32 (
 logic [DOT_OUT_WIDTH-1:0] mag;
 logic                     sign;
 logic [22:0]              mant;
-logic [7:0]               exp_adj;
+logic [8:0]               exp_adj;
 
 logic [4:0]               lead_zero_count;
 logic [22:0]              normalized_mant;
@@ -41,7 +41,22 @@ always_comb begin
 	exp_adj = (shared_exp + DOT_OUT_WIDTH - lead_zero_count - 1);
 	mant = {normalized_mant[21:0], 1'b0};
 
-	fp32_out = (|mag == 1'b0) ? '0 : {sign, exp_adj, mant};
+	case(1'b1)
+		(exp_adj >= 9'd255): fp32_out = {sign, 8'hFF, 23'd0};
+		(|mag == 1'b0): fp32_out = '0;
+		default: fp32_out = {sign, exp_adj[7:0], mant};
+	endcase
+
+/*
+	if (|mag == 1'b0)
+		fp32_out = '0;
+	else if (exp_adj[8] == 1'b1)
+		fp32_out = {sign, 8'hFF, 23'd0};
+	else
+		fp32_out = {sign, exp_adj[7:0], mant};
+*/	
+
+	//fp32_out = (|mag == 1'b0) ? '0 : {sign, exp_adj, mant};
 
 end
 

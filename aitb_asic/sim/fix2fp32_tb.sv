@@ -8,7 +8,7 @@ logic [31:0] fp32_out;
 
 shortreal golden_fp32_out;
 
-int n_tests = 100;
+int n_tests = 1000000;
 int n_pass = 0;
 
 initial begin
@@ -45,7 +45,7 @@ task automatic checkOutput;
 	$display("Expected: fix_in   = %32b", $shortrealtobits(golden_fp32_out));
 	$display("Got     : fp32_out = %32b", fp32_out);
 
-	if ($bitstoshortreal(fp32_out) == golden_fp32_out) begin
+	if (fp32_out == $shortrealtobits(golden_fp32_out)) begin
 		$display("PASS");
 		n_pass++;
 	end else
