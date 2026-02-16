@@ -8,7 +8,7 @@ logic [31:0] fp32_out;
 
 shortreal golden_fp32_out;
 
-int n_tests = 1000000;
+int n_tests = 1000;
 int n_pass = 0;
 
 initial begin

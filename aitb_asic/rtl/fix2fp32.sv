@@ -41,7 +41,7 @@ always_comb begin
 	exp_adj = (shared_exp + DOT_OUT_WIDTH - lead_zero_count - 1);
 	mant = {normalized_mant[21:0], 1'b0};
 
-	case(1'b1)
+	priority case(1'b1)
 		(exp_adj >= 9'd255): fp32_out = {sign, 8'hFF, 23'd0};
 		(|mag == 1'b0): fp32_out = '0;
 		default: fp32_out = {sign, exp_adj[7:0], mant};
