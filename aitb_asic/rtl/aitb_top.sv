@@ -137,23 +137,23 @@ assign adder_out_col2 = dot_out_col2_pipe + '0;
 // FXP to FP32
 fix2fp32 FXP2FP32_col1 (
 	.fix_in(adder_out_col1),
-	.shared_exponent(dot_out_col1_sh_exp_pipe),
+	.shared_exp(dot_out_col1_sh_exp_pipe),
 	.fp32_out(fix2float_out_col1)
 );
 
 fix2fp32 FXP2FP32_col2 (
 	.fix_in(adder_out_col2),
-	.shared_exponent(dot_out_col2_sh_exp_pipe),
+	.shared_exp(dot_out_col2_sh_exp_pipe),
 	.fp32_out(fix2float_out_col2)
 );
 // PIPE 3
-pipeline #(.W(DOT_OUT_WIDTH), .STAGES(1)) PIPE_3_fix2float_col1 (
+pipeline #(.W(32), .STAGES(1)) PIPE_3_fix2float_col1 (
 	.clk(clk),
 	.rst(rst),
 	.pipe_in(fix2float_out_col1),
 	.pipe_out(fix2float_out_col1_pipe)
 );
-pipeline #(.W(DOT_OUT_WIDTH), .STAGES(1)) PIPE_3_fix2float_col2 (
+pipeline #(.W(32), .STAGES(1)) PIPE_3_fix2float_col2 (
 	.clk(clk),
 	.rst(rst),
 	.pipe_in(fix2float_out_col2),
@@ -176,14 +176,14 @@ pipeline #(.W(32), .STAGES(1)) PIPE_cascade_in_col2 (
 always_comb begin
 	case({zero_en, acc_en})
 		2'b00: begin
-			acc_mux_out_col1 = fp32_cascade_in_col1_pipe	
-			acc_mux_out_col2 = fp32_cascade_in_col2_pipe	
+			acc_mux_out_col1 = fp32_cascade_in_col1_pipe;
+			acc_mux_out_col2 = fp32_cascade_in_col2_pipe;
 		end
 		2'b01: begin
 			acc_mux_out_col1 = fp32_dot_out_col1;
 			acc_mux_out_col2 = fp32_dot_out_col2;
 		end
-		2'b10: 
+		2'b10,
 		2'b11: begin
 			acc_mux_out_col1 = '0;
 			acc_mux_out_col2 = '0;
