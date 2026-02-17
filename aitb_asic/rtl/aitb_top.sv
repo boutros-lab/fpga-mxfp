@@ -1,20 +1,26 @@
 import pkg_aitb::*;
 
-module aitb_top (
+module aitb (
 	input logic clk,
 	input logic rst,
-	input logic [1:0] acc_mode,
+//	input logic [1:0] acc_mode,
+	input logic acc_en,
+	input logic zero_en,
 	input logic load_bb_one,
 	input logic load_bb_two,
 	input logic load_buf_sel,
 	input logic signed [DATA_WIDTH-1:0] data_in [0:DOT_LENGTH-1],
 	input logic [7:0] shared_exponent,
-	input logic [31:0] fp32_cascade_in,
+	input logic [31:0] fp32_cascade_in_col1,
+	input logic [31:0] fp32_cascade_in_col2,
 
 	output logic [31:0] fp32_dot_out_col1,
 	output logic [31:0] fp32_dot_out_col2,
-	output logic [31:0] fp32_cascade_out,
-	output logic [3:0]  fp32_flags
+	output logic [31:0] fp32_cascade_out_col1,
+	output logic [31:0] fp32_cascade_out_col2,
+	output logic [3:0]  fp32_flags_col1,
+	output logic [3:0]  fp32_flags_col2
+
 );
 
 
@@ -34,10 +40,16 @@ logic signed [DOT_OUT_WIDTH-1:0] dot_out_col2_pipe;
 logic [7:0] dot_out_col2_sh_exp_pipe;
 logic signed [DOT_OUT_WIDTH-1:0] adder_out_col1;
 logic signed [DOT_OUT_WIDTH-1:0] adder_out_col2;
-logic signed [DOT_OUT_WIDTH-1:0] fix2float_out_col1;
-logic signed [DOT_OUT_WIDTH-1:0] fix2float_out_col2;
-logic signed [DOT_OUT_WIDTH-1:0] fix2float_out_col1_pipe;
-logic signed [DOT_OUT_WIDTH-1:0] fix2float_out_col2_pipe;
+logic [31:0] fix2float_out_col1;
+logic [31:0] fix2float_out_col2;
+logic [31:0] fix2float_out_col1_pipe;
+logic [31:0] fix2float_out_col2_pipe;
+logic [31:0] fp32_cascade_in_col1_pipe;
+logic [31:0] fp32_cascade_in_col2_pipe;
+logic [31:0] acc_mux_out_col1;
+logic [31:0] acc_mux_out_col2;
+logic [31:0] fp32_alu_out_col1;
+logic [31:0] fp32_alu_out_col2;
 
 // Input register bank
 in_reg_bank in_reg_bank (
@@ -122,10 +134,18 @@ pipeline #(.W(8), .STAGES(1)) PIPE_2_dot_sh_exp_col2 (
 assign adder_out_col1 = dot_out_col1_pipe + '0;
 assign adder_out_col2 = dot_out_col2_pipe + '0;
 
-
 // FXP to FP32
-assign fix2float_out_col1 = dot_out_col1_pipe;
-assign fix2float_out_col2 = dot_out_col2_pipe;
+fix2fp32 FXP2FP32_col1 (
+	.fix_in(adder_out_col1),
+	.shared_exponent(dot_out_col1_sh_exp_pipe),
+	.fp32_out(fix2float_out_col1)
+);
+
+fix2fp32 FXP2FP32_col2 (
+	.fix_in(adder_out_col2),
+	.shared_exponent(dot_out_col2_sh_exp_pipe),
+	.fp32_out(fix2float_out_col2)
+);
 // PIPE 3
 pipeline #(.W(DOT_OUT_WIDTH), .STAGES(1)) PIPE_3_fix2float_col1 (
 	.clk(clk),
@@ -140,9 +160,66 @@ pipeline #(.W(DOT_OUT_WIDTH), .STAGES(1)) PIPE_3_fix2float_col2 (
 	.pipe_out(fix2float_out_col2_pipe)
 );
 
-assign fp32_dot_out_col1 = fix2float_out_col1_pipe;
-assign fp32_dot_out_col2 = fix2float_out_col2_pipe;
+pipeline #(.W(32), .STAGES(1)) PIPE_cascade_in_col1 (
+	.clk(clk),
+	.rst(rst),
+	.pipe_in(fp32_cascade_in_col1),
+	.pipe_out(fp32_cascade_in_col1_pipe)
+);
+pipeline #(.W(32), .STAGES(1)) PIPE_cascade_in_col2 (
+	.clk(clk),
+	.rst(rst),
+	.pipe_in(fp32_cascade_in_col2),
+	.pipe_out(fp32_cascade_in_col2_pipe)
+);
+
+always_comb begin
+	case({zero_en, acc_en})
+		2'b00: begin
+			acc_mux_out_col1 = fp32_cascade_in_col1_pipe	
+			acc_mux_out_col2 = fp32_cascade_in_col2_pipe	
+		end
+		2'b01: begin
+			acc_mux_out_col1 = fp32_dot_out_col1;
+			acc_mux_out_col2 = fp32_dot_out_col2;
+		end
+		2'b10: 
+		2'b11: begin
+			acc_mux_out_col1 = '0;
+			acc_mux_out_col2 = '0;
+		end
+	endcase
+end
+
 // FP32 ALU
+ieee_fp32_add FP32_ALU_col1 (
+	.X(fix2float_out_col1_pipe),
+	//.Y(fp32_cascade_in_col1_pipe),
+	.Y(acc_mux_out_col1),
+	.R(fp32_alu_out_col1)
+);
+ieee_fp32_add FP32_ALU_col2 (
+	.X(fix2float_out_col2_pipe),
+	//.Y(fp32_cascade_in_col2_pipe),
+	.Y(acc_mux_out_col2),
+	.R(fp32_alu_out_col2)
+);
+
+// Output PIPE
+pipeline #(.W(32), .STAGES(1)) PIPE_OUT_col1 (
+	.clk(clk),
+	.rst(rst),
+	.pipe_in(fp32_alu_out_col1),
+	.pipe_out(fp32_dot_out_col1)
+);
+pipeline #(.W(32), .STAGES(1)) PIPE_OUT_col2 (
+	.clk(clk),
+	.rst(rst),
+	.pipe_in(fp32_alu_out_col2),
+	.pipe_out(fp32_dot_out_col2)
+);
+assign fp32_cascade_out_col1 = fp32_dot_out_col1;
+assign fp32_cascade_out_col2 = fp32_dot_out_col2;
 
 endmodule 
 /*
