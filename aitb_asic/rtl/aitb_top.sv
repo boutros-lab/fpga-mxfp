@@ -1,6 +1,6 @@
 import pkg_aitb::*;
 
-module aitb (
+module aitb_top (
 	input logic clk,
 	input logic rst,
 //	input logic [1:0] acc_mode,
