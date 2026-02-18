@@ -3,8 +3,8 @@
 module aitb_wrapper_tb();
 
 localparam CLK_PERIOD = 2;   // Clock period in ns
-localparam NUM_LOADS = 2;    // Number of times AITB is loaded with new pair of vectors
-localparam REUSE_FACTOR = 5; // Number of vector operands multiplied by the loaded vectors in the AITB
+localparam NUM_LOADS = 10;    // Number of times AITB is loaded with new pair of vectors
+localparam REUSE_FACTOR = 100; // Number of vector operands multiplied by the loaded vectors in the AITB
 
 // DUT signals
 logic clk;
@@ -15,7 +15,10 @@ logic signed [7:0] i_data [0:9];
 logic [7:0] i_sh_exp;
 logic [31:0] o_result0;
 logic [31:0] o_result1;
+logic [31:0] o_ref_result0;
+logic [31:0] o_ref_result1;
 logic o_valid;
+logic o_valid_golden;
 
 // DUT instantiation
 aitb_wrapper dut (
@@ -28,6 +31,19 @@ aitb_wrapper dut (
 	.o_result0(o_result0),
 	.o_result1(o_result1),
 	.o_valid(o_valid)
+);
+altera_fp_aitb reference (
+	.clk(clk),
+	.rst(rst),
+	.load_en(i_load_en),
+	.acc_en(1'b0),
+	.zero_en(1'b1),
+	.valid_in(i_valid),
+	.data_in(i_data),
+	.shared_exponent(i_sh_exp),
+	.fp32_col_1(o_ref_result0),
+	.fp32_col_2(o_ref_result1),
+	.valid_out(o_valid_golden)
 );
 
 // Clock generation
@@ -55,8 +71,8 @@ initial begin
 			load0_data[load_id][element_id] = $random;
 			load1_data[load_id][element_id] = $random;
 		end
-		load0_sh_exp[load_id] = 8'd127; //$random;
-		load1_sh_exp[load_id] = 8'd127; //$random;
+		load0_sh_exp[load_id] = $urandom;//$urandom_range(130, 70);
+		load1_sh_exp[load_id] = $urandom;//$urandom_range(130, 70);
 	end
 	// Generate streamed in vectors
 	for (reuse_id = 0; reuse_id < REUSE_FACTOR; reuse_id = reuse_id + 1) begin
@@ -64,7 +80,7 @@ initial begin
 			for (element_id = 0; element_id < 10; element_id = element_id + 1) begin
 				input_data[load_id][reuse_id][element_id] = $random;
 			end
-			input_sh_exp[load_id][reuse_id] = 8'd127; //$random;
+			input_sh_exp[load_id][reuse_id] = $urandom;//$urandom_range(130, 70);
 		end
 	end
 	// Calculate golden results
@@ -78,12 +94,12 @@ initial begin
 				golden_result1[reuse_id + (REUSE_FACTOR*load_id)] = golden_result1[reuse_id + (REUSE_FACTOR*load_id)] + 
 					shortreal'(load1_data[load_id][element_id]) * shortreal'(input_data[load_id][reuse_id][element_id]);
 			end
-			/*
-			golden_result0[reuse_id + (REUSE_FACTOR*load_id)] = golden_result0[reuse_id + (REUSE_FACTOR*load_id)] * 
-				(2.0 ** (int'(load0_sh_exp[load_id])-127 + int'(input_sh_exp[load_id][reuse_id])-127));
-			golden_result1[reuse_id + (REUSE_FACTOR*load_id)] = golden_result1[reuse_id + (REUSE_FACTOR*load_id)] * 
-				(2.0 ** (int'(load1_sh_exp[load_id])-127 + int'(input_sh_exp[load_id][reuse_id])-127));
-			*/
+			
+			golden_result0[reuse_id + (REUSE_FACTOR*load_id)] = (golden_result0[reuse_id + (REUSE_FACTOR*load_id)]) * 
+				shortreal'(2.0 ** (int'(load0_sh_exp[load_id])-127 + int'(input_sh_exp[load_id][reuse_id])-127));
+			golden_result1[reuse_id + (REUSE_FACTOR*load_id)] = (golden_result1[reuse_id + (REUSE_FACTOR*load_id)]) * 
+				shortreal'(2.0 ** (int'(load1_sh_exp[load_id])-127 + int'(input_sh_exp[load_id][reuse_id])-127));
+			
 		end
 	end
 end
@@ -126,7 +142,39 @@ initial begin
 	end
 end
 integer out_id, mistakes;
+///*
+initial begin
+	out_id = 0;
+	mistakes = 0;
+	while (out_id < NUM_LOADS * REUSE_FACTOR) begin
+		if (o_valid && o_valid_golden) begin
+			$display("result0  = %1b||%8b||%23b = %f", o_result0[31], o_result0[30:23], o_result0[22:0], $bitstoshortreal(o_result0));
+			$display("ref_res0 = %1b||%8b||%23b = %f", o_ref_result0[31], o_ref_result0[30:23], o_ref_result0[22:0], $bitstoshortreal(o_ref_result0));
+			$display("-----------------------------------------------------");
+			$display("result1  = %1b||%8b||%23b = %f", o_result1[31], o_result1[30:23], o_result1[22:0], $bitstoshortreal(o_result1));
+			$display("ref_res1 = %1b||%8b||%23b = %f", o_ref_result1[31], o_ref_result1[30:23], o_ref_result1[22:0], $bitstoshortreal(o_ref_result1));
+			if ((o_result0 != o_ref_result0) || (o_result1 != o_ref_result1)) begin
+				mistakes = mistakes + 1;
+				//$display("Results are NOT matching: result0=%b, golden0=%b, result1=%b, golden1=%b", 
+				//	o_result0, o_ref_result0, o_result1, o_ref_result1);
+				$display("MISMATCH!!");
+			end else begin
+				//$display("Results are matching: result0=%b, golden0=%b, result1=%b, golden1=%b", 
+				//	o_result0, o_ref_result0, o_result1, o_ref_result1);
+				$display("Result Match!");
+			end
 
+			$display("=====================================================");
+			out_id = out_id + 1;
+		end
+		#(CLK_PERIOD);
+	end
+	if (mistakes > 0) $display("Simulation FAILED!");
+	else $display("Simulation PASSED!");
+	$stop;
+end
+//*/
+/*
 initial begin
 	out_id = 0;
 	mistakes = 0;
@@ -134,8 +182,8 @@ initial begin
 		if (o_valid) begin
 			if ((o_result0 != $shortrealtobits(golden_result0[out_id])) || (o_result1 != $shortrealtobits(golden_result1[out_id]))) begin
 				mistakes = mistakes + 1;
-				$display("Results are NOT matching: result0=%f, golden0=%f, result1=%f, golden1=%f", 
-					$bitstoshortreal(o_result0), golden_result0[out_id], $bitstoshortreal(o_result1), golden_result1[out_id]);
+				$display("Results are NOT matching: result0=%b, golden0=%b, result1=%b, golden1=%b", 
+					o_result0, $shortrealtobits(golden_result0[out_id]), o_result1, $shortrealtobits(golden_result1[out_id]));
 			end else begin
 				$display("Results are matching: result0=%f, golden0=%f, result1=%f, golden1=%f", 
 					$bitstoshortreal(o_result0), golden_result0[out_id], $bitstoshortreal(o_result1), golden_result1[out_id]);
@@ -149,4 +197,5 @@ initial begin
 	$stop;
 end
 
+*/
 endmodule

@@ -10,7 +10,7 @@ module aitb_wrapper (
 	output logic o_valid
 );
 
-localparam LATENCY = 4;
+localparam LATENCY = 5;
 
 logic [LATENCY-1:0] valid;
 

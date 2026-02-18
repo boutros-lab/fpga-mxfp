@@ -206,13 +206,13 @@ ieee_fp32_add FP32_ALU_col2 (
 );
 
 // Output PIPE
-pipeline #(.W(32), .STAGES(1)) PIPE_OUT_col1 (
+pipeline #(.W(32), .STAGES(2)) PIPE_OUT_col1 (
 	.clk(clk),
 	.rst(rst),
 	.pipe_in(fp32_alu_out_col1),
 	.pipe_out(fp32_dot_out_col1)
 );
-pipeline #(.W(32), .STAGES(1)) PIPE_OUT_col2 (
+pipeline #(.W(32), .STAGES(2)) PIPE_OUT_col2 (
 	.clk(clk),
 	.rst(rst),
 	.pipe_in(fp32_alu_out_col2),

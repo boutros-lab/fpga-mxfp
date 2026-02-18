@@ -23,7 +23,7 @@ module fix2fp32 (
 logic [DOT_OUT_WIDTH-1:0] mag;
 logic                     sign;
 logic [22:0]              mant;
-logic [8:0]               exp_adj;
+logic signed [9:0]               exp_adj;
 
 logic [4:0]               lead_zero_count;
 logic [22:0]              normalized_mant;
@@ -38,12 +38,14 @@ always_comb begin
 		sign = 1'b0;
 	end
 
-	exp_adj = (shared_exp + DOT_OUT_WIDTH - lead_zero_count - 1);
+	//exp_adj = (shared_exp + DOT_OUT_WIDTH - lead_zero_count - 1);
+	exp_adj = ($signed({2'b00, shared_exp}) + /*$signed(DOT_OUT_WIDTH)*/ 10'sd23 - $signed({5'b00000, lead_zero_count}) - 10'sd1);
 	mant = {normalized_mant[21:0], 1'b0};
 
 	priority case(1'b1)
-		(exp_adj >= 9'd255): fp32_out = {sign, 8'hFF, 23'd0};
 		(|mag == 1'b0): fp32_out = '0;
+		(exp_adj >= 10'sd255): fp32_out = {sign, 8'hFF, 23'd0};
+		(exp_adj <= 10'sd0): fp32_out = '0;
 		default: fp32_out = {sign, exp_adj[7:0], mant};
 	endcase
 
@@ -60,8 +62,8 @@ always_comb begin
 
 end
 
-normalizer #(.IN_WIDTH(DOT_OUT_WIDTH), .OUT_WIDTH(23)) norm (
-	.shift_in(mag),
+normalizer #(.IN_WIDTH(23), .OUT_WIDTH(23)) norm (
+	.shift_in({3'd0, mag}),
 	.shift_out(normalized_mant),
 	.lead_zero_count(lead_zero_count)
 );
