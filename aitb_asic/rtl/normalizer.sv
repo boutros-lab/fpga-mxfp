@@ -33,7 +33,7 @@ generate
  	end
 endgenerate
 
-assign lead_zero_count = /*(shift_amount > MAX_SHIFT) ? MAX_SHIFT :*/ shift_amount-PAD;
+assign lead_zero_count = /*(shift_amount > MAX_SHIFT) ? MAX_SHIFT :*/ (shift_in == '0) ? '0 : shift_amount-PAD;
 //assign shift_out = {stage[STAGES][1 +: OUT_WIDTH-1], 1'b0};
 //assign shift_out = stage[STAGES][OUT_WIDTH-1:0];
 assign shift_out = stage[STAGES][INTERNAL_WIDTH-1 -: OUT_WIDTH];
