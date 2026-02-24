@@ -17,21 +17,21 @@ module mxfp_multiply #(
 	parameter PROD_WIDTH     = 2*(MAX_MAN_BITS + 1)
 )(
 	// Configuration for MXFP format
-	input logic [EXP_BITS_WIDTH-1:0] exp_bits;
-	input logic [MAN_BITS_WIDTH-1:0] man_bits;
+	input logic [EXP_BITS_WIDTH-1:0] exp_bits,
+	input logic [MAN_BITS_WIDTH-1:0] man_bits,
 	//logic [2:0] mxfp_mode; // 000: E2M1, 001: E2M3, 010: E3M2, 011: E4M3, 100: E5M2
 
 	// Input MXFP numbers
-	input logic [MXFP_WIDTH-1:0] mxfp_a;
-	input logic [MXFP_WIDTH-1:0] mxfp_b;
+	input logic [MXFP_WIDTH-1:0] mxfp_a,
+	input logic [MXFP_WIDTH-1:0] mxfp_b,
 
 	// Result of multiply
-	output logic        [MAX_EXP_BITS:0] exp_sum;
-	output logic signed [PROD_WIDTH:0]   man_prd_signed;
+	output logic        [MAX_EXP_BITS:0] exp_sum,
+	output logic signed [PROD_WIDTH:0]   man_prd_signed,
 
 	// Inf/Nan
-	output logic inf;
-	output logic nan;
+	output logic inf,
+	output logic nan
 );
 
 // MXFP components
@@ -42,24 +42,29 @@ logic [MAX_MAN_BITS:0]   man_a, man_b;
 logic [PROD_WIDTH-1:0] man_prd;
 
 logic [MAX_EXP_BITS-1:0] exp_mask;
+logic [MAX_MAN_BITS-1:0] man_mask;
 logic a_norm, b_norm;
 
 // Inf/NaN handling
+logic [MAX_EXP_BITS-1:0] max_exp;
 logic inf_nan;
 logic man_a_or, man_b_or;
 
 generate
 	// Special simpler case for E2M1
-	if (MXFP_WIDTH == 4 && MAX_EXP_WIDTH == 2 && MAX_MAN_WIDTH == 1) begin
+	if (MXFP_WIDTH == 4 && MAX_EXP_BITS == 2 && MAX_MAN_BITS == 1) begin
 		// Break out MXFP inputs into their components
-		sign_a = mxfp_a[3];
-		sign_b = mxfp_b[3];
-		
-		exp_a = mxfp_a[2:1];
-		exp_b = mxfp_b[2:1];
-		
-		man_a = mxfp_a[0];
-		man_b = mxfp_b[0];
+		assign sign_a = mxfp_a[3];
+		assign sign_b = mxfp_b[3];
+
+		assign exp_a = mxfp_a[2:1];
+		assign exp_b = mxfp_b[2:1];
+
+		assign a_norm = |exp_a;
+		assign b_norm = |exp_b;
+
+		assign man_a = {a_norm, mxfp_a[0]};
+		assign man_b = {b_norm, mxfp_b[0]};
 	end else begin
 		always_comb begin
 			// Break out MXFP inputs into their components
@@ -68,17 +73,19 @@ generate
 		
 			exp_mask = (1 << exp_bits) - 1'b1;
 		
-			exp_a = (mxfp_a >> exp_bits) & exp_mask;
-			exp_b = (mxfp_b >> exp_bits) & exp_mask;
+			exp_a = (mxfp_a >> man_bits) & exp_mask;
+			exp_b = (mxfp_b >> man_bits) & exp_mask;
+
+			a_norm = |exp_a;
+			b_norm = |exp_b;
 		
-			man_a = mxfp_a[0 +: man_bits];
-			man_b = mxfp_b[0 +: man_bits];
+			man_mask = (1 << man_bits) - 1'b1;
+
+			man_a = (a_norm << man_bits) | (mxfp_a & man_mask);
+			man_b = (b_norm << man_bits) | (mxfp_b & man_mask);
 		end
 	end
 endgenerate
-
-assign a_norm = |exp_a;
-assign b_norm = |exp_b;
 
 // Add exponents, take away 1 if it's a normal number
 assign exp_sum = exp_a + exp_b - a_norm - b_norm;
@@ -91,7 +98,9 @@ assign man_prd_signed = sign_a ^ sign_b ? -man_prd : man_prd;
 generate
 	if (MXFP_WIDTH == 8) begin
 		// Inf/NaN handling
-		assign inf_nan = &exp_a[0 +: exp_bits] || &exp_b[0 +: exp_bits];
+		assign max_exp = (1 << exp_bits) - 1;
+
+		assign inf_nan = (exp_a == max_exp) || (exp_b == max_exp);
 		
 		assign man_a_or = |man_a;
 		assign man_b_or = |man_b;
