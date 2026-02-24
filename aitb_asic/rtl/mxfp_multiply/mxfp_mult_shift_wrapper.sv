@@ -33,6 +33,7 @@ mxfp_mult_shift #(
 	.MXFP_WIDTH(MXFP_WIDTH)
 //	OUTPUT_WIDTH = 2 * ((1 << MAX_EXP_BITS) + MAX_MAN_BITS),
 ) u_mxfp_mult_shift (
+	.sign_shift(exp_width + man_width),
 	.exp_bits(exp_width),
 	.man_bits(man_width),
 	.mxfp_a(i_vec_a[0]),

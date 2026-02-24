@@ -12,13 +12,15 @@ module mxfp_multiply #(
 	parameter MAX_MAN_BITS = 3,
 	parameter MXFP_WIDTH   = 8,
 
-	parameter EXP_BITS_WIDTH = $clog2(MAX_EXP_BITS),
-	parameter MAN_BITS_WIDTH = $clog2(MAX_MAN_BITS),
-	parameter PROD_WIDTH     = 2*(MAX_MAN_BITS + 1)
+	parameter SIGN_SHIFT_WIDTH = $clog2(MXFP_WIDTH - 1),
+	parameter EXP_BITS_WIDTH   = $clog2(MAX_EXP_BITS),
+	parameter MAN_BITS_WIDTH   = $clog2(MAX_MAN_BITS),
+	parameter PROD_WIDTH       = 2*(MAX_MAN_BITS + 1)
 )(
 	// Configuration for MXFP format
-	input logic [EXP_BITS_WIDTH-1:0] exp_bits,
-	input logic [MAN_BITS_WIDTH-1:0] man_bits,
+	input logic [SIGN_SHIFT_WIDTH-1:0] sign_shift,
+	input logic [EXP_BITS_WIDTH-1:0]   exp_bits,
+	input logic [MAN_BITS_WIDTH-1:0]   man_bits,
 	//logic [2:0] mxfp_mode; // 000: E2M1, 001: E2M3, 010: E3M2, 011: E4M3, 100: E5M2
 
 	// Input MXFP numbers
@@ -68,8 +70,8 @@ generate
 	end else begin
 		always_comb begin
 			// Break out MXFP inputs into their components
-			sign_a = mxfp_a >> (exp_bits + man_bits) & 1'b1;
-			sign_b = mxfp_b >> (exp_bits + man_bits) & 1'b1;
+			sign_a = (mxfp_a >> sign_shift) & 1'b1;
+			sign_b = (mxfp_b >> sign_shift) & 1'b1;
 		
 			exp_mask = (1 << exp_bits) - 1'b1;
 		
@@ -93,7 +95,7 @@ assign exp_sum = exp_a + exp_b - a_norm - b_norm;
 assign man_prd = man_a * man_b;
 
 // Apply sign to manissa product
-assign man_prd_signed = sign_a ^ sign_b ? -man_prd : man_prd;
+assign man_prd_signed = (sign_a ^ sign_b) ? -man_prd : man_prd;
 
 generate
 	if (MXFP_WIDTH == 8) begin
