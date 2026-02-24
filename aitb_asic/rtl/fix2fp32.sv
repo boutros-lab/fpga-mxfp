@@ -39,26 +39,17 @@ always_comb begin
 	end
 
 	//exp_adj = (shared_exp + DOT_OUT_WIDTH - lead_zero_count - 1);
-	exp_adj = ($signed({2'b00, shared_exp}) + /*$signed(DOT_OUT_WIDTH)*/ 10'sd23 - $signed({5'b00000, lead_zero_count}) - 10'sd1);
+	exp_adj = ($signed({2'b00, shared_exp}) + 10'sd23 - $signed({5'b00000, lead_zero_count}) - 10'sd1);
+	////exp_adj = $signed(shared_exp) - $signed(lead_zero_count);
 	mant = {normalized_mant[21:0], 1'b0};
 
 	priority case(1'b1)
+		(mag == '0): fp32_out = {sign, 31'd0};
+		(shared_exp == '0): fp32_out = {sign, 31'd0};
 		(exp_adj >= 10'sd255): fp32_out = {sign, 8'hFF, 23'd0};
-		(exp_adj <= 10'sd0): fp32_out = '0;
+		(exp_adj <= 10'sd0): fp32_out = {sign, 31'd0};
 		default: fp32_out = {sign, exp_adj[7:0], mant};
 	endcase
-
-/*
-	if (|mag == 1'b0)
-		fp32_out = '0;
-	else if (exp_adj[8] == 1'b1)
-		fp32_out = {sign, 8'hFF, 23'd0};
-	else
-		fp32_out = {sign, exp_adj[7:0], mant};
-*/	
-
-	//fp32_out = (|mag == 1'b0) ? '0 : {sign, exp_adj, mant};
-
 end
 
 normalizer #(.IN_WIDTH(23), .OUT_WIDTH(23)) norm (

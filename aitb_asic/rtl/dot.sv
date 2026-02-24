@@ -22,7 +22,7 @@ always_comb begin
 		dot_out += data_in[i] * w_reg[i];
 	end	
 
-	sh_exp_sum = $signed({2'b00, data_in_sh_exp}) + $signed({1'b0, w_reg_sh_exp}) - 8'sd127;
+	sh_exp_sum = $signed({2'b00, data_in_sh_exp}) + $signed({2'b00, w_reg_sh_exp}) - 8'sd127;
 
 	if (sh_exp_sum < 0)
 		sh_exp_out = '0;
