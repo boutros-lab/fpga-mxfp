@@ -48,18 +48,34 @@ logic a_norm, b_norm;
 logic inf_nan;
 logic man_a_or, man_b_or;
 
-always_comb begin
-	// Break out MXFP inputs into their components
-	sign_a = mxfp_a >> (exp_bits + man_bits) & 1'b1;
-
-	exp_mask = (1 << exp_bits) - 1'b1;
-
-	exp_a = (mxfp_a >> exp_bits) & exp_mask;
-	exp_b = (mxfp_b >> exp_bits) & exp_mask;
-
-	man_a = mxfp_a[0 +: man_bits];
-	man_b = mxfp_b[0 +: man_bits];
-end
+generate
+	// Special simpler case for E2M1
+	if (MXFP_WIDTH == 4 && MAX_EXP_WIDTH == 2 && MAX_MAN_WIDTH == 1) begin
+		// Break out MXFP inputs into their components
+		sign_a = mxfp_a[3];
+		sign_b = mxfp_b[3];
+		
+		exp_a = mxfp_a[2:1];
+		exp_b = mxfp_b[2:1];
+		
+		man_a = mxfp_a[0];
+		man_b = mxfp_b[0];
+	end else begin
+		always_comb begin
+			// Break out MXFP inputs into their components
+			sign_a = mxfp_a >> (exp_bits + man_bits) & 1'b1;
+			sign_b = mxfp_b >> (exp_bits + man_bits) & 1'b1;
+		
+			exp_mask = (1 << exp_bits) - 1'b1;
+		
+			exp_a = (mxfp_a >> exp_bits) & exp_mask;
+			exp_b = (mxfp_b >> exp_bits) & exp_mask;
+		
+			man_a = mxfp_a[0 +: man_bits];
+			man_b = mxfp_b[0 +: man_bits];
+		end
+	end
+endgenerate
 
 assign a_norm = |exp_a;
 assign b_norm = |exp_b;
@@ -72,13 +88,21 @@ assign man_prd = man_a * man_b;
 // Apply sign to manissa product
 assign man_prd_signed = sign_a ^ sign_b ? -man_prd : man_prd;
 
-// Inf/NaN handling
-assign inf_nan = &exp_a[0 +: exp_bits] || &exp_b[0 +: exp_bits];
-
-assign man_a_or = |man_a;
-assign man_b_or = |man_b;
-
-assign inf = inf_nan && (exp_bits == 3'h5) && (!man_a_or && !man_b_or);
-assign nan = inf_nan && (exp_bits >= 3'h4) && (man_a_or || man_b_or);
+generate
+	if (MXFP_WIDTH == 8) begin
+		// Inf/NaN handling
+		assign inf_nan = &exp_a[0 +: exp_bits] || &exp_b[0 +: exp_bits];
+		
+		assign man_a_or = |man_a;
+		assign man_b_or = |man_b;
+		
+		assign inf = inf_nan && (exp_bits == 3'h5) && (!man_a_or && !man_b_or);
+		assign nan = inf_nan && (exp_bits >= 3'h4) && (man_a_or || man_b_or);
+	end else begin
+		// If paramaters don't allow MXFP8, don't generate Inf/NaN logic
+		assign inf = 1'b0;
+		assign nan = 1'b0;
+	end
+endgenerate
 
 endmodule
