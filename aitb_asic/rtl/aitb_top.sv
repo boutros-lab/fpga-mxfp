@@ -26,10 +26,13 @@ module aitb_top (
 
 logic signed [DATA_WIDTH-1:0] data_in_pipe [0:DOT_LENGTH-1];
 logic [DATA_WIDTH-1:0] data_in_sh_exp_pipe;
+logic [DATA_WIDTH-1:0] data_in_sh_exp_pipe2;
 logic signed [DATA_WIDTH-1:0] w_reg_c1 [0:DOT_LENGTH-1];
 logic [DATA_WIDTH-1:0] w_reg_c1_sh_exp;
+logic [DATA_WIDTH-1:0] w_reg_c1_sh_exp_pipe;
 logic signed [DATA_WIDTH-1:0] w_reg_c2 [0:DOT_LENGTH-1];
 logic [DATA_WIDTH-1:0] w_reg_c2_sh_exp;
+logic [DATA_WIDTH-1:0] w_reg_c2_sh_exp_pipe;
 logic signed [DOT_OUT_WIDTH-1:0] dot_out_col1;
 logic [7:0] dot_out_col1_sh_exp;
 logic signed [DOT_OUT_WIDTH-1:0] dot_out_col2;
@@ -130,6 +133,27 @@ pipeline #(.W(8), .STAGES(1)) PIPE_2_dot_sh_exp_col2 (
 	.pipe_out(dot_out_col2_sh_exp_pipe)
 );
 
+pipeline #(.W(8), .STAGES(1)) PIPE_2_in_sh_exp (
+	.clk(clk),
+	.rst(rst),
+	.pipe_in(data_in_sh_exp_pipe),
+	.pipe_out(data_in_sh_exp_pipe2)
+);
+
+pipeline #(.W(8), .STAGES(1)) PIPE_2_w_reg_c1 (
+	.clk(clk),
+	.rst(rst),
+	.pipe_in(w_reg_c1_sh_exp),
+	.pipe_out(w_reg_c1_sh_exp_pipe)
+);
+
+pipeline #(.W(8), .STAGES(1)) PIPE_2_w_reg_c2 (
+	.clk(clk),
+	.rst(rst),
+	.pipe_in(w_reg_c2_sh_exp),
+	.pipe_out(w_reg_c2_sh_exp_pipe)
+);
+
 // CPA Adder (used for FXP Tensor Mode but in this datapath nonetheless)
 assign adder_out_col1 = dot_out_col1_pipe + '0;
 assign adder_out_col2 = dot_out_col2_pipe + '0;
@@ -137,13 +161,17 @@ assign adder_out_col2 = dot_out_col2_pipe + '0;
 // FXP to FP32
 fix2fp32 FXP2FP32_col1 (
 	.fix_in(adder_out_col1),
-	.shared_exp(dot_out_col1_sh_exp_pipe),
+	//.shared_exp(dot_out_col1_sh_exp_pipe),
+	.data_in_sh_exp(data_in_sh_exp_pipe2),
+	.w_reg_sh_exp(w_reg_c1_sh_exp_pipe),
 	.fp32_out(fix2float_out_col1)
 );
 
 fix2fp32 FXP2FP32_col2 (
 	.fix_in(adder_out_col2),
-	.shared_exp(dot_out_col2_sh_exp_pipe),
+	//.shared_exp(dot_out_col2_sh_exp_pipe),
+	.data_in_sh_exp(data_in_sh_exp_pipe2),
+	.w_reg_sh_exp(w_reg_c2_sh_exp_pipe),
 	.fp32_out(fix2float_out_col2)
 );
 // PIPE 3

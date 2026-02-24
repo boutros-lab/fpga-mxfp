@@ -3,8 +3,8 @@
 module aitb_wrapper_tb();
 
 localparam CLK_PERIOD = 2;   // Clock period in ns
-localparam NUM_LOADS = 1;    // Number of times AITB is loaded with new pair of vectors
-localparam REUSE_FACTOR = 4; // Number of vector operands multiplied by the loaded vectors in the AITB
+localparam NUM_LOADS = 100;    // Number of times AITB is loaded with new pair of vectors
+localparam REUSE_FACTOR = 100; // Number of vector operands multiplied by the loaded vectors in the AITB
 
 // DUT signals
 logic clk;
@@ -162,14 +162,14 @@ initial begin
 			$display("ref_res1  = %1b||%8b||%23b = %f", o_ref_result1[31], o_ref_result1[30:23], o_ref_result1[22:0], $bitstoshortreal(o_ref_result1));
 			$display("o_golden1 = %1b||%8b||%23b = %f", golden_result1_bits[31], golden_result1_bits[30:23], golden_result1_bits[22:0], golden_result1[out_id]);
 			if ((o_result0 != o_ref_result0) || (o_result1 != o_ref_result1)) begin
-				mistakes = mistakes + 1;
-				//$display("Results are NOT matching: result0=%b, golden0=%b, result1=%b, golden1=%b", 
-				//	o_result0, o_ref_result0, o_result1, o_ref_result1);
-				$display("MISMATCH!!");
+				if((o_result0 != golden_result0_bits) || (o_result1 != golden_result1_bits)) begin
+					mistakes = mistakes + 1;
+					$display("FULL MISMATCH!!");
+				end else begin
+					$display("Numerical Match");	
+				end
 			end else begin
-				//$display("Results are matching: result0=%b, golden0=%b, result1=%b, golden1=%b", 
-				//	o_result0, o_ref_result0, o_result1, o_ref_result1);
-				$display("Result Match!");
+				$display("Full Match!!");
 			end
 
 			$display("=====================================================");

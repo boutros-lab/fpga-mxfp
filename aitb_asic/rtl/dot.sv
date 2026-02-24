@@ -22,6 +22,8 @@ always_comb begin
 		dot_out += data_in[i] * w_reg[i];
 	end	
 
+	//sh_exp_out = $signed({2'b00, data_in_sh_exp}) - 10'sd127 + $signed({2'b00, w_reg_sh_exp}) - 10'sd127;
+/*
 	sh_exp_sum = $signed({2'b00, data_in_sh_exp}) + $signed({2'b00, w_reg_sh_exp}) - 8'sd127;
 
 	if (sh_exp_sum < 0)
@@ -30,6 +32,6 @@ always_comb begin
 		sh_exp_out = 8'd255;
 	else
 		sh_exp_out = sh_exp_sum[7:0];
+*/
 end
-
 endmodule
