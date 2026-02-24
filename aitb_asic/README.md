@@ -39,3 +39,27 @@ II. `dot.sv`: Dot Engine
 5. `dot_out`: dot product of 1st and 2nd inputs
 6. `sh_exp_out`: dot product shared exponent
 ---
+
+III. CPA
+**NOTE** This is a carry propoagate adder that is used for accumulation in the AITB's fixed point mode. However it exists in the FP mode as a passthrough.
+---
+IV. `fix2fp32.sv`: Fix to FP32 converter
+
+**I/O**
+1. `fixed_in`: Fixed point input 
+2. `shared_exp`: Shared exponent input
+3. `fp32_out`: Output packed in FP32
+
+**NOTE** The `fix2fp32` module includes a normalizer that counts the number of leading zeros and shifts the fixed point number to be an FP32 mantissa. The number of leading zeros is used to adjust the exponent to be an FP32 exponent.
+---
+V. `ieee_fp32_add.vhdl` Flopoco-generated IEEE single-precision FP32 adder
+**I/O**
+1. `X`: First operand
+2. `Y`: Second operand
+3. `R`: Output results (X+Y)
+---
+
+### Design Notes
+- The output pipeline has 2 register stages to compensate for an unknown register placing to achieve 5-cycle latency
+- There is a `pipeline.sv` module. This is just a module that encapsulates the pipeline register logic.
+ 
