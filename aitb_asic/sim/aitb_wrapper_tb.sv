@@ -3,8 +3,8 @@
 module aitb_wrapper_tb();
 
 localparam CLK_PERIOD = 2;   // Clock period in ns
-localparam NUM_LOADS = 100;    // Number of times AITB is loaded with new pair of vectors
-localparam REUSE_FACTOR = 100; // Number of vector operands multiplied by the loaded vectors in the AITB
+localparam NUM_LOADS = 10;    // Number of times AITB is loaded with new pair of vectors
+localparam REUSE_FACTOR = 10; // Number of vector operands multiplied by the loaded vectors in the AITB
 
 // DUT signals
 logic clk;

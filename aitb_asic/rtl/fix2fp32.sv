@@ -2,7 +2,6 @@ import pkg_aitb::*;
 
 module fix2fp32 (
 	input logic signed [DOT_OUT_WIDTH-1:0] fix_in,
-	//input logic [DATA_WIDTH-1:0] shared_exp,
 	input  logic [DATA_WIDTH-1:0]  data_in_sh_exp,
 	input  logic [DATA_WIDTH-1:0]  w_reg_sh_exp,
 	output logic [31:0] fp32_out
@@ -40,10 +39,6 @@ always_comb begin
 		sign = 1'b0;
 	end
 
-	//exp_adj = (shared_exp + DOT_OUT_WIDTH - lead_zero_count - 1);
-	//exp_adj = ($signed({2'b00, shared_exp}) + 10'sd23 - $signed({5'b00000, lead_zero_count}) - 10'sd1);
-//	exp_adj = (shared_exp + 10'sd23 - $signed({5'b00000, lead_zero_count}) - 10'sd1);
-	////exp_adj = $signed(shared_exp) - $signed(lead_zero_count);
 	exp_adj = $signed({3'd0, data_in_sh_exp}) + $signed({3'd0, w_reg_sh_exp}) + 11'sd23 - 11'sd1 - $signed({6'd0, lead_zero_count}) - 11'sd127;
 	mant = {normalized_mant[21:0], 1'b0};
 
