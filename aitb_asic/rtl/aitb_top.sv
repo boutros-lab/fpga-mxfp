@@ -3,7 +3,6 @@ import pkg_aitb::*;
 module aitb_top (
 	input logic clk,
 	input logic rst,
-//	input logic [1:0] acc_mode,
 	input logic acc_en,
 	input logic zero_en,
 	input logic load_bb_one,
@@ -161,7 +160,6 @@ assign adder_out_col2 = dot_out_col2_pipe + '0;
 // FXP to FP32
 fix2fp32 FXP2FP32_col1 (
 	.fix_in(adder_out_col1),
-	//.shared_exp(dot_out_col1_sh_exp_pipe),
 	.data_in_sh_exp(data_in_sh_exp_pipe2),
 	.w_reg_sh_exp(w_reg_c1_sh_exp_pipe),
 	.fp32_out(fix2float_out_col1)
@@ -169,7 +167,6 @@ fix2fp32 FXP2FP32_col1 (
 
 fix2fp32 FXP2FP32_col2 (
 	.fix_in(adder_out_col2),
-	//.shared_exp(dot_out_col2_sh_exp_pipe),
 	.data_in_sh_exp(data_in_sh_exp_pipe2),
 	.w_reg_sh_exp(w_reg_c2_sh_exp_pipe),
 	.fp32_out(fix2float_out_col2)
@@ -222,13 +219,11 @@ end
 // FP32 ALU
 ieee_fp32_add FP32_ALU_col1 (
 	.X(fix2float_out_col1_pipe),
-	//.Y(fp32_cascade_in_col1_pipe),
 	.Y(acc_mux_out_col1),
 	.R(fp32_alu_out_col1)
 );
 ieee_fp32_add FP32_ALU_col2 (
 	.X(fix2float_out_col2_pipe),
-	//.Y(fp32_cascade_in_col2_pipe),
 	.Y(acc_mux_out_col2),
 	.R(fp32_alu_out_col2)
 );
@@ -250,22 +245,3 @@ assign fp32_cascade_out_col1 = fp32_dot_out_col1;
 assign fp32_cascade_out_col2 = fp32_dot_out_col2;
 
 endmodule 
-/*
-tennm_dsp_prime		tennm_dsp_prime_component (
-			 .clk (clk),
-			 .ena (1'b1),
-			 .acc_en (acc_mode[0]),
-			 .zero_en (acc_mode[1]),
-			 .load_bb_one (load_en),
-			 .load_bb_two (1'b0),
-			 .load_buf_sel (1'b0),
-			 .shared_exponent (shared_exponent),
-			 .clr ({rst,rst}),
-
-			 .data_in({16'b0,data_in[10],data_in[9],data_in[8],data_in[7],data_in[6],data_in[5],data_in[4],data_in[3],data_in[2],data_in[1]}),
-
-			 .cascade_data_in ({32'b0,fp32_cascade_in}),
-			 .cascade_data_out ({cascade_data_out_col_2_w,fp32_cascade_out}),
-			 .result_l({fp32_col_2_w[4:0],fp32_dot_out[31:0]}),
-			 .result_h({fp32_col_2_flag_w[3:0],fp32_flags[3:0],fp32_col_2_w[31:5]}));
-*/

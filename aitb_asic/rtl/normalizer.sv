@@ -3,8 +3,7 @@ import pkg_aitb::*;
 module normalizer #(
 	parameter IN_WIDTH = 20,
 	parameter INTERNAL_WIDTH = 32,
-	parameter OUT_WIDTH = 23,
-	parameter MAX_SHIFT = OUT_WIDTH
+	parameter OUT_WIDTH = 23
 ) (
 	input logic [IN_WIDTH-1:0] shift_in,
 	output logic [OUT_WIDTH-1:0] shift_out,
@@ -16,7 +15,7 @@ localparam PAD = INTERNAL_WIDTH - IN_WIDTH;
 
 logic [INTERNAL_WIDTH-1:0] shift_in_pad;
 
-assign shift_in_pad = { /*PAD{1'b0}*/ '0, shift_in };
+assign shift_in_pad = { '0, shift_in };
 
 logic [INTERNAL_WIDTH-1:0] stage [0:STAGES];
 logic [STAGES-1:0] shift_amount;
@@ -33,8 +32,6 @@ generate
  	end
 endgenerate
 
-assign lead_zero_count = /*(shift_amount > MAX_SHIFT) ? MAX_SHIFT :*/ (shift_in == '0) ? '0 : shift_amount-PAD;
-//assign shift_out = {stage[STAGES][1 +: OUT_WIDTH-1], 1'b0};
-//assign shift_out = stage[STAGES][OUT_WIDTH-1:0];
+assign lead_zero_count = (shift_in == '0) ? '0 : shift_amount-PAD;
 assign shift_out = stage[STAGES][INTERNAL_WIDTH-1 -: OUT_WIDTH];
 endmodule
