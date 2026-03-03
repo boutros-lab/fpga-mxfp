@@ -80,7 +80,7 @@ u_naive_mxfp_dot (
 	.sign_shift(exp_width + man_width),
 	.exp_bits(exp_width),
 	.man_bits(man_width),
-	.mxfp_mode(exp_width), // 000: E2M1, 001: E2M3, 010: E3M2, 011: E4M3, 100: E5M2
+	.mxfp_mode(mxfp_mode), // 000: E2M1, 001: E2M3, 010: E3M2, 011: E4M3, 100: E5M2
 
 	.mxfp8_a(mxfp8_a),
 	.mxfp8_b(mxfp8_b),

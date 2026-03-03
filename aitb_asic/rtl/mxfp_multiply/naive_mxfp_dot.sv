@@ -109,8 +109,8 @@ generate
 			.exp_bits(exp_bits),
 			.man_bits(man_bits),
 
-			.mxfp_a(mxfp6_a[i]),
-			.mxfp_b(mxfp6_b[i]),
+			.mxfp_a(mxfp4_a[i]),
+			.mxfp_b(mxfp4_b[i]),
 
 			.mxfp_mult_fixed(mxfp4_mult_result[i]),
 
