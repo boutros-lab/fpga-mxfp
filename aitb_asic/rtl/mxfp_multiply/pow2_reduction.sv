@@ -14,7 +14,7 @@ module pow2_reduction #(
 
 localparam LEVELS = $clog2(INPUTS);
 
-genvar i = 0;
+genvar i;
 
 generate
 	if (INPUTS > 2) begin

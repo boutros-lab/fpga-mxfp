@@ -318,22 +318,22 @@ def self_check(vector_a_list, vector_b_list, fp32_result_list, exp_bits, man_bit
     
     for a_vec, b_vec, fp32_orig in zip(vector_a_list, vector_b_list, fp32_result_list):
         # Use numpy for explicit FP32 operations
-        fp32_a   = np.zeros((1,1), dtype='float32')
-        fp32_b   = np.zeros((1,1), dtype='float32')
-        fp32_dot = np.zeros((1,1), dtype='float32')
+        fp32_a      = np.zeros((1,1), dtype='float32')
+        fp32_b      = np.zeros((1,1), dtype='float32')
+        fp32_python = np.zeros((1,1), dtype='float32')
     
         for a, b in zip(a_vec, b_vec):
             fp32_a    = mxfp_to_fp32(a, exp_bits, man_bits, bias)
             fp32_b    = mxfp_to_fp32(b, exp_bits, man_bits, bias)
-            fp32_dot += fp32_a * fp32_b
+            fp32_python += fp32_a * fp32_b
     
-        if (fp32_dot != fp32_orig):
-            error = abs((fp32_orig - fp32_dot[0][0]) / fp32_orig) * 100
+        if (fp32_python != fp32_orig):
+            error = abs((fp32_orig - fp32_python[0][0]) / fp32_orig) * 100
     
             if (error > tolerance):
                 print("ERROR: Mismatch!")
-                print(f"fp32_dot:  {fp32_dot[0][0]:f}")
-                print(f"fp32_orig: {fp32_orig:f}")
+                print(f"fp32_python: {fp32_python[0][0]:f}")
+                print(f"fp32_orig:   {fp32_orig:f}")
     
                 print(f"Error: {error:f}%")
     

@@ -85,8 +85,14 @@ vmap tennm "/tools/altera/quartus-pro/25.3/questa_fse/intel/verilog/tennm"
 
 # Add all files
 for dir in ${rtl_dir[@]}; do
+	# Verilog
 	find $dir -type f -name "*.sv" -o -name "*.v" -o -name "*.h" -o -name "*.vh" | while IFS= read -r filename; do
 		vlog -sv $filename || exit 1
+	done
+
+	# VHDL
+	find $dir -type f -name "*.vhdl" | while IFS= read -r filename; do
+		vcom $filename || exit 1
 	done
 done
 

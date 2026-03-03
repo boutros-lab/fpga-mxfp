@@ -73,7 +73,7 @@ generate
 			sign_a = (mxfp_a >> sign_shift) & 1'b1;
 			sign_b = (mxfp_b >> sign_shift) & 1'b1;
 		
-			exp_mask = (1 << exp_bits) - 1'b1;
+			exp_mask = (1 << exp_bits) - 1'b1; // TODO: Get masks as inputs
 		
 			exp_a = (mxfp_a >> man_bits) & exp_mask;
 			exp_b = (mxfp_b >> man_bits) & exp_mask;
