@@ -54,8 +54,8 @@ generate
 				assign mxfp6_a[i] = i_vec_a[i+8];
 				assign mxfp6_b[i] = i_vec_b[i+8];
 			end else begin
-				assign mxfp6_a[i] = {{(bit_width-6), 1'b0}, i_vec_a[i]};
-				assign mxfp6_b[i] = {{(bit_width-6), 1'b0}, i_vec_b[i]};
+				assign mxfp6_a[i] = {{(bit_width-6), 1'b0}, i_vec_a[i+8]};
+				assign mxfp6_b[i] = {{(bit_width-6), 1'b0}, i_vec_b[i+8]};
 			end
 		end else begin
 			assign mxfp6_a[i] = 6'b0;
