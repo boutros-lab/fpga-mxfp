@@ -1,47 +1,52 @@
 /*
 * Runtime configurable fix2float module
+* Input width is fixed, point_position configurable
 * Intended only for MXFP dot product of length 16
 * As a result, does not support subnormals
 */
 
+// TODO, move to pkg
+`define INPUT_WIDTH 69
+`define EXP_BITS 8
+`define MAN_BITS 23
+`define OUTPUT_WIDTH `EXP_BITS + `MAN_BITS + 1
+`define FP32_BIAS 8'd127
+
 module config_fix2float #(
-	parameter INPUT_WIDTH = 32,
-
-	parameter EXP_BITS = 8,
-	parameter MAN_BITS = 23,
-
-	// Setting max possible values, but point position can be smaller
-	parameter FIXED_MSB_WIDTH      = $clog2(INPUT_WIDTH),
-	parameter POINT_POSITION_WIDTH = $clog2(INPUT_WIDTH),
-
-	parameter OUTPUT_WIDTH = 1 + EXP_BITS + MAN_BITS
+	// Setting max possible value, but point position can be smaller
+	parameter POINT_POSITION_WIDTH = $clog2(`INPUT_WIDTH)
 )(
 	// Configuration
-	input logic [FIXED_MSB_WIDTH-1:0]      fixed_msb,
-	input logic [POINT_POSITION_WIDTH-1:0] point_position,
+	input logic [POINT_POSITION_WIDTH-1:0] i_point_position, // TODO Change this to a combined exponent correction
 
 	// Data
-	input logic signed [INPUT_WIDTH-1:0] i_fixed,
-	output logic [OUTPUT_WIDTH-1:0]      o_fp
+	input logic signed [`INPUT_WIDTH-1:0] i_fixed,
+	output logic [`OUTPUT_WIDTH-1:0]      o_fp
 );
+logic                 sign;
+logic [`EXP_BITS-1:0] exponent;
+logic [`MAN_BITS:0]   significand;
 
-logic                sign;
-logic [MAN_BITS-1:0] mantissa;
-logic [EXP_BITS-1:0] exponent;
+logic [`INPUT_WIDTH-2:0] unsigned_fixed;
 
-logic [INPUT_WIDTH-2:0] unsigned_fixed;
+logic [6:0] leading_zero_count;
 
 // Get sign bit, take two's complement if necessary
-assign sign = i_fixed[fixed_msb]; // TODO: is this necessary, will it always be sign extended?
-assign unsigned_fixed = sign ? (-i_fixed)[INPUT_WIDTH-2:0] : i_fixed[INPUT_WIDTH-2:0];
+assign sign = i_fixed[`INPUT_WIDTH-1];
+assign unsigned_fixed = sign ? -i_fixed : i_fixed;
 
-// Count leading zeros
-// Leading zero counter needs to start from MSB of input width
-// Can't make it start from fixed_msb
+// TODO: Do we want round to even?
+normalizer_68b 
+u_normalizer (
+	.X(unsigned_fixed), 
+	.Count(leading_zero_count), 
+	.R(significand)
+);
 
-// Exp = FP32_Bias + Leading_1-pos - Point_position
-
-// Shift/form mantissa - no subnormal support
+assign exponent = unsigned_fixed == '0 ? 8'b0 
+				       : (`INPUT_WIDTH - 1) - leading_zero_count + `FP32_BIAS - i_point_position - 1'b1; // TODO Collect this into a single term, exponent_correction
 
 // Form final FP32
+assign o_fp = {sign, exponent, significand[22:0]};
+
 endmodule

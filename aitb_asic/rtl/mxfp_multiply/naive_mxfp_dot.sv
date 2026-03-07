@@ -11,17 +11,20 @@ module naive_mxfp_dot #(
 	parameter FP6_OPS = FP6_DOT_LENGTH - FP8_DOT_LENGTH,
 	parameter FP4_OPS = FP4_DOT_LENGTH - FP6_DOT_LENGTH
 )(
-	input logic [2:0] sign_shift,
-	input logic [3:0] exp_bits,
-	input logic [1:0] man_bits,
-	logic [2:0] mxfp_mode, // 000: E2M1, 001: E2M3, 010: E3M2, 011: E4M3, 100: E5M2
+	// Configuration
+	input logic [2:0] i_sign_shift,
+	input logic [3:0] i_exp_bits,
+	input logic [1:0] i_man_bits,
+	input logic [2:0] i_mxfp_mode, // 000: E2M1, 001: E2M3, 010: E3M2, 011: E4M3, 100: E5M2
+	input logic [$clog2(69)-1:0] i_point_position, //TODO
 
-	input logic [7:0] mxfp8_a [FP8_OPS],
-	input logic [7:0] mxfp8_b [FP8_OPS],
-	input logic [5:0] mxfp6_a [FP6_OPS],
-	input logic [5:0] mxfp6_b [FP6_OPS],
-	input logic [3:0] mxfp4_a [FP4_OPS],
-	input logic [3:0] mxfp4_b [FP4_OPS],
+	// Data
+	input logic [7:0] i_mxfp8_a [FP8_OPS],
+	input logic [7:0] i_mxfp8_b [FP8_OPS],
+	input logic [5:0] i_mxfp6_a [FP6_OPS],
+	input logic [5:0] i_mxfp6_b [FP6_OPS],
+	input logic [3:0] i_mxfp4_a [FP4_OPS],
+	input logic [3:0] i_mxfp4_b [FP4_OPS],
 
 	output logic [31:0] o_fp32_result
 );
@@ -63,12 +66,12 @@ generate
 			.MAX_MAN_BITS(3),
 			.MXFP_WIDTH(8)
 		) u_mxfp_mul_shift_mxfp8 (
-			.sign_shift(sign_shift),
-			.exp_bits(exp_bits),
-			.man_bits(man_bits),
+			.sign_shift(i_sign_shift),
+			.exp_bits(i_exp_bits),
+			.man_bits(i_man_bits),
 
-			.mxfp_a(mxfp8_a[i]),
-			.mxfp_b(mxfp8_b[i]),
+			.mxfp_a(i_mxfp8_a[i]),
+			.mxfp_b(i_mxfp8_b[i]),
 
 			.mxfp_mult_fixed(mxfp8_mult_result[i]),
 
@@ -84,12 +87,12 @@ generate
 			.MAX_MAN_BITS(3),
 			.MXFP_WIDTH(6)
 		) u_mxfp_mul_shift_mxfp8 (
-			.sign_shift(sign_shift),
-			.exp_bits(exp_bits),
-			.man_bits(man_bits),
+			.sign_shift(i_sign_shift),
+			.exp_bits(i_exp_bits),
+			.man_bits(i_man_bits),
 
-			.mxfp_a(mxfp6_a[i]),
-			.mxfp_b(mxfp6_b[i]),
+			.mxfp_a(i_mxfp6_a[i]),
+			.mxfp_b(i_mxfp6_b[i]),
 
 			.mxfp_mult_fixed(mxfp6_mult_result[i]),
 
@@ -105,12 +108,12 @@ generate
 			.MAX_MAN_BITS(1),
 			.MXFP_WIDTH(4)
 		) u_mxfp_mul_shift_mxfp8 (
-			.sign_shift(sign_shift),
-			.exp_bits(exp_bits),
-			.man_bits(man_bits),
+			.sign_shift(i_sign_shift),
+			.exp_bits(i_exp_bits),
+			.man_bits(i_man_bits),
 
-			.mxfp_a(mxfp4_a[i]),
-			.mxfp_b(mxfp4_b[i]),
+			.mxfp_a(i_mxfp4_a[i]),
+			.mxfp_b(i_mxfp4_b[i]),
 
 			.mxfp_mult_fixed(mxfp4_mult_result[i]),
 
@@ -130,7 +133,7 @@ naive_reduction #(
 	.FP6_INPUT_WIDTH(MXFP6_PRODUCT_WIDTH),
 	.FP4_INPUT_WIDTH(MXFP4_PRODUCT_WIDTH)
 ) u_naive_reduction (
-	.mxfp_mode(mxfp_mode),
+	.mxfp_mode(i_mxfp_mode),
 
 	.i_fp8_ops(mxfp8_mult_result),
 	.i_fp6_ops(mxfp6_mult_result),
@@ -140,47 +143,11 @@ naive_reduction #(
 );
 
 // Convert to FP32
-// TODO: this should all become one module once configurable fix2float is
-// available, code below is temporary
-// The widths are off since we're using circuits intended for smaller formats,
-// and intended for K=32
-
-logic [33:0] flopoco_fp32 [5];
-
-MXFP_E2M1_to_FP32 
-ufix_to_fp32_e2m1 (
-	.I(fixed_result[14:0]),
-	.O(flopoco_fp32[0])
+config_fix2float 
+u_fix2float (
+	.i_point_position(i_point_position),
+	.i_fixed(fixed_result[68:0]),
+	.o_fp(o_fp32_result)
 );
-
-MXFP_E2M3_to_FP32 
-ufix_to_fp32_e2m3 (
-	.I(fixed_result[18:0]),
-	.O(flopoco_fp32[1])
-);
-
-MXFP_E3M2_to_FP32 
-ufix_to_fp32_e3m2 (
-	.I(fixed_result[23:0]),
-	.O(flopoco_fp32[2])
-);
-
-MXFP_E4M3_to_FP32 
-ufix_to_fp32_e4m3 (
-	.I(fixed_result[42:0]),
-	.O(flopoco_fp32[3])
-);
-
-MXFP_E5M2_to_FP32 
-ufix_to_fp32_e5m2 (
-	.I(fixed_result[72:0]),
-	.O(flopoco_fp32[4])
-);
-
-assign o_fp32_result = mxfp_mode == 3'b000 ? flopoco_fp32[0][31:0]
-					   : mxfp_mode == 3'b001 ? flopoco_fp32[1][31:0]
-					   : mxfp_mode == 3'b010 ? flopoco_fp32[2][31:0]
-					   : mxfp_mode == 3'b011 ? flopoco_fp32[3][31:0]
-					   : flopoco_fp32[4][31:0];
 
 endmodule

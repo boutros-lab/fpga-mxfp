@@ -25,6 +25,8 @@ localparam mxfp_mode = exp_width == 2 ? (man_width == 1 ? 0 : 1)
 				      : exp_width == 4 ? 3
 				      : 4;
 
+localparam point_position = ((1 << (exp_width - 1)) - 2 + man_width) * 2;
+
 assign o_valid = i_valid;
 
 logic [7:0] mxfp8_a [8];
@@ -77,17 +79,18 @@ endgenerate
 // Only works with MXFP8 K=8, MXFP6 K=12, MXFP4 K=16
 naive_mxfp_dot 
 u_naive_mxfp_dot (
-	.sign_shift(exp_width + man_width),
-	.exp_bits(exp_width),
-	.man_bits(man_width),
-	.mxfp_mode(mxfp_mode), // 000: E2M1, 001: E2M3, 010: E3M2, 011: E4M3, 100: E5M2
+	.i_sign_shift(exp_width + man_width),
+	.i_exp_bits(exp_width),
+	.i_man_bits(man_width),
+	.i_mxfp_mode(mxfp_mode), // 000: E2M1, 001: E2M3, 010: E3M2, 011: E4M3, 100: E5M2
+	.i_point_position(point_position),
 
-	.mxfp8_a(mxfp8_a),
-	.mxfp8_b(mxfp8_b),
-	.mxfp6_a(mxfp6_a),
-	.mxfp6_b(mxfp6_b),
-	.mxfp4_a(mxfp4_a),
-	.mxfp4_b(mxfp4_b),
+	.i_mxfp8_a(mxfp8_a),
+	.i_mxfp8_b(mxfp8_b),
+	.i_mxfp6_a(mxfp6_a),
+	.i_mxfp6_b(mxfp6_b),
+	.i_mxfp4_a(mxfp4_a),
+	.i_mxfp4_b(mxfp4_b),
 
 	.o_fp32_result(o_result)
 );
