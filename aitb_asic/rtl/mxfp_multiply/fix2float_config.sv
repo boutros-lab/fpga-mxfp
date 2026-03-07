@@ -12,12 +12,9 @@
 `define OUTPUT_WIDTH `EXP_BITS + `MAN_BITS + 1
 `define FP32_BIAS 8'd127
 
-module config_fix2float #(
-	// Setting max possible value, but point position can be smaller
-	parameter POINT_POSITION_WIDTH = $clog2(`INPUT_WIDTH)
-)(
+module config_fix2float (
 	// Configuration
-	input logic [POINT_POSITION_WIDTH-1:0] i_point_position, // TODO Change this to a combined exponent correction
+	input logic [`EXP_BITS-1:0] i_exponent_correction,
 
 	// Data
 	input logic signed [`INPUT_WIDTH-1:0] i_fixed,
@@ -44,7 +41,7 @@ u_normalizer (
 );
 
 assign exponent = unsigned_fixed == '0 ? 8'b0 
-				       : (`INPUT_WIDTH - 1) - leading_zero_count + `FP32_BIAS - i_point_position - 1'b1; // TODO Collect this into a single term, exponent_correction
+				       : i_exponent_correction - leading_zero_count;
 
 // Form final FP32
 assign o_fp = {sign, exponent, significand[22:0]};

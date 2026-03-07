@@ -12,11 +12,16 @@ module naive_mxfp_dot #(
 	parameter FP4_OPS = FP4_DOT_LENGTH - FP6_DOT_LENGTH
 )(
 	// Configuration
+	//   MXFP Multiply
 	input logic [2:0] i_sign_shift,
 	input logic [3:0] i_exp_bits,
 	input logic [1:0] i_man_bits,
+	input logic [4:0] i_exp_mask,
+	input logic [2:0] i_man_mask,
+	//   Reduction
 	input logic [2:0] i_mxfp_mode, // 000: E2M1, 001: E2M3, 010: E3M2, 011: E4M3, 100: E5M2
-	input logic [$clog2(69)-1:0] i_point_position, //TODO
+	//   Fix2Float
+	input logic [7:0] i_exponent_correction,
 
 	// Data
 	input logic [7:0] i_mxfp8_a [FP8_OPS],
@@ -69,6 +74,8 @@ generate
 			.sign_shift(i_sign_shift),
 			.exp_bits(i_exp_bits),
 			.man_bits(i_man_bits),
+			.exp_mask(i_exp_mask),
+			.man_mask(i_man_mask),
 
 			.mxfp_a(i_mxfp8_a[i]),
 			.mxfp_b(i_mxfp8_b[i]),
@@ -90,6 +97,8 @@ generate
 			.sign_shift(i_sign_shift),
 			.exp_bits(i_exp_bits),
 			.man_bits(i_man_bits),
+			.exp_mask(i_exp_mask),
+			.man_mask(i_man_mask),
 
 			.mxfp_a(i_mxfp6_a[i]),
 			.mxfp_b(i_mxfp6_b[i]),
@@ -111,6 +120,8 @@ generate
 			.sign_shift(i_sign_shift),
 			.exp_bits(i_exp_bits),
 			.man_bits(i_man_bits),
+			.exp_mask(i_exp_mask),
+			.man_mask(i_man_mask),
 
 			.mxfp_a(i_mxfp4_a[i]),
 			.mxfp_b(i_mxfp4_b[i]),
@@ -145,7 +156,7 @@ naive_reduction #(
 // Convert to FP32
 config_fix2float 
 u_fix2float (
-	.i_point_position(i_point_position),
+	.i_exponent_correction(i_exponent_correction),
 	.i_fixed(fixed_result[68:0]),
 	.o_fp(o_fp32_result)
 );

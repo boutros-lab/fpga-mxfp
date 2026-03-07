@@ -7,6 +7,7 @@
 * Supoorts mantissas up to 3 bits
 */
 
+// TODO, add parameter for multiplier size, add option for fixed point
 module mxfp_multiply #(
 	parameter MAX_EXP_BITS = 5,
 	parameter MAX_MAN_BITS = 3,
@@ -21,7 +22,8 @@ module mxfp_multiply #(
 	input logic [SIGN_SHIFT_WIDTH-1:0] sign_shift,
 	input logic [EXP_BITS_WIDTH-1:0]   exp_bits,
 	input logic [MAN_BITS_WIDTH-1:0]   man_bits,
-	//logic [2:0] mxfp_mode; // 000: E2M1, 001: E2M3, 010: E3M2, 011: E4M3, 100: E5M2
+	input logic [MAX_EXP_BITS-1:0]     exp_mask,
+	input logic [MAX_MAN_BITS-1:0]     man_mask,
 
 	// Input MXFP numbers
 	input logic [MXFP_WIDTH-1:0] mxfp_a,
@@ -43,8 +45,6 @@ logic [MAX_MAN_BITS:0]   man_a, man_b;
 
 logic [PROD_WIDTH-1:0] man_prd;
 
-logic [MAX_EXP_BITS-1:0] exp_mask;
-logic [MAX_MAN_BITS-1:0] man_mask;
 logic a_norm, b_norm;
 
 // Inf/NaN handling
@@ -73,16 +73,12 @@ generate
 			sign_a = (mxfp_a >> sign_shift) & 1'b1;
 			sign_b = (mxfp_b >> sign_shift) & 1'b1;
 		
-			exp_mask = (1 << exp_bits) - 1'b1; // TODO: Get masks as inputs
-		
 			exp_a = (mxfp_a >> man_bits) & exp_mask;
 			exp_b = (mxfp_b >> man_bits) & exp_mask;
 
 			a_norm = |exp_a;
 			b_norm = |exp_b;
 		
-			man_mask = (1 << man_bits) - 1'b1;
-
 			man_a = (a_norm << man_bits) | (mxfp_a & man_mask);
 			man_b = (b_norm << man_bits) | (mxfp_b & man_mask);
 		end

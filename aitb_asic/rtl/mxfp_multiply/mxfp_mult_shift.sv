@@ -22,7 +22,8 @@ module mxfp_mult_shift #(
 	input logic [SIGN_SHIFT_WIDTH-1:0] sign_shift,
 	input logic [EXP_BITS_WIDTH-1:0]   exp_bits,
 	input logic [MAN_BITS_WIDTH-1:0]   man_bits,
-	//logic [2:0] mxfp_mode; // 000: E2M1, 001: E2M3, 010: E3M2, 011: E4M3, 100: E5M2
+	input logic [MAX_EXP_BITS-1:0]     exp_mask,
+	input logic [MAX_MAN_BITS-1:0]     man_mask,
 
 	// Input MXFP numbers
 	input logic [MXFP_WIDTH-1:0] mxfp_a,
@@ -48,6 +49,8 @@ mxfp_multiply #(
 	.sign_shift(sign_shift),
 	.exp_bits(exp_bits),
 	.man_bits(man_bits),
+	.exp_mask(exp_mask),
+	.man_mask(man_mask),
 	.mxfp_a(mxfp_a),
 	.mxfp_b(mxfp_b),
 	.exp_sum(exp_sum),

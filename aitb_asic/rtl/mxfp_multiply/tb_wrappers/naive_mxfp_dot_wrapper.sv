@@ -3,6 +3,9 @@
 * Only supports: MXFP8 K=8, MXFP6 K=12, MXFP4 K=16
 */
 
+`define UNSIGNED_WIDTH 68
+`define FP32_BIAS 8'd127
+
 module naive_mxfp_dot_wrapper #(
 	parameter exp_width = 5,
 	parameter man_width = 2,
@@ -20,12 +23,16 @@ module naive_mxfp_dot_wrapper #(
 	input  logic [7:0] i_shared_exp_b,
         output logic [31:0] o_result
 );
+localparam exp_mask = (1 << exp_width) - 1;
+localparam man_mask = (1 << man_width) - 1;
 localparam mxfp_mode = exp_width == 2 ? (man_width == 1 ? 0 : 1) 
 				      : exp_width == 3 ? 2
 				      : exp_width == 4 ? 3
 				      : 4;
 
 localparam point_position = ((1 << (exp_width - 1)) - 2 + man_width) * 2;
+
+localparam exponent_correction = `UNSIGNED_WIDTH + `FP32_BIAS - point_position - 1;
 
 assign o_valid = i_valid;
 
@@ -82,8 +89,10 @@ u_naive_mxfp_dot (
 	.i_sign_shift(exp_width + man_width),
 	.i_exp_bits(exp_width),
 	.i_man_bits(man_width),
+	.i_exp_mask(exp_mask),
+	.i_man_mask(man_mask),
 	.i_mxfp_mode(mxfp_mode), // 000: E2M1, 001: E2M3, 010: E3M2, 011: E4M3, 100: E5M2
-	.i_point_position(point_position),
+	.i_exponent_correction(exponent_correction),
 
 	.i_mxfp8_a(mxfp8_a),
 	.i_mxfp8_b(mxfp8_b),
