@@ -21,7 +21,7 @@ module naive_mxfp_dot #(
 	input logic [4:0] i_exp_mask,
 	input logic [2:0] i_man_mask,
 	//   Reduction
-	input logic [2:0] i_mxfp_mode, // 000: E2M1, 001: E2M3, 010: E3M2, 011: E4M3, 100: E5M2
+	input logic [2:0] i_mxfp_mode, // 000: E2M1, 001: E2M3, 010: E3M2, 011: E4M3, 100: E5M2, default: Fixed
 	//   Fix2Float
 	input logic [7:0] i_exponent_correction,
 
@@ -54,6 +54,11 @@ localparam MXFP4_PRODUCT_WIDTH = 2 * ((1 << MXFP4_MAX_EXP) + MXFP4_MAX_MAN);
 
 localparam FIXED_RESULT_WIDTH = MXFP8_PRODUCT_WIDTH + $clog2(FP8_OPS);
 
+// Used fixed point multiplier result
+logic fixed_mult;
+
+assign fixed_mult = i_mxfp_mode > 3'b100;
+
 // Output fixed point results of mxfp_mult modules
 logic signed [MXFP8_PRODUCT_WIDTH-1:0] mxfp8_mult_result [FP8_OPS];
 logic signed [MXFP6_PRODUCT_WIDTH-1:0] mxfp6_mult_result [FP6_OPS];
@@ -75,15 +80,17 @@ generate
 			.MAX_EXP_BITS(5), 
 			.MAX_MAN_BITS(3),
 			.MXFP_WIDTH(8),
-			.FIXED_MULT(0)
+			.FIXED_MULT(1)
 		) u_mxfp_mult_shift_mxfp8 (
-			.fixed(1'b0),
+			.fixed(fixed_mult),
 			.sign_shift(i_sign_shift),
 			.exp_bits(i_exp_bits),
 			.man_bits(i_man_bits),
 			.exp_mask(i_exp_mask),
 			.man_mask(i_man_mask),
 
+			.fixed_a(i_fixed_a[i]),
+			.fixed_b(i_fixed_b[i]),
 			.mxfp_a(i_mxfp8_a[i]),
 			.mxfp_b(i_mxfp8_b[i]),
 
@@ -96,27 +103,62 @@ generate
 
 	// MXFP6
 	for (i = 0; i < FP6_OPS; i++) begin : inst_mxfp6_mult
-		mxfp_mult_shift #(
-			.MAX_EXP_BITS(3), 
-			.MAX_MAN_BITS(3),
-			.MXFP_WIDTH(6),
-			.FIXED_MULT(0)
-		) u_mxfp_mult_shift_mxfp8 (
-			.fixed(1'b0),
-			.sign_shift(i_sign_shift),
-			.exp_bits(i_exp_bits),
-			.man_bits(i_man_bits),
-			.exp_mask(i_exp_mask),
-			.man_mask(i_man_mask),
+		// Only use FIXED_MULT up to the number of fixed_point inputs
+		if (i + FP8_OPS < FIXED_OPS) begin
+			mxfp_mult_shift #(
+				.MAX_EXP_BITS(3), 
+				.MAX_MAN_BITS(3),
+				.MXFP_WIDTH(6),
+				.FIXED_MULT(1)
+			) u_mxfp_mult_shift_mxfp6 (
+				.fixed(fixed_mult),
+				.sign_shift(i_sign_shift),
+				.exp_bits(i_exp_bits),
+				.man_bits(i_man_bits),
+				.exp_mask(i_exp_mask),
+				.man_mask(i_man_mask),
 
-			.mxfp_a(i_mxfp6_a[i]),
-			.mxfp_b(i_mxfp6_b[i]),
+				.fixed_a(i_fixed_a[i+FP8_OPS]),
+				.fixed_b(i_fixed_b[i+FP8_OPS]),
+				.mxfp_a(i_mxfp6_a[i]),
+				.mxfp_b(i_mxfp6_b[i]),
 
-			.mxfp_mult_fixed(mxfp6_mult_result[i]),
+				.mxfp_mult_fixed(mxfp6_mult_result[i]),
 
-			.inf(),
-			.nan()
-		);
+				.inf(),
+				.nan()
+			);
+		end else begin
+			logic [MXFP6_PRODUCT_WIDTH-1:0] mxfp_mult_fixed;
+
+			mxfp_mult_shift #(
+				.MAX_EXP_BITS(3), 
+				.MAX_MAN_BITS(3),
+				.MXFP_WIDTH(6),
+				.FIXED_MULT(0)
+			) u_mxfp_mult_shift_mxfp6 (
+				.fixed(),
+				.sign_shift(i_sign_shift),
+				.exp_bits(i_exp_bits),
+				.man_bits(i_man_bits),
+				.exp_mask(i_exp_mask),
+				.man_mask(i_man_mask),
+
+				.fixed_a(),
+				.fixed_b(),
+				.mxfp_a(i_mxfp6_a[i]),
+				.mxfp_b(i_mxfp6_b[i]),
+
+				.mxfp_mult_fixed(mxfp_mult_fixed),
+
+				.inf(),
+				.nan()
+			);
+
+			// Force to 0 if using fixed point modes
+			// Fixed point modes use the same adders as FP6
+			assign mxfp6_mult_result[i] = fixed_mult == 1'b1 ? 'b0 : mxfp_mult_fixed;
+		end
 	end
 
 	// MXFP4
@@ -126,14 +168,16 @@ generate
 			.MAX_MAN_BITS(1),
 			.MXFP_WIDTH(4),
 			.FIXED_MULT(0)
-		) u_mxfp_mult_shift_mxfp8 (
-			.fixed(1'b0),
-			.sign_shift(i_sign_shift),
-			.exp_bits(i_exp_bits),
-			.man_bits(i_man_bits),
-			.exp_mask(i_exp_mask),
-			.man_mask(i_man_mask),
+		) u_mxfp_mult_shift_mxfp4 (
+			.fixed(),
+			.sign_shift(),
+			.exp_bits(),
+			.man_bits(),
+			.exp_mask(),
+			.man_mask(),
 
+			.fixed_a(),
+			.fixed_b(),
 			.mxfp_a(i_mxfp4_a[i]),
 			.mxfp_b(i_mxfp4_b[i]),
 

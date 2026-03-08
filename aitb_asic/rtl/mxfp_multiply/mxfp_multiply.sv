@@ -30,7 +30,7 @@ module mxfp_multiply #(
 	input logic [MAX_EXP_BITS-1:0]     exp_mask,
 	input logic [MAX_MAN_BITS-1:0]     man_mask,
 
-	// Input FXP numbers
+	// Input fixed point numbers
 	input logic signed [MULT_WIDTH-1:0] fixed_a,
 	input logic signed [MULT_WIDTH-1:0] fixed_b,
 

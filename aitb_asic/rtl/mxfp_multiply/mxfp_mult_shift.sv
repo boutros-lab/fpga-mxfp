@@ -31,6 +31,10 @@ module mxfp_mult_shift #(
 	input logic [MAX_EXP_BITS-1:0]     exp_mask,
 	input logic [MAX_MAN_BITS-1:0]     man_mask,
 
+	// Input fixed point numbers
+	input logic signed [MULT_WIDTH-1:0] fixed_a,
+	input logic signed [MULT_WIDTH-1:0] fixed_b,
+
 	// Input MXFP numbers
 	input logic [MXFP_WIDTH-1:0] mxfp_a,
 	input logic [MXFP_WIDTH-1:0] mxfp_b,
@@ -44,8 +48,9 @@ module mxfp_mult_shift #(
 );
 
 // MXFP Multilpy Outputs
-logic        [MAX_EXP_BITS:0] exp_sum;
-logic signed [PROD_WIDTH:0]   man_prd_signed;
+logic        [MAX_EXP_BITS:0]     exp_sum;
+logic signed [PROD_WIDTH:0]       man_prd_signed;
+logic signed [(MULT_WIDTH*2)-1:0] fixed_prd_signed;
 
 mxfp_multiply #(
 	.MAX_EXP_BITS(MAX_EXP_BITS),
@@ -60,14 +65,24 @@ mxfp_multiply #(
 	.man_bits(man_bits),
 	.exp_mask(exp_mask),
 	.man_mask(man_mask),
+	.fixed_a(fixed_a),
+	.fixed_b(fixed_b),
 	.mxfp_a(mxfp_a),
 	.mxfp_b(mxfp_b),
 	.exp_sum(exp_sum),
 	.man_prd_signed(man_prd_signed),
+	.fixed_prd_signed(fixed_prd_signed),
 	.inf(inf),
 	.nan(nan)
 );
 
-assign mxfp_mult_fixed = man_prd_signed << $unsigned(exp_sum);
+generate
+	if (FIXED_MULT == 1) begin
+		assign mxfp_mult_fixed = fixed ? $signed(fixed_prd_signed)
+					       : man_prd_signed << $unsigned(exp_sum);
+	end else begin
+		assign mxfp_mult_fixed = man_prd_signed << $unsigned(exp_sum);
+	end
+endgenerate
 
 endmodule

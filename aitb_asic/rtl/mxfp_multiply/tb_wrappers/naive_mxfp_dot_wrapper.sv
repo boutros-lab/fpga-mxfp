@@ -23,18 +23,23 @@ module naive_mxfp_dot_wrapper #(
 	input  logic [7:0] i_shared_exp_b,
         output logic [31:0] o_result
 );
-localparam exp_mask = (1 << exp_width) - 1;
-localparam man_mask = (1 << man_width) - 1;
-localparam mxfp_mode = exp_width == 2 ? (man_width == 1 ? 0 : 1) 
-				      : exp_width == 3 ? 2
-				      : exp_width == 4 ? 3
-				      : 4;
+localparam [4:0] exp_mask = (1 << exp_width) - 1;
+localparam [2:0] man_mask = (1 << man_width) - 1;
+localparam [2:0] mxfp_mode = exp_width == 2 ? (man_width == 1 ? 0 : 1) 
+					    : exp_width == 3 ? 2
+					    : exp_width == 4 ? 3
+					    : exp_width == 0 ? 5 // FIXED
+					    : 4;
 
-localparam point_position = ((1 << (exp_width - 1)) - 2 + man_width) * 2;
+localparam point_position = exp_width == 0 ? 0 // Fixed point
+					   : ((1 << (exp_width - 1)) - 2 + man_width) * 2;
 
-localparam exponent_correction = `UNSIGNED_WIDTH + `FP32_BIAS - point_position - 1;
+localparam [7:0] exponent_correction = `UNSIGNED_WIDTH + `FP32_BIAS - point_position - 1;
 
 assign o_valid = i_valid;
+
+logic signed [7:0] fixed_a [10];
+logic signed [7:0] fixed_b [10];
 
 logic [7:0] mxfp8_a [8];
 logic [7:0] mxfp8_b [8];
@@ -47,6 +52,18 @@ genvar i;
 
 // Prep TB inputs
 generate
+	for (i = 0; i < 10; i++) begin
+		if (bit_width == 8 && exp_width == 0) begin
+			assign fixed_a[i] = i_vec_a[i][7] ? -$signed({1'b0, i_vec_a[i][6:0]})
+							  : $signed({1'b0, i_vec_a[i][6:0]});
+			assign fixed_b[i] = i_vec_b[i][7] ? -$signed({1'b0, i_vec_b[i][6:0]}) 
+							  : $signed({1'b0, i_vec_b[i][6:0]});
+		end else begin
+			assign fixed_a[i] = 'b0;
+			assign fixed_b[i] = 'b0;
+		end
+	end
+
 	for (i = 0; i < 8; i++) begin
 		if (bit_width < 8) begin
 			assign mxfp8_a[i] = {{(bit_width-8), 1'b0}, i_vec_a[i]};
@@ -83,7 +100,7 @@ generate
 	end
 endgenerate
 
-// Only works with MXFP8 K=8, MXFP6 K=12, MXFP4 K=16
+// Only works with MXFP8 K=8, MXFP6 K=12, MXFP4 K=16, INT8 K=10
 naive_mxfp_dot 
 u_naive_mxfp_dot (
 	.i_sign_shift(exp_width + man_width),
@@ -93,6 +110,9 @@ u_naive_mxfp_dot (
 	.i_man_mask(man_mask),
 	.i_mxfp_mode(mxfp_mode), // 000: E2M1, 001: E2M3, 010: E3M2, 011: E4M3, 100: E5M2
 	.i_exponent_correction(exponent_correction),
+
+	.i_fixed_a(fixed_a),
+	.i_fixed_b(fixed_b),
 
 	.i_mxfp8_a(mxfp8_a),
 	.i_mxfp8_b(mxfp8_b),
