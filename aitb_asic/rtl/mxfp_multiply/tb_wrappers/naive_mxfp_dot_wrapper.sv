@@ -49,22 +49,22 @@ genvar i;
 generate
 	for (i = 0; i < 8; i++) begin
 		if (bit_width < 8) begin
-			assign mxfp8_a[i] = i_vec_a[i];
-			assign mxfp8_b[i] = i_vec_b[i];
-		end else begin
 			assign mxfp8_a[i] = {{(bit_width-8), 1'b0}, i_vec_a[i]};
 			assign mxfp8_b[i] = {{(bit_width-8), 1'b0}, i_vec_b[i]};
+		end else begin
+			assign mxfp8_a[i] = i_vec_a[i];
+			assign mxfp8_b[i] = i_vec_b[i];
 		end
 	end
 
 	for (i = 0; i < 4; i++) begin
 		if (k >= 12) begin
 			if (bit_width < 6) begin
-				assign mxfp6_a[i] = i_vec_a[i+8];
-				assign mxfp6_b[i] = i_vec_b[i+8];
-			end else begin
 				assign mxfp6_a[i] = {{(bit_width-6), 1'b0}, i_vec_a[i+8]};
 				assign mxfp6_b[i] = {{(bit_width-6), 1'b0}, i_vec_b[i+8]};
+			end else begin
+				assign mxfp6_a[i] = i_vec_a[i+8];
+				assign mxfp6_b[i] = i_vec_b[i+8];
 			end
 		end else begin
 			assign mxfp6_a[i] = 6'b0;

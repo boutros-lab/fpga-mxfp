@@ -3,13 +3,15 @@
 */
 
 module naive_mxfp_dot #(
-	parameter FP8_DOT_LENGTH =  8,
-	parameter FP6_DOT_LENGTH = 12,
-	parameter FP4_DOT_LENGTH = 16,
+	parameter FIXED_DOT_LENGTH = 10,
+	parameter FP8_DOT_LENGTH   =  8,
+	parameter FP6_DOT_LENGTH   = 12,
+	parameter FP4_DOT_LENGTH   = 16,
 
-	parameter FP8_OPS = FP8_DOT_LENGTH,
-	parameter FP6_OPS = FP6_DOT_LENGTH - FP8_DOT_LENGTH,
-	parameter FP4_OPS = FP4_DOT_LENGTH - FP6_DOT_LENGTH
+	parameter FIXED_OPS = FIXED_DOT_LENGTH,
+	parameter FP8_OPS   = FP8_DOT_LENGTH,
+	parameter FP6_OPS   = FP6_DOT_LENGTH - FP8_DOT_LENGTH,
+	parameter FP4_OPS   = FP4_DOT_LENGTH - FP6_DOT_LENGTH
 )(
 	// Configuration
 	//   MXFP Multiply
@@ -24,6 +26,9 @@ module naive_mxfp_dot #(
 	input logic [7:0] i_exponent_correction,
 
 	// Data
+	input logic signed [7:0] i_fixed_a [FIXED_OPS],
+	input logic signed [7:0] i_fixed_b [FIXED_OPS],
+
 	input logic [7:0] i_mxfp8_a [FP8_OPS],
 	input logic [7:0] i_mxfp8_b [FP8_OPS],
 	input logic [5:0] i_mxfp6_a [FP6_OPS],
@@ -69,8 +74,10 @@ generate
 		mxfp_mult_shift #(
 			.MAX_EXP_BITS(5), 
 			.MAX_MAN_BITS(3),
-			.MXFP_WIDTH(8)
-		) u_mxfp_mul_shift_mxfp8 (
+			.MXFP_WIDTH(8),
+			.FIXED_MULT(0)
+		) u_mxfp_mult_shift_mxfp8 (
+			.fixed(1'b0),
 			.sign_shift(i_sign_shift),
 			.exp_bits(i_exp_bits),
 			.man_bits(i_man_bits),
@@ -92,8 +99,10 @@ generate
 		mxfp_mult_shift #(
 			.MAX_EXP_BITS(3), 
 			.MAX_MAN_BITS(3),
-			.MXFP_WIDTH(6)
-		) u_mxfp_mul_shift_mxfp8 (
+			.MXFP_WIDTH(6),
+			.FIXED_MULT(0)
+		) u_mxfp_mult_shift_mxfp8 (
+			.fixed(1'b0),
 			.sign_shift(i_sign_shift),
 			.exp_bits(i_exp_bits),
 			.man_bits(i_man_bits),
@@ -115,8 +124,10 @@ generate
 		mxfp_mult_shift #(
 			.MAX_EXP_BITS(2), 
 			.MAX_MAN_BITS(1),
-			.MXFP_WIDTH(4)
-		) u_mxfp_mul_shift_mxfp8 (
+			.MXFP_WIDTH(4),
+			.FIXED_MULT(0)
+		) u_mxfp_mult_shift_mxfp8 (
+			.fixed(1'b0),
 			.sign_shift(i_sign_shift),
 			.exp_bits(i_exp_bits),
 			.man_bits(i_man_bits),

@@ -326,7 +326,7 @@ def self_check(vector_a_list, vector_b_list, fp32_result_list, exp_bits, man_bit
             fp32_a    = mxfp_to_fp32(a, exp_bits, man_bits, bias)
             fp32_b    = mxfp_to_fp32(b, exp_bits, man_bits, bias)
             fp32_python += fp32_a * fp32_b
-    
+
         if (fp32_python != fp32_orig):
             error = abs((fp32_orig - fp32_python[0][0]) / fp32_orig) * 100
     
@@ -403,12 +403,22 @@ def main():
     sum_bits   = mult_bits + math.ceil(math.log2(k)) # sum of products
 
     # Position of the point in fixed point representations
-    emin = 2**(exp_bits-1) - 2
-    point_position = emin + man_bits
+    if exp_bits != 0:
+        emin = 2**(exp_bits-1) - 2
+        point_position = emin + man_bits
+    else:
+        # MXINT8 has implicit scale of 2^-6
+        emin = 0
+        point_position = 0 #6 TODO
+
     mult_point_position = point_position * 2
 
     # Get exponent bias
-    bias = 2**(exp_bits-1) - 1
+    if exp_bits != 0:
+        bias = 2**(exp_bits-1) - 1
+    else:
+        # MXINT8
+        bias = 0
 
     print("MXFP Format Details:")
     print(f"\tS: 1b,  E: {exp_bits}b,  M: {man_bits}b")

@@ -13,11 +13,17 @@ module mxfp_mult_shift #(
 	parameter MXFP_WIDTH   = 8,
 	parameter OUTPUT_WIDTH = 2 * ((1 << MAX_EXP_BITS) + MAX_MAN_BITS),
 
+	parameter FIXED_MULT   = 0,
+	parameter MULT_WIDTH   = FIXED_MULT ? 8 : MAX_MAN_BITS + 1,
+
 	parameter SIGN_SHIFT_WIDTH = $clog2(MXFP_WIDTH - 1),
 	parameter EXP_BITS_WIDTH   = $clog2(MAX_EXP_BITS),
 	parameter MAN_BITS_WIDTH   = $clog2(MAX_MAN_BITS),
 	parameter PROD_WIDTH       = 2*(MAX_MAN_BITS + 1)
 )(
+	// Fixed or MXFP input
+	input logic fixed,
+
 	// Configuration for MXFP format
 	input logic [SIGN_SHIFT_WIDTH-1:0] sign_shift,
 	input logic [EXP_BITS_WIDTH-1:0]   exp_bits,
@@ -44,8 +50,11 @@ logic signed [PROD_WIDTH:0]   man_prd_signed;
 mxfp_multiply #(
 	.MAX_EXP_BITS(MAX_EXP_BITS),
 	.MAX_MAN_BITS(MAX_MAN_BITS),
-	.MXFP_WIDTH(MXFP_WIDTH)
+	.MXFP_WIDTH(MXFP_WIDTH),
+	.FIXED_MULT(FIXED_MULT),
+	.MULT_WIDTH(MULT_WIDTH)
 ) u_mxfp_multiply (
+	.fixed(fixed),
 	.sign_shift(sign_shift),
 	.exp_bits(exp_bits),
 	.man_bits(man_bits),

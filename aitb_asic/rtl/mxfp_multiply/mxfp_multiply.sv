@@ -7,17 +7,22 @@
 * Supoorts mantissas up to 3 bits
 */
 
-// TODO, add parameter for multiplier size, add option for fixed point
 module mxfp_multiply #(
 	parameter MAX_EXP_BITS = 5,
 	parameter MAX_MAN_BITS = 3,
 	parameter MXFP_WIDTH   = 8,
+	
+	parameter FIXED_MULT   = 0,
+	parameter MULT_WIDTH   = FIXED_MULT ? 8 : MAX_MAN_BITS + 1,
 
 	parameter SIGN_SHIFT_WIDTH = $clog2(MXFP_WIDTH - 1),
 	parameter EXP_BITS_WIDTH   = $clog2(MAX_EXP_BITS),
 	parameter MAN_BITS_WIDTH   = $clog2(MAX_MAN_BITS),
 	parameter PROD_WIDTH       = 2*(MAX_MAN_BITS + 1)
 )(
+	// Fixed or MXFP input
+	input logic fixed,
+
 	// Configuration for MXFP format
 	input logic [SIGN_SHIFT_WIDTH-1:0] sign_shift,
 	input logic [EXP_BITS_WIDTH-1:0]   exp_bits,
@@ -25,13 +30,18 @@ module mxfp_multiply #(
 	input logic [MAX_EXP_BITS-1:0]     exp_mask,
 	input logic [MAX_MAN_BITS-1:0]     man_mask,
 
+	// Input FXP numbers
+	input logic signed [MULT_WIDTH-1:0] fixed_a,
+	input logic signed [MULT_WIDTH-1:0] fixed_b,
+
 	// Input MXFP numbers
 	input logic [MXFP_WIDTH-1:0] mxfp_a,
 	input logic [MXFP_WIDTH-1:0] mxfp_b,
 
 	// Result of multiply
-	output logic        [MAX_EXP_BITS:0] exp_sum,
-	output logic signed [PROD_WIDTH:0]   man_prd_signed,
+	output logic        [MAX_EXP_BITS:0]     exp_sum,
+	output logic signed [PROD_WIDTH:0]       man_prd_signed,
+	output logic signed [(MULT_WIDTH*2)-1:0] fixed_prd_signed,
 
 	// Inf/Nan
 	output logic inf,
@@ -85,10 +95,32 @@ generate
 	end
 endgenerate
 
+generate
+	if (FIXED_MULT == 1) begin : fixed_mult
+		// Instantiate multiplier
+		logic signed [(MULT_WIDTH*2)-1:0] mult_prd;
+		logic signed [MULT_WIDTH-1:0]     op_a, op_b;
+
+		assign mult_prd = op_a * op_b;
+		
+		assign op_a = fixed ? fixed_a // Multiply the signed fixed point numbers
+				    : man_a;  // Multiply the unsigned mantissas
+		assign op_b = fixed ? fixed_b
+				    : man_b;
+
+		assign man_prd = mult_prd[PROD_WIDTH-1:0];
+
+		assign fixed_prd_signed = mult_prd;
+	end else begin : mxfp_mult
+		// Multiply the unsigned mantissas
+		assign man_prd = man_a * man_b;
+
+		assign fixed_prd_signed = 'b0;
+	end
+endgenerate
+
 // Add exponents, take away 1 if it's a normal number
 assign exp_sum = exp_a + exp_b - a_norm - b_norm;
-// Multiply the unsigned mantissas
-assign man_prd = man_a * man_b;
 
 // Apply sign to manissa product
 assign man_prd_signed = (sign_a ^ sign_b) ? -man_prd : man_prd;
