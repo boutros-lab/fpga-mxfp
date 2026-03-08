@@ -12,7 +12,7 @@
 `define OUTPUT_WIDTH `EXP_BITS + `MAN_BITS + 1
 `define FP32_BIAS 8'd127
 
-module config_fix2float (
+module config_fix2fp32 (
 	// Configuration
 	input logic [`EXP_BITS-1:0] i_exponent_correction,
 

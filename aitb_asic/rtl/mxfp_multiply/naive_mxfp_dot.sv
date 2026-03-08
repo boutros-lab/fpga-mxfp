@@ -209,8 +209,8 @@ naive_reduction #(
 );
 
 // Convert to FP32
-config_fix2float 
-u_fix2float (
+config_fix2fp32 
+u_fix2fp32 (
 	.i_exponent_correction(i_exponent_correction),
 	.i_fixed(fixed_result[68:0]),
 	.o_fp(o_fp32_result)
