@@ -27,11 +27,96 @@ module sys_array_aitb #(
     // Activation interface (from top of the array)
     input  logic valid_top_i [0:N-1],
     input logic [DATA_MX_W-1:0] x_top_i [0:N-1][0:DOT_LEN-1],
-    input logic [SHARED_EXP_W-1:0] x_shared_exp_left_i [0:N-1],
+    input logic [SHARED_EXP_W-1:0] x_shared_exp_top_i [0:N-1],
     // Outputs (from bottom of the array)
     output logic [DATA_OUT_W-1:0] dot_fp32_o [0:N-1][0:N-1],
     output logic valid_o [0:N-1][0:N-1],
     output [3:0] fp32_flags_o [0:N-1][0:N-1][0:3]
 );
     
+    // Weight pipeline (row, col, k)
+    logic [DATA_MW_W-1:0] w_pipe [0:N-1][0:N-1][0:DOT_LEN-1];
+    logic [SHARED_EXP_W-1:0] w_scale_pipe [0:N-1][0:N-1];
+
+    // Activation pipeline (row, col, k)
+    logic [DATA_MX_W-1] x_pipe [0:N-1][0:N-1][0:DOT_LEN-1];
+    logic [SHARED_EXP_W-1:0] x_scale_pipe [0:N-1][0:N-1];
+    logic valid_pipe [0:N-1][0:N-1];
+
+    // Weight pipeline implementation
+    // - Weights go right every cycle
+    // - Driver must make sure to pulse load_en_all_i, 
+    //   at the appropriate cycle for the weights to load
+    always_ff @( posedge clk or posedge rst ) begin
+        if (rst) begin
+            // In every row, reset every column
+            for (r = 0; r < N; r++) begin
+                for (c = 0; c < N; c++) begin
+                    w_scale_pipe[r][c] <= '0;
+                    // For each element, reset the vector
+                    for (i = 0; i < DOT_LEN; i++) begin
+                        w_pipe[r][c][i] <= '0;
+                    end
+                end
+            end
+        end
+        else begin
+            // Weights move to the right
+            for (r = 0; r < N; r++) begin
+                // Column 0 takes in the inputs
+                w_scale_pipe[r][0] <= weight_shared_exp_left_i[r];
+                for (i = 0; i < DOT_LEN; i++) begin
+                    w_pipe[r][0][i] <= weight_left_i[r][i];
+                end
+
+                for (c = 1; c < N; c++) begin
+                    w_scale_pipe[r][c] <= w_scale_pipe[r][c-1];
+                    for (i = 0; i < DOT_LEN; i++) begin
+                        w_pipe[r][c][i] <= w_pipe[r][c-1][i];
+                    end 
+                end
+            end
+        end
+    end
+
+    // Activation pipeline implementation
+    // - Activations go down every cycle
+    // - Driver must make activations provided when weight loading is done
+    always_ff @( posedge clk or posedge rst ) begin
+        if (rst) begin
+            // In every row, reset every column
+            for (r = 0; r < N; r++) begin
+                for (c = 0; c < N; c++) begin
+                    valid_pipe[r][c] <= 1'b0;
+                    x_scale_pipe[r][c] <= '0;
+                    // For each element, reset the vector
+                    for (i = 0; i < DOT_LEN; i++) begin
+                        x_pipe[r][c][i] <= '0;
+                    end
+                end
+            end
+        end
+        else begin
+            // Activations move down
+            // Treat column by column
+            for (c = 0; c < N; c++) begin
+                // Row 0 takes in the inputs
+                valid_pipe[0][c] <= valid_top_i[c];
+                x_scale_pipe[0][c] <= x_shared_exp_top_i[c];
+                for (i = 0; i < DOT_LEN; i++) begin
+                    x_pipe[0][c][i] <= x_top_i[c][i];
+                end
+
+                for (r = 1; r < N; r++) begin
+                    valid_pipe[r][c] <= valid_pipe[r-1][c];
+                    x_scale_pipe[r][c] <= x_scale_pipe[r-1][c]
+                    for (i = 0; i < DOT_LEN; i++) begin
+                        x_pipe[r][c][i] <= x_pipe[r-1][c][i];
+                    end
+                end
+
+            end
+        end
+    end
+
 endmodule
