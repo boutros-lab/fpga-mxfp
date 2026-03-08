@@ -119,4 +119,34 @@ module sys_array_aitb #(
         end
     end
 
+    // Instantiate PEs
+    genvar gr, gc, gi;
+    generate
+        for (gr = 0; gr < N; gr++) begin : ROW_GEN
+            for (gc = 0; gc < N; gc++) begin : COL_GEN
+                // PE Instance
+                mxfp_dot #(
+                    .M(MAN_W),
+                    .E(EXP_W),
+                    .E_SHARED(SHARED_EXP_W),
+                    .FP_BIAS(FP_BIAS),
+                    .SH_BIAS(SHARED_EXP_BIAS),
+                    .DOT_LEN(DOT_LEN),
+                    .PIPE(PIPE)
+                ) pe_inst (
+                    .clk(clk),
+                    .rst(rst),
+                    .load_en(load_en_all),
+                    .valid_in(),
+                    .mx_data_in(),
+                    .shared_exponent(),
+                    .fp32_dot_out(dot_fp32_o),
+                    .valid_out(valid_o),
+                    .fp32_flags(fp32_flags_o)
+                );
+
+            end
+        end
+    endgenerate
+
 endmodule
