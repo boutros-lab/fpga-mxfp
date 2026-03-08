@@ -34,7 +34,9 @@ localparam [2:0] mxfp_mode = exp_width == 2 ? (man_width == 1 ? 0 : 1)
 localparam point_position = exp_width == 0 ? 0 // Fixed point
 					   : ((1 << (exp_width - 1)) - 2 + man_width) * 2;
 
-localparam [7:0] exponent_correction = `UNSIGNED_WIDTH + `FP32_BIAS - point_position - 1;
+// Formula: UNSIGNED_WIDTH + FP32_BIAS - point_position <- correction without shared exponents
+//          -2 * FP32_BIAS <- correction for shared exponents
+localparam signed [7:0] exponent_correction = `UNSIGNED_WIDTH + `FP32_BIAS - point_position - 1 - (`FP32_BIAS * 2);
 
 assign o_valid = i_valid;
 
@@ -120,6 +122,9 @@ u_naive_mxfp_dot (
 	.i_mxfp6_b(mxfp6_b),
 	.i_mxfp4_a(mxfp4_a),
 	.i_mxfp4_b(mxfp4_b),
+
+	.i_shared_exp_a(i_shared_exp_a),
+	.i_shared_exp_b(i_shared_exp_b),
 
 	.o_fp32_result(o_result)
 );

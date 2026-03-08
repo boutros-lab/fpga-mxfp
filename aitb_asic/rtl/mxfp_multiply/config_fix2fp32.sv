@@ -14,10 +14,12 @@
 
 module config_fix2fp32 (
 	// Configuration
-	input logic [`EXP_BITS-1:0] i_exponent_correction,
+	input logic signed [`EXP_BITS-1:0] i_exponent_correction,
 
 	// Data
 	input logic signed [`INPUT_WIDTH-1:0] i_fixed,
+	input logic [7:0]                     i_shared_exp_a,
+	input logic [7:0]                     i_shared_exp_b,
 	output logic [`OUTPUT_WIDTH-1:0]      o_fp
 );
 logic                 sign;
@@ -27,6 +29,13 @@ logic [`MAN_BITS:0]   significand;
 logic [`INPUT_WIDTH-2:0] unsigned_fixed;
 
 logic [6:0] leading_zero_count;
+
+// Shared exponent handling
+logic overflow, underflow;
+logic [`EXP_BITS+1:0] shared_exponent_sum;
+
+// Add shared exponents and exponent_correction before normalizer
+assign shared_exponent_sum = $signed({1'b0, i_shared_exp_a}) + $signed({1'b0, i_shared_exp_b}) + $signed(i_exponent_correction);
 
 // Get sign bit, take two's complement if necessary
 assign sign = i_fixed[`INPUT_WIDTH-1];
@@ -40,10 +49,18 @@ u_normalizer (
 	.R(significand)
 );
 
-assign exponent = unsigned_fixed == '0 ? 8'b0 
-				       : i_exponent_correction - leading_zero_count;
+assign {underflow, overflow, exponent} = unsigned_fixed == 'b0 ? 'b0 
+				       			       : shared_exponent_sum - leading_zero_count;
 
 // Form final FP32
-assign o_fp = {sign, exponent, significand[22:0]};
+always_comb begin
+	if (underflow || (!overflow && (exponent == 0))) begin // Underflow, Flush subnormals
+		o_fp = {sign, 31'b0}; // 0
+	end else if (overflow) begin // Overflow
+		o_fp = {sign, 31'h7f800000}; // Inf
+	end else begin // Normal
+		o_fp = {sign, exponent, significand[22:0]};
+	end
+end
 
 endmodule

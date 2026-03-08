@@ -23,7 +23,7 @@ module naive_mxfp_dot #(
 	//   Reduction
 	input logic [2:0] i_mxfp_mode, // 000: E2M1, 001: E2M3, 010: E3M2, 011: E4M3, 100: E5M2, default: Fixed
 	//   Fix2Float
-	input logic [7:0] i_exponent_correction,
+	input logic signed [7:0] i_exponent_correction,
 
 	// Data
 	input logic signed [7:0] i_fixed_a [FIXED_OPS],
@@ -35,6 +35,9 @@ module naive_mxfp_dot #(
 	input logic [5:0] i_mxfp6_b [FP6_OPS],
 	input logic [3:0] i_mxfp4_a [FP4_OPS],
 	input logic [3:0] i_mxfp4_b [FP4_OPS],
+
+	input logic [7:0] i_shared_exp_a,
+	input logic [7:0] i_shared_exp_b,
 
 	output logic [31:0] o_fp32_result
 );
@@ -213,6 +216,8 @@ config_fix2fp32
 u_fix2fp32 (
 	.i_exponent_correction(i_exponent_correction),
 	.i_fixed(fixed_result[68:0]),
+	.i_shared_exp_a(i_shared_exp_a),
+	.i_shared_exp_b(i_shared_exp_b),
 	.o_fp(o_fp32_result)
 );
 
