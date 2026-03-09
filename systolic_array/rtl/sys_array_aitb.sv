@@ -48,7 +48,7 @@ module sys_array_aitb #(
     // - Weights go right every cycle
     // - Driver must make sure to pulse load_en_all_i, 
     //   at the appropriate cycle for the weights to load
-    always_ff @( posedge clk or posedge rst ) begin
+    always_ff @( posedge clk) begin
         if (rst) begin
             // In every row, reset every column
             for (r = 0; r < N; r++) begin
@@ -83,7 +83,7 @@ module sys_array_aitb #(
     // Activation pipeline implementation
     // - Activations go down every cycle
     // - Driver must make activations provided when weight loading is done
-    always_ff @( posedge clk or posedge rst ) begin
+    always_ff @( posedge clk) begin
         if (rst) begin
             // In every row, reset every column
             for (r = 0; r < N; r++) begin
