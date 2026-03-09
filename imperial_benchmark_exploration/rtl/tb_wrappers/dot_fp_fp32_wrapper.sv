@@ -7,7 +7,14 @@ module dot_fp_fp32_wrapper #(
 	parameter man_width = 2,
 	parameter k = 8,
 
-	parameter bit_width = 1 + exp_width + man_width
+	parameter bit_width = 1 + exp_width + man_width,
+
+	parameter input_stages    = 1,
+	parameter dot_fp_stages   = 1,
+	parameter pipeline_add    = 1,
+	parameter fp32_stages     = 1,
+	parameter pipeline_fix2fp = 1,
+	parameter output_stages   = 1
 )(
 	input  logic clk,
 	input  logic rst,
@@ -33,7 +40,7 @@ localparam fix2fp_stages = (exp_width == 5 && man_width == 2) ? 14
 							      : (exp_width == 2 && man_width == 1) ?  5 
 							      : 0;
 
-localparam latency = 3 + $clog2(k) + fix2fp_stages;
+localparam latency = input_stages + dot_fp_stages + (($clog2(k) - 1) * pipeline_add) + fp32_stages + (fix2fp_stages * pipeline_fix2fp) + output_stages;
 
 logic [latency-1:0] valid_sr;
 
@@ -50,7 +57,14 @@ assign o_valid = valid_sr[latency-1];
 dot_fp_fp32 #(
 	.exp_width(exp_width),
 	.man_width(man_width),
-	.k(k)
+	.k(k),
+
+	.input_stages(input_stages),
+	.dot_fp_stages(dot_fp_stages),
+	.pipeline_add(pipeline_add),
+	.fp32_stages(fp32_stages),
+	.pipeline_fix2fp(pipeline_fix2fp),
+	.output_stages(output_stages)
 ) u_dot_fp_fp32 (
 	.clk(clk),
 	.rst(rst),

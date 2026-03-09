@@ -83,17 +83,18 @@ set_instance_assignment -name VIRTUAL_PIN ON -to i_shared_exp_b -entity dot_fp_f
 set_instance_assignment -name VIRTUAL_PIN ON -to o_fp32_q -entity dot_fp_fp32
 
 # Set parameters
-set_parameter -name exp_width     $EXP_WIDTH
-set_parameter -name man_width     $MAN_WIDTH
-set_parameter -name k             $K
-set_parameter -name input_stages  $INPUT_STAGES
-set_parameter -name dot_fp_stages $DOT_FP_STAGES
-set_parameter -name pipeline_add  $PIPELINE_ADD
-set_parameter -name fp32_stages   $FP32_STAGES
-set_parameter -name output_stages $OUTPUT_STAGES
+set_parameter -name exp_width       $EXP_WIDTH
+set_parameter -name man_width       $MAN_WIDTH
+set_parameter -name k               $K
+set_parameter -name input_stages    $INPUT_STAGES
+set_parameter -name dot_fp_stages   $DOT_FP_STAGES
+set_parameter -name pipeline_add    $PIPELINE_ADD
+set_parameter -name fp32_stages     $FP32_STAGES
+set_parameter -name output_stages   $OUTPUT_STAGES
+set_parameter -name pipeline_fix2fp $PIPELINE_FLOPOCO
 
 # Disable retiming
-#set_global_assignment -name ALLOW_REGISTER_RETIMING OFF
+set_global_assignment -name ALLOW_REGISTER_RETIMING OFF
 
 # Other Assignments
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0

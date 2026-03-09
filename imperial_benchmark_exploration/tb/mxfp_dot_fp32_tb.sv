@@ -88,12 +88,14 @@ module mxfp_dot_tb();
     dot_fp_fp32_wrapper #(
         .exp_width(exp_width),
         .man_width(man_width),
-        .k(k)
-	//.input_stages(input_stages),
-	//.dot_fp_stages(dot_fp_stages),
-	//.pipeline_add(pipeline_add),
-	//.fp32_stages(fp32_stages),
-	//.output_stages(output_stages)
+        .k(k),
+
+	.input_stages(input_stages),
+	.dot_fp_stages(dot_fp_stages),
+	.pipeline_add(pipeline_add),
+	.fp32_stages(fp32_stages),
+	.pipeline_fix2fp(`PIPELINE_FLOPOCO),
+	.output_stages(output_stages)
     ) u_dot (
 	.clk(clk),
 	.rst(~rst),
