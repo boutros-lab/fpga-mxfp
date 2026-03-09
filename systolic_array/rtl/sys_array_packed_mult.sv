@@ -36,4 +36,12 @@ module sys_array_aitb #(
     output logic valid_o [N-1:0][N-1:0]
 );
 
+    // Each row has its input delayed by 1 cycle compared to the previous row.
+    // Each column has its input delayed by 1 cycle compared to the previous col.
+    logic [DATA_MX_W-1:0] w_row_delayed [N-1:0][N-1:0][DOT_LEN-1:0];
+    logic w_valid_delayed [N-1:0][N-1:0];
+
+    logic [DATA_MX_W-1:0] x_col_delayed [N-1:0][N-1:0][DOT_LEN-1:0][NUM_OPS-1:0];
+    logic x_valid_delayed [N-1:0][N-1:0];
+
 endmodule
