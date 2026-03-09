@@ -91,8 +91,8 @@ else
 	vcom $FL_ROOT/combinational/mxfp_e${exp_width}m${man_width}_to_fp32.vhdl
 fi
 
-vlog -sv $TB_ROOT/mxfp_dot_fp32_tb.sv $RTL_ROOT/dot_fp_fp32.sv $RTL_ROOT/pipeline.sv $RTL_ROOT/dot_fp.sv $MX_ROOT/src/util/arith/vec_mul_fp.sv \
-	$RTL_ROOT/vec_sum_int.sv $MX_ROOT/src/util/arith/mul_fp.sv $mul_int +define+EXP_WIDTH=$exp_width +define+MAN_WIDTH=$man_width \
+vlog -sv $TB_ROOT/mxfp_dot_fp32_tb.sv $RTL_ROOT/tb_wrappers/dot_fp_fp32_wrapper.sv $RTL_ROOT/dot_fp_fp32.sv $RTL_ROOT/pipeline.sv $RTL_ROOT/dot_fp.sv \
+	$MX_ROOT/src/util/arith/vec_mul_fp.sv $RTL_ROOT/vec_sum_int.sv $MX_ROOT/src/util/arith/mul_fp.sv $mul_int +define+EXP_WIDTH=$exp_width +define+MAN_WIDTH=$man_width \
 	+define+K=$k +define+INPUT_STAGES=$input_stages +define+DOT_FP_STAGES=$dot_fp_stages +define+PIPELINE_ADD=$pipeline_add +define+FP32_STAGES=$fp32_stages \
 	+define+OUTPUT_STAGES=$output_stages +define+TESTS=$test_length +define+DATA_DIR=$test +define+PIPELINE_FLOPOCO=$pipeline_flopoco
 

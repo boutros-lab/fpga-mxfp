@@ -1,7 +1,7 @@
 module mxfp_dot_tb();
     // Generate clock and reset.
     logic clk;
-    logic rst_n;
+    logic rst;
 
     initial begin
         clk = 0;
@@ -10,9 +10,9 @@ module mxfp_dot_tb();
     end
 
     initial begin
-        rst_n = 0;
+        rst = 0;
         #10
-        rst_n = 1;
+        rst = 1;
     end
 
     // Parameters and functions.
@@ -78,28 +78,36 @@ module mxfp_dot_tb();
     end
 
     // DUT
+    logic i_valid, o_valid;
     logic signed [bit_width-1:0] i_op0 [k];
     logic signed [bit_width-1:0] i_op1 [k];
-    logic signed [33:0] o_fp32;
+    logic        [7:0]           i_shared_exp_a;
+    logic        [7:0]           i_shared_exp_b;
+    logic        [31:0]          o_fp32;
 
-    dot_fp_fp32 #(
+    dot_fp_fp32_wrapper #(
         .exp_width(exp_width),
         .man_width(man_width),
-        .k(k),
-	.input_stages(input_stages),
-	.dot_fp_stages(dot_fp_stages),
-	.pipeline_add(pipeline_add),
-	.fp32_stages(fp32_stages),
-	.output_stages(output_stages)
+        .k(k)
+	//.input_stages(input_stages),
+	//.dot_fp_stages(dot_fp_stages),
+	//.pipeline_add(pipeline_add),
+	//.fp32_stages(fp32_stages),
+	//.output_stages(output_stages)
     ) u_dot (
 	.clk(clk),
 	.rst(~rst),
+	.i_valid(i_valid),
+	.o_valid(o_valid),
         .i_vec_a(i_op0),
         .i_vec_b(i_op1),
-        .o_fp32_q(o_fp32)
+        .i_shared_exp_a(i_shared_exp_a),
+        .i_shared_exp_b(i_shared_exp_b),
+        .o_result(o_fp32)
     );
 
     int mismatch_count = 0;
+    int valid_count    = 0;
 
     initial begin
 	#10
@@ -124,18 +132,60 @@ module mxfp_dot_tb();
 	    i_op0 = vector_a[i];
 	    i_op1 = vector_b[i];
 
-	    for (int j = 0; j < (input_stages + dot_fp_stages + tree_add_reg_stages + fix2fp_stages + fp32_stages + output_stages); j++) begin
-                #10;
+	    i_shared_exp_a = shared_exp_a[i];
+	    i_shared_exp_b = shared_exp_b[i];
+
+	    i_valid = 1'b1;
+
+	    #10
+	    //for (int j = 0; j < (input_stages + dot_fp_stages + tree_add_reg_stages + fix2fp_stages + fp32_stages + output_stages); j++) begin
+            //    #10;
+	    //end
+
+	    if (o_valid == 1'b1) begin
+	    	if (o_fp32[31:0] !== fp32_result[valid_count]) begin
+	    	    $display("!!!!!MISMATCH!!!!!");
+	    	    $display("TEST: %0x", valid_count);
+	    	    $display("DUT: %0x", o_fp32[31:0]);
+	    	    $display("REF: %0x", fp32_result[valid_count]);
+	    	    $display("REF Shared Exp A: %0x", shared_exp_a[valid_count]);
+	    	    $display("REF Shared Exp B: %0x", shared_exp_b[valid_count]);
+
+	    	    $display("Orig FP32:    %0x", u_dot.u_dot_fp_fp32.o_fp32);
+	    	    $display("Orig Exp:     %0x", u_dot.u_dot_fp_fp32.o_fp32[30:23]);
+	    	    $display("Scaled Exp:   %0x", u_dot.u_dot_fp_fp32.scaled_exponent);
+	    	    $display("Shared Sum:   %0x", u_dot.u_dot_fp_fp32.shared_exp_sum_q);
+
+	    	    mismatch_count = mismatch_count + 1;
+	    	end
+
+		valid_count++;
 	    end
+	end
 
-	    if (o_fp32[31:0] !== fp32_result[i]) begin
-		$display("!!!!!MISMATCH!!!!!");
-		$display("TEST: %0x", i);
-		$display("DUT Flags: %0x", o_fp32[33:32]);
-		$display("DUT: %0x", o_fp32[31:0]);
-		$display("REF: %0x", fp32_result[i]);
+	i_valid = 1'b0;
 
-		mismatch_count = mismatch_count + 1;
+	while (valid_count < `TESTS) begin
+	    #10
+
+	    if (o_valid == 1'b1) begin
+	    	if (o_fp32[31:0] !== fp32_result[valid_count]) begin
+	    	    $display("!!!!!MISMATCH!!!!!");
+	    	    $display("TEST: %0x", valid_count);
+	    	    $display("DUT: %0x", o_fp32[31:0]);
+	    	    $display("REF: %0x", fp32_result[valid_count]);
+	    	    $display("REF Shared Exp A: %0x", shared_exp_a[valid_count]);
+	    	    $display("REF Shared Exp B: %0x", shared_exp_b[valid_count]);
+
+	    	    $display("Orig FP32:    %0x", u_dot.u_dot_fp_fp32.o_fp32);
+	    	    $display("Orig Exp:     %0x", u_dot.u_dot_fp_fp32.o_fp32[30:23]);
+	    	    $display("Scaled Exp:   %0x", u_dot.u_dot_fp_fp32.scaled_exponent);
+	    	    $display("Shared Sum:   %0x", u_dot.u_dot_fp_fp32.shared_exp_sum_q);
+
+	    	    mismatch_count = mismatch_count + 1;
+	    	end
+
+		valid_count++;
 	    end
 	end
 
