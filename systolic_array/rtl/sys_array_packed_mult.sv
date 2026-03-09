@@ -36,12 +36,64 @@ module sys_array_aitb #(
     output logic valid_o [N-1:0][N-1:0]
 );
 
+    // TODO: Currently no scales because the underlying packed_mult dot does not support them yet
+
+    // Boundary delay
     // Each row has its input delayed by 1 cycle compared to the previous row.
     // Each column has its input delayed by 1 cycle compared to the previous col.
     logic [DATA_MX_W-1:0] w_row_delayed [N-1:0][N-1:0][DOT_LEN-1:0];
-    logic w_valid_delayed [N-1:0][N-1:0];
+    logic w_row_valid_delayed [N-1:0][N-1:0]; // redundant, will only keep the activation like for the other SA
 
     logic [DATA_MX_W-1:0] x_col_delayed [N-1:0][N-1:0][DOT_LEN-1:0][NUM_OPS-1:0];
-    logic x_valid_delayed [N-1:0][N-1:0];
+    logic x_col_valid_delayed [N-1:0][N-1:0];
+
+    // Weight pipeline (weights shift to the right)
+    logic [DATA_MX_W-1:0] w_pipe [N-1:0][N-1:0][DOT_LEN-1:0];
+    logic w_valid_pipe [N-1:0][N-1:0];
+    
+    // Activation pipeline (activations shift down)
+    logic [DATA_MX_W-1:0] x_pipe [N-1:0][N-1:0][DOT_LEN-1:0][NUM_OPS-1:0];
+    logic x_valid_pipe [N-1:0][N-1:0];
+
+    // Boundary delay
+    integer r, c, i;
+    always_ff @( posedge clk ) begin
+        if (rst) begin
+            w_row_delayed <= '0;
+            w_row_valid_delayed <= '0;
+            x_col_delayed <= '0;
+            x_col_valid_delayed <= '0;
+        end
+        else begin
+            // Weight delay
+            // The different rows
+            for (r = 0; r < N; r++) begin
+                // First "column" of the pipeline gets the inputs
+                w_row_delayed[r][0] <= weight_left_i[r];
+                w_row_valid_delayed[r][0] <= weights_valid_left_i[r];
+
+                // Additional delays get delay from previous stage
+                for (c = 1; c < N; c++) begin
+                    w_row_delayed[r][c] <= w_row_delayed[r][c-1];
+                    w_row_valid_delayed[r][c] <= w_row_valid_delayed[r][c-1];
+                end
+            end
+
+            // Activation delay
+            // The different columns
+            for (c = 0; c < N; c++) begin
+                // First "row" of the pipeline gets the inputs
+                x_col_delayed[c][0] <= x_top_i[c];
+                x_col_valid_delayed[c][0] <= x_valid_top_i[c];
+
+                for (r = 0; r < N; r++) begin
+                    x_col_delayed[c][r] <= x_col_delayed[c][r-1];
+                    x_col_valid_delayed[c][r] <= x_col_valid_delayed[c][r-1];
+                end
+            end
+
+        end
+    end
+
 
 endmodule
