@@ -3,7 +3,7 @@ module aitb_wrapper (
 	input logic rst,
 	input logic i_load_en,
 	input logic i_valid,
-	input logic signed [7:0] i_data [0:9],
+	input logic [79:0] i_data,
 	input logic [7:0] i_sh_exp,
 	output logic [31:0] o_result0,
 	output logic [31:0] o_result1,

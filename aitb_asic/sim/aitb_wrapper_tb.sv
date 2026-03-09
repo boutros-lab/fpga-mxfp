@@ -12,7 +12,8 @@ logic rst;
 logic i_load_en;
 logic i_valid;
 logic signed [7:0] i_data [0:9];
-logic [7:0] i_sh_exp;
+logic [79:0] i_data_flat;
+logic [7:0]  i_sh_exp;
 logic [31:0] o_result0;
 logic [31:0] o_result1;
 logic [31:0] o_ref_result0;
@@ -20,13 +21,20 @@ logic [31:0] o_ref_result1;
 logic o_valid;
 logic o_valid_golden;
 
+// Flatten input
+always_comb begin
+	for (int i = 0; i < 10; i++) begin
+		i_data_flat[i*8+:8] = i_data[i];
+	end
+end
+
 // DUT instantiation
 aitb_wrapper dut (
 	.clk(clk),
 	.rst(rst),
 	.i_load_en(i_load_en),
 	.i_valid(i_valid),
-	.i_data(i_data),
+	.i_data(i_data_flat),
 	.i_sh_exp(i_sh_exp),
 	.o_result0(o_result0),
 	.o_result1(o_result1),
