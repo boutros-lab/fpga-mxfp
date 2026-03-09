@@ -30,7 +30,7 @@ module sys_array_aitb #(
     input logic [DATA_MX_W-1:0] weight_left_i [N-1:0][DOT_LEN-1:0],
     // Activation interface (from top of the array)
     input logic x_valid_top_i [N-1:0],
-    input logic [DATA_MX_W-1:0] x_top_i [N-1:0][DOT_LEN-1:0],
+    input logic [DATA_MX_W-1:0] x_top_i [N-1:0][DOT_LEN-1:0][NUM_OPS-1:0],
     // Outputs (from bottom of the array)
     output logic [FIXED_POINT_W-1:0] dot_fixed_o [N-1:0][N-1:0][NUM_OPS-1:0],
     output logic valid_o [N-1:0][N-1:0]
@@ -116,18 +116,31 @@ module sys_array_aitb #(
         end
         else begin
             for (r = 0; r < N; r++) begin
-                // Column 0 takes inputs
-                w_valid_pipe[r][0] <= weights_valid_left_i[r];
-                for (i = 0; i < DOT_LEN; i++) begin
-                    w_pipe[r][0][i] <= weight_left_i[r][i];
+                // Column 0 takes inputs from the boundary delay
+                if (r == 0) begin
+                    // Row 0 has no delay
+                    w_valid_pipe[r][0] <= weights_valid_left_i[r];
+                    for (i = 0; i < DOT_LEN; i++) begin
+                        w_pipe[r][0][i] <= weight_left_i[r][i];
+                    end
+                end
+                else begin
+                    // Other rows have delay
+                    // row 1 has a 1 cycle delay so from delayed[r-1 = 1-1 = 0]
+                    w_valid_pipe[r][0] <= w_row_valid_delayed[r-1];
+                    for (i = 0; i < DOT_LEN; i++) begin
+                        w_pipe[r][0][i] <= w_row_delayed[r][r-1][i];
+                    end
                 end
 
+                // Other columns take from the previous column
                 for (c = 1; c < N; c++) begin
                     w_valid_pipe[r][c] <= w_valid_pipe[r][c-1];
                     for (i = 0; i < DOT_LEN; i++) begin
                         w_pipe[r][c][i] <= w_pipe[r][c-1][i];
                     end
                 end
+
             end
         end
     end
@@ -141,14 +154,25 @@ module sys_array_aitb #(
         end
         else begin
             for (c = 0; c < N; c++) begin
-                // Row 0 takes inputs
-                x_valid_pipe[0][c] <= x_valid_top_i[c];
-                for (i = 0; i < DOT_LEN; i++) begin
-                    for (n = 0; n < NUM_OPS; n++) begin
-                        x_pipe[0][c][i][n] <= x_top_i[c][i][n];
+                // Row 0 takes inputs from delayed pipeline
+                if (c == 0) begin
+                    // Column 0 has no delay
+                    x_valid_pipe[0][c] <= x_valid_top_i[c];
+                    for (i = 0; i < DOT_LEN; i++) begin
+                        for (n = 0; n < NUM_OPS; n++) begin
+                            x_pipe[0][c][i][n] <= x_top_i[c][i][n];
+                        end
+                    end
+                end
+                else begin
+                    // Next columns has delays
+                    x_valid_pipe[0][c] <= x_col_valid_delayed[c][c-1];
+                    for (i = 0; i < DOT_LEN; i++) begin
+                        x_pipe[0][c][i][n] <= x_col_delayed[c][c-1][i][n];
                     end
                 end
 
+                // Other rows take above row
                 for (r = 1; r < N; r++) begin
                     x_valid_pipe[r][c] <= x_valid_pipe[r-1][c];
                     for (i = 0; i < DOT_LEN; i++) begin
@@ -157,6 +181,7 @@ module sys_array_aitb #(
                         end
                     end
                 end
+                
             end
         end
     end
