@@ -17,6 +17,7 @@ module sys_array_aitb #(
 ) (
     input clk,
     input rst,
+    input logic is_load_phase_i,
     // Weight interface (from left of the array)
     // All rows loaded at the same time.
     // The load_en_all signal has to be asserted (high) 
@@ -121,9 +122,25 @@ module sys_array_aitb #(
 
     // Instantiate PEs
     genvar gr, gc, gi;
+    // Signals for PEs (row, col, k)
+    logic pe_valid_in [0:N-1][0:N-1];
+    logic [DATA_MX_W-1:0] pe_data_in [0:N-1][0:N-1][0:DOT_LEN-1];
+    logic [SHARED_EXP_W-1:0] pe_shared_exp [0:N-1][0:N-1];
     generate
         for (gr = 0; gr < N; gr++) begin : ROW_GEN
             for (gc = 0; gc < N; gc++) begin : COL_GEN
+
+                // Gate the PE inputs by a "is_load_phase_i"
+                // Since valid is only used to do computations
+                assign pe_valid_in[gr][gc] = is_load_phase_i ? 1'b0 : valid_pipe[gr][gc];
+                // w or x depending on phase
+                assign pe_shared_exp[gr][gc] = is_load_phase_i  ? w_scale_pipe[gr][gc]
+                                                                : x_scale_pipe[gr][gc];
+                for (gi = 0; gi < DOT_LEN; gi++) begin
+                    assign pe_data_in[gr][gc][gi] = is_load_phase_i ? w_pipe[gr][gc][gi]
+                                                                    : x_pipe[gr][gc][gi];
+                end
+
                 // PE Instance
                 mxfp_dot #(
                     .M(MAN_W),
@@ -137,9 +154,9 @@ module sys_array_aitb #(
                     .clk(clk),
                     .rst(rst),
                     .load_en(load_en_all),
-                    .valid_in(),
-                    .mx_data_in(),
-                    .shared_exponent(),
+                    .valid_in(pe_valid_in),
+                    .mx_data_in(pe_data_in),
+                    .shared_exponent(pe_shared_exp),
                     .fp32_dot_out(dot_fp32_o),
                     .valid_out(valid_o),
                     .fp32_flags(fp32_flags_o)
