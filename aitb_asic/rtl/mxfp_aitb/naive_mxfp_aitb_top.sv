@@ -1,3 +1,7 @@
+/*
+* Naive implementation of MXFP AITB
+*/
+
 import pkg_aitb::*;
 
 module naive_mxfp_aitb_top (
@@ -396,7 +400,7 @@ config_fix2fp32  #(
 	.INPUT_WIDTH(FIXED_RESULT_WIDTH)
 ) u_fix2fp32_col1 (
 	.i_exponent_correction(exponent_correction),
-	.i_fixed(adder_out_col_1),
+	.i_fixed(adder_out_col1),
 	.i_shared_exp_a(data_in_sh_exp_pipe3),
 	.i_shared_exp_b(w_reg_c1_sh_exp_pipe3),
 	.o_fp(fix2float_out_col1)
@@ -406,7 +410,7 @@ config_fix2fp32  #(
 	.INPUT_WIDTH(FIXED_RESULT_WIDTH)
 ) u_fix2fp32_col2 (
 	.i_exponent_correction(exponent_correction),
-	.i_fixed(adder_out_col_2),
+	.i_fixed(adder_out_col2),
 	.i_shared_exp_a(data_in_sh_exp_pipe3),
 	.i_shared_exp_b(w_reg_c2_sh_exp_pipe3),
 	.o_fp(fix2float_out_col2)
