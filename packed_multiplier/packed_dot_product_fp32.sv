@@ -3,15 +3,25 @@ module packed_dot_product_fp32 #(
     parameter mantissa_width = 3,
     parameter mul_width = 18,
     parameter block_size = 32, // must be divisible by 2 since the DSP can handle 2 multiplications at once
+    parameter pipeline_depth = 16, // total pipeline latency in clock cycles
     localparam num_ops = mul_width / 2 / (1+mantissa_width), 
     localparam fixed_point_result_width = 1 + 2 * (mantissa_width + 1) + 2 ** (exponent_width + 1) - 2 + $clog2(block_size)
 ) (
     input logic clk,
+    input logic valid_in,
+    output logic valid_out,
     // NOTE: operands are a sequence of block-length vectors
     input logic [1 + mantissa_width + exponent_width -1:0] operands [block_size-1:0][num_ops-1:0], sharedOperands [block_size-1:0],
     input logic [7:0] shared_exponent [num_ops-1:0],
     output logic [31:0] results [num_ops-1:0]
 );
+
+// Valid signal pipeline
+logic [pipeline_depth-1:0] valid_sr;
+always_ff @(posedge clk) begin
+    valid_sr <= {valid_sr[pipeline_depth-2:0], valid_in};
+end
+assign valid_out = valid_sr[pipeline_depth-1];
 
 wire [fixed_point_result_width-1:0] fixed_point_results [num_ops-1:0];
 wire signed [fixed_point_result_width-2:0] shifted_results [num_ops-1:0];

@@ -8,6 +8,7 @@ parameter block_size = 32;
 localparam num_ops = mul_width / 2 / (1+mantissa_width);
 
 logic clk;
+logic valid_in, valid_out;
 logic [1 + mantissa_width + exponent_width -1:0] operands [block_size-1:0][num_ops-1:0], sharedOperands [block_size-1:0];
 logic [7:0] shared_exponent [num_ops-1:0];
 logic [31:0] results [num_ops-1:0];
@@ -18,6 +19,8 @@ packed_dot_product_fp32 #(
     .block_size(block_size)
 ) dut (
     .clk(clk),
+    .valid_in(valid_in),
+    .valid_out(valid_out),
     .operands(operands),
     .sharedOperands(sharedOperands),
     .shared_exponent(shared_exponent),
