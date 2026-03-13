@@ -271,8 +271,8 @@ def fixed_to_fp32(num, bits, point_position, shared_exp_a, shared_exp_b, rne=Tru
         # Overflow
         exp = 2**exp_bits - 1 # exp all 1's for inf/nan
         num = 0 # sets man, 0 for inf, !=0 for nan
-    elif exp < 0:
-        # Underflow
+    elif exp <= 0:
+        # Underflow, flush subnormals to zero
         fp32_bits = sign << (exp_bits + man_bits)
         fp32      = struct.unpack('>f', struct.pack('>I', fp32_bits))[0]
 

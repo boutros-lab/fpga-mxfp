@@ -3,7 +3,7 @@
 */
 import pkg_aitb::*;
 
-module naive_mxfp_dot #(
+module naive_mxfp_dot_fixed #(
 	parameter FIXED_DOT_LENGTH = 10,
 	parameter FP8_DOT_LENGTH   =  8,
 	parameter FP6_DOT_LENGTH   = 12,
@@ -23,8 +23,6 @@ module naive_mxfp_dot #(
 	input logic [2:0] i_man_mask,
 	//   Reduction
 	input mxfp_mode_e i_mxfp_mode,
-	//   Fix2Float
-	input logic signed [7:0] i_exponent_correction,
 
 	// Data
 	input logic signed [7:0] i_fixed_a [FIXED_OPS],
@@ -37,10 +35,7 @@ module naive_mxfp_dot #(
 	input logic [3:0] i_mxfp4_a [FP4_OPS],
 	input logic [3:0] i_mxfp4_b [FP4_OPS],
 
-	input logic [7:0] i_shared_exp_a,
-	input logic [7:0] i_shared_exp_b,
-
-	output logic [31:0] o_fp32_result
+	output logic signed [FIXED_RESULT_WIDTH-1:0] o_fixed_result
 );
 // Used fixed point multiplier result
 logic fixed_mult;
@@ -54,9 +49,6 @@ logic signed [MXFP4_PRODUCT_WIDTH-1:0] mxfp4_mult_result [FP4_OPS];
 
 logic inf_vec [FP8_OPS];
 logic nan_vec [FP8_OPS];
-
-// Output of reduction tree
-logic signed [FIXED_RESULT_WIDTH-1:0] fixed_result;
 
 genvar i;
 
@@ -197,18 +189,7 @@ naive_reduction #(
 	.i_fp6_ops(mxfp6_mult_result),
 	.i_fp4_ops(mxfp4_mult_result),
 
-	.o_sum(fixed_result)
-);
-
-// Convert to FP32
-config_fix2fp32  #(
-	.INPUT_WIDTH(FIXED_RESULT_WIDTH)
-) u_fix2fp32 (
-	.i_exponent_correction(i_exponent_correction),
-	.i_fixed(fixed_result),
-	.i_shared_exp_a(i_shared_exp_a),
-	.i_shared_exp_b(i_shared_exp_b),
-	.o_fp(o_fp32_result)
+	.o_sum(o_fixed_result)
 );
 
 endmodule

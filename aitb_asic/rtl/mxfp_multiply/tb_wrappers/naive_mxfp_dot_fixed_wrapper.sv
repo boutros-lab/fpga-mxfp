@@ -4,12 +4,14 @@
 */
 import pkg_aitb::*;
 
-module naive_mxfp_dot_wrapper #(
+module naive_mxfp_dot_fixed_wrapper #(
 	parameter exp_width = 5,
 	parameter man_width = 2,
 	parameter k = 8,
 	
-	parameter bit_width = 1 + exp_width + man_width
+	parameter bit_width = 1 + exp_width + man_width,
+	parameter prd_width = 2 * ((1<<exp_width) + man_width),
+	parameter out_width = prd_width + $clog2(k)
 )(
 	input  logic clk,
 	input  logic rst,
@@ -17,18 +19,10 @@ module naive_mxfp_dot_wrapper #(
 	output logic o_valid,
 	input  logic [bit_width-1:0] i_vec_a [k],
 	input  logic [bit_width-1:0] i_vec_b [k],
-	input  logic [7:0] i_shared_exp_a,
-	input  logic [7:0] i_shared_exp_b,
-	output logic [31:0] o_result
+	output logic [out_width-1:0] o_result
 );
 localparam [4:0] exp_mask = (1 << exp_width) - 1;
 localparam [2:0] man_mask = (1 << man_width) - 1;
-localparam point_position = exp_width == 0 ? 0 // Fixed point
-					   : ((1 << (exp_width - 1)) - 2 + man_width) * 2;
-
-// Formula: UNSIGNED_WIDTH + FP32_BIAS - point_position <- correction without shared exponents
-//          -2 * FP32_BIAS <- correction for shared exponents
-localparam signed [7:0] exponent_correction = (FIXED_RESULT_WIDTH - 1) + FP32_BIAS - point_position - 1 - (FP32_BIAS * 2);
 
 assign o_valid = i_valid;
 
@@ -41,6 +35,8 @@ logic [5:0] mxfp6_a [4];
 logic [5:0] mxfp6_b [4];
 logic [3:0] mxfp4_a [4];
 logic [3:0] mxfp4_b [4];
+
+logic [FIXED_RESULT_WIDTH-1:0] fixed_result;
 
 mxfp_mode_e mxfp_mode;
 
@@ -104,15 +100,14 @@ generate
 endgenerate
 
 // Only works with MXFP8 K=8, MXFP6 K=12, MXFP4 K=16, INT8 K=10
-naive_mxfp_dot 
-u_naive_mxfp_dot (
+naive_mxfp_dot_fixed 
+u_naive_mxfp_dot_fixed (
 	.i_sign_shift(exp_width + man_width),
 	.i_exp_bits(exp_width),
 	.i_man_bits(man_width),
 	.i_exp_mask(exp_mask),
 	.i_man_mask(man_mask),
 	.i_mxfp_mode(mxfp_mode), // 000: E2M1, 001: E2M3, 010: E3M2, 011: E4M3, 100: E5M2
-	.i_exponent_correction(exponent_correction),
 
 	.i_fixed_a(fixed_a),
 	.i_fixed_b(fixed_b),
@@ -124,10 +119,15 @@ u_naive_mxfp_dot (
 	.i_mxfp4_a(mxfp4_a),
 	.i_mxfp4_b(mxfp4_b),
 
-	.i_shared_exp_a(i_shared_exp_a),
-	.i_shared_exp_b(i_shared_exp_b),
-
-	.o_fp32_result(o_result)
+	.o_fixed_result(fixed_result)
 );
+
+generate
+	if (out_width > FIXED_RESULT_WIDTH) begin
+		assign o_result = {{(out_width - FIXED_RESULT_WIDTH){fixed_result[FIXED_RESULT_WIDTH-1]}}, fixed_result};
+	end else begin
+		assign o_result = fixed_result;
+	end
+endgenerate
 
 endmodule
