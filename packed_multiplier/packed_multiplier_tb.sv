@@ -5,8 +5,6 @@ module packed_multiplier_tb;
 parameter tests = 1024;
 parameter op_width = 3;
 parameter mul_width = 18;
-parameter registered_input = 0; // doesn't do anything yet !!!
-parameter registered_output = 0; // doesn't do anything yet !!!
 localparam num_ops = mul_width / 2 / op_width;
 
 logic clk;
@@ -29,9 +27,7 @@ DSP_2x18x18 dsp (
 
 packed_multiplier #(
     .op_width(op_width), 
-    .mul_width(mul_width),
-    .registered_input(registered_input),
-    .registered_output(registered_output)
+    .mul_width(mul_width)
 ) dut_a (
     .clk(clk),
     .operands(operands_a),
@@ -44,9 +40,7 @@ packed_multiplier #(
 
 packed_multiplier #(
     .op_width(op_width), 
-    .mul_width(mul_width),
-    .registered_input(registered_input),
-    .registered_output(registered_output)
+    .mul_width(mul_width)
 ) dut_b (
     .clk(clk),
     .operands(operands_b),
@@ -66,6 +60,11 @@ end
 // Test sequence
 initial begin
 
+    $display("!!!DUT=packed_multiplier");
+    $display("op_width=%0d", op_width);
+    $display("num_ops=%0d", num_ops);
+    $display("tests=%0d", tests);
+
     for (int test = 0; test < tests; test++) begin
 
         for (int i = 0; i < num_ops; i++) begin
@@ -75,25 +74,21 @@ initial begin
         sharedOperand_a = $random % (1 << op_width);
         sharedOperand_b = $random % (1 << op_width);
         #10; // Wait for result
-        
-        // Check results
+
+        $display("test=%0d", test);
+        $display("sharedOperand_a=%b", sharedOperand_a);
+        $display("sharedOperand_b=%b", sharedOperand_b);
         for (int i = 0; i < num_ops; i++) begin
-            logic [2*op_width-1:0] expected_product_a;
-            logic [2*op_width-1:0] expected_product_b;
-            expected_product_a = operands_a[i] * sharedOperand_a;
-            expected_product_b = operands_b[i] * sharedOperand_b;
-            if (products_a[i] != expected_product_a || products_b[i] != expected_product_b) begin
-                $display("A Test failed for operand %0d: %0d * %0d = %0d, got %0d", i, operands_a[i], sharedOperand_a, expected_product_a, products_a[i]);
-                $display("B Test failed for operand %0d: %0d * %0d = %0d, got %0d", i, operands_b[i], sharedOperand_b, expected_product_b, products_b[i]);
-                $finish;
-            end
-            //$display("A Test passed for operand %0d: %0d * %0d = %0d", i, operands_a[i], sharedOperand_a, products_a[i]);
-            //$display("B Test passed for operand %0d: %0d * %0d = %0d", i, operands_b[i], sharedOperand_b, products_b[i]);
+            $display("operand_a[%0d]=%b", i, operands_a[i]);
+            $display("operand_b[%0d]=%b", i, operands_b[i]);
+        end
+        for (int i = 0; i < num_ops; i++) begin
+            $display("product_a[%0d]=%b", i, products_a[i]);
+            $display("product_b[%0d]=%b", i, products_b[i]);
         end
 
     end
 
-    $display("All tests passed!");
     $finish;
 
 end
