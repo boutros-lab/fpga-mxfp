@@ -126,7 +126,7 @@ initial begin
 end
 
 // DUT instantiation
-naive_mxfp_aitb_wrapper dut (
+`DUT dut (
 	.clk(clk),
 	.rst(rst),
 	.i_load_en(i_load_en),

@@ -1,15 +1,16 @@
-E ?= 2
-M ?= 1
-TESTS ?= 256
-K ?= 16
-PIPE ?= 1
-DUT=normalizer
+E        ?= 2
+M        ?= 1
+TESTS    ?= 256
+K        ?= 16
+PIPE     ?= 1
+DUT       = normalizer
+DUT_MXFP ?= naive_mxfp_aitb_wrapper
 
 sim:
 	vsim -c -do "do sim/${DUT}_run.tcl"
 
 sim_mxfp:
-	vsim -c -do "set exp_width $E; set man_width $M; set k $K; set test_length ${TESTS}; do sim/mxfp_aitb_run.tcl"
+	vsim -c -do "set dut ${DUT_MXFP}; set exp_width $E; set man_width $M; set k $K; set test_length ${TESTS}; do sim/mxfp_aitb_run.tcl"
 
 syn:
 	quartus_sh -t syn/setup.tcl mxfp_dot_cli E$E_M$M $E $M ${PIPE}
