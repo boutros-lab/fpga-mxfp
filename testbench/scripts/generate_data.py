@@ -382,6 +382,7 @@ def main():
     parser.add_argument('-n', '--no_subnormals', action='store_true', help="Do not generate subnormals in input vectors")
     parser.add_argument('--no_infnan', action='store_true', help="Do not generate Inf/NaN inputs, applicable to MXFP8 E5M2")
     parser.add_argument('-s', '--self_check', action='store_true', help="Self check against FP32 operaions, used only with ignore_shared_exp")
+    parser.add_argument('--common_vec', action='store_true', help="Common vector mode - dot a single vector_b against all vector_a")
 
     args = parser.parse_args()
 
@@ -453,10 +454,19 @@ def main():
     fp32_bits_result_list = []
     fp32_result_list      = []
 
+    common_vector_b = []
+
+    if args.common_vec:
+        common_vector_b = generate_mxfp_vector(exp_bits, man_bits, k, args.no_subnormals, args.no_infnan)
+
     # Generate input vectors
     for i in range(test_length):
         vector_a_list.append(generate_mxfp_vector(exp_bits, man_bits, k, args.no_subnormals, args.no_infnan))
-        vector_b_list.append(generate_mxfp_vector(exp_bits, man_bits, k, args.no_subnormals, args.no_infnan))
+
+        if args.common_vec:
+            vector_b_list.append(common_vector_b)
+        else:
+            vector_b_list.append(generate_mxfp_vector(exp_bits, man_bits, k, args.no_subnormals, args.no_infnan))
 
         shared_exp_a_list.append(generate_shared_exponent(shared_exp_bits, args.ignore_shared_exp))
         shared_exp_b_list.append(generate_shared_exponent(shared_exp_bits, args.ignore_shared_exp))
