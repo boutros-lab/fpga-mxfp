@@ -1,6 +1,13 @@
+/*
+* Fixed Point TB for mxfp AITB
+* Compares with reference AITB as well as golden results
+*/
+
 `timescale 1ns / 1ps
 
-module aitb_wrapper_tb();
+import pkg_aitb::*;
+
+module mxfp_aitb_fixed_tb();
 
 localparam CLK_PERIOD = 2;   // Clock period in ns
 localparam NUM_LOADS = 10;    // Number of times AITB is loaded with new pair of vectors
@@ -21,6 +28,11 @@ logic [31:0] o_ref_result1;
 logic o_valid;
 logic o_valid_golden;
 
+mxfp_mode_e i_mxfp_mode;
+
+// Constant for test
+assign i_mxfp_mode = FIXED;
+
 // Flatten input
 always_comb begin
 	for (int i = 0; i < 10; i++) begin
@@ -29,17 +41,19 @@ always_comb begin
 end
 
 // DUT instantiation
-aitb_wrapper dut (
+naive_mxfp_aitb_wrapper dut (
 	.clk(clk),
 	.rst(rst),
 	.i_load_en(i_load_en),
 	.i_valid(i_valid),
+	.i_mxfp_mode(i_mxfp_mode),
 	.i_data(i_data_flat),
 	.i_sh_exp(i_sh_exp),
 	.o_result0(o_result0),
 	.o_result1(o_result1),
 	.o_valid(o_valid)
 );
+
 altera_fp_aitb reference (
 	.clk(clk),
 	.rst(rst),
@@ -149,10 +163,11 @@ initial begin
 		i_valid = 1'b0;
 	end
 end
+
 integer out_id, mistakes;
 logic [31:0] golden_result0_bits;
 logic [31:0] golden_result1_bits;
-///*
+
 initial begin
 	out_id = 0;
 	mistakes = 0;
@@ -169,8 +184,23 @@ initial begin
 			$display("result1   = %1b||%8b||%23b = %f", o_result1[31], o_result1[30:23], o_result1[22:0], $bitstoshortreal(o_result1));
 			$display("ref_res1  = %1b||%8b||%23b = %f", o_ref_result1[31], o_ref_result1[30:23], o_ref_result1[22:0], $bitstoshortreal(o_ref_result1));
 			$display("o_golden1 = %1b||%8b||%23b = %f", golden_result1_bits[31], golden_result1_bits[30:23], golden_result1_bits[22:0], golden_result1[out_id]);
-			if ((o_result0 != o_ref_result0) || (o_result1 != o_ref_result1)) begin
-				if((o_result0 != golden_result0_bits) || (o_result1 != golden_result1_bits)) begin
+
+			/*$display("FLAT: %x", dut.aitb.data_in);
+			$display("Fixed C1: %x", dut.aitb.fixed_c1[0]);
+			$display("Fixed C2: %x", dut.aitb.fixed_c2[0]);
+			$display("Fixed DI: %x", dut.aitb.fixed_data_in[0]);
+			$display("Fixed C1 P: %x", dut.aitb.fixed_c1_pipe[0]);
+			$display("Fixed C2 P: %x", dut.aitb.fixed_c2_pipe[0]);
+			$display("Fixed DI P: %x", dut.aitb.fixed_data_in_pipe[0]);
+			$display("Dot Out C1: %x", dut.aitb.dot_out_col1);
+			$display("Dot Out C2: %x", dut.aitb.dot_out_col2);
+			$display("Fx2Fp C1: %x", dut.aitb.fix2float_out_col1);
+			$display("Fx2Fp C2: %x", dut.aitb.fix2float_out_col2);
+			$display("Exponent Correction: %x", dut.aitb.exponent_correction);
+			$display("Fixed: %x", dut.aitb.adder_out_col1);*/
+
+			if ((o_result0 !== o_ref_result0) || (o_result1 !== o_ref_result1)) begin
+				if((o_result0 !== golden_result0_bits) || (o_result1 !== golden_result1_bits)) begin
 					mistakes = mistakes + 1;
 					$display("FULL MISMATCH!!");
 				end else begin
@@ -189,29 +219,4 @@ initial begin
 	else $display("Simulation PASSED!");
 	$stop;
 end
-//*/
-/*
-initial begin
-	out_id = 0;
-	mistakes = 0;
-	while (out_id < NUM_LOADS * REUSE_FACTOR) begin
-		if (o_valid) begin
-			if ((o_result0 != $shortrealtobits(golden_result0[out_id])) || (o_result1 != $shortrealtobits(golden_result1[out_id]))) begin
-				mistakes = mistakes + 1;
-				$display("Results are NOT matching: result0=%b, golden0=%b, result1=%b, golden1=%b", 
-					o_result0, $shortrealtobits(golden_result0[out_id]), o_result1, $shortrealtobits(golden_result1[out_id]));
-			end else begin
-				$display("Results are matching: result0=%f, golden0=%f, result1=%f, golden1=%f", 
-					$bitstoshortreal(o_result0), golden_result0[out_id], $bitstoshortreal(o_result1), golden_result1[out_id]);
-			end
-			out_id = out_id + 1;
-		end
-		#(CLK_PERIOD);
-	end
-	if (mistakes > 0) $display("Simulation FAILED!");
-	else $display("Simulation PASSED!");
-	$stop;
-end
-
-*/
 endmodule

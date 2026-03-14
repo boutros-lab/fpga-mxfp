@@ -78,17 +78,20 @@ set_global_assignment -name PROJECT_OUTPUT_DIRECTORY "output_files"
 set_instance_assignment -name VIRTUAL_PIN ON -to rst -entity dot_fp_fp32
 set_instance_assignment -name VIRTUAL_PIN ON -to i_vec_a -entity dot_fp_fp32
 set_instance_assignment -name VIRTUAL_PIN ON -to i_vec_b -entity dot_fp_fp32
+set_instance_assignment -name VIRTUAL_PIN ON -to i_shared_exp_a -entity dot_fp_fp32
+set_instance_assignment -name VIRTUAL_PIN ON -to i_shared_exp_b -entity dot_fp_fp32
 set_instance_assignment -name VIRTUAL_PIN ON -to o_fp32_q -entity dot_fp_fp32
 
 # Set parameters
-set_parameter -name exp_width     $EXP_WIDTH
-set_parameter -name man_width     $MAN_WIDTH
-set_parameter -name k             $K
-set_parameter -name input_stages  $INPUT_STAGES
-set_parameter -name dot_fp_stages $DOT_FP_STAGES
-set_parameter -name pipeline_add  $PIPELINE_ADD
-set_parameter -name fp32_stages   $FP32_STAGES
-set_parameter -name output_stages $OUTPUT_STAGES
+set_parameter -name exp_width       $EXP_WIDTH
+set_parameter -name man_width       $MAN_WIDTH
+set_parameter -name k               $K
+set_parameter -name input_stages    $INPUT_STAGES
+set_parameter -name dot_fp_stages   $DOT_FP_STAGES
+set_parameter -name pipeline_add    $PIPELINE_ADD
+set_parameter -name fp32_stages     $FP32_STAGES
+set_parameter -name output_stages   $OUTPUT_STAGES
+set_parameter -name pipeline_fix2fp $PIPELINE_FLOPOCO
 
 # Disable retiming
 set_global_assignment -name ALLOW_REGISTER_RETIMING OFF

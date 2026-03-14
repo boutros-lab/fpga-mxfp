@@ -1,8 +1,6 @@
 module packed_multiplier # (
     parameter op_width = 3,
     parameter mul_width = 18,
-    parameter registered_input = 0, // doesn't do anything yet !!!
-    parameter registered_output = 0, // doesn't do anything yet !!!
     localparam num_ops = mul_width / 2 / op_width
 ) (
     input logic clk,

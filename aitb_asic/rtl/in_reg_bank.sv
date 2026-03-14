@@ -3,14 +3,14 @@ import pkg_aitb::*;
 module in_reg_bank (
 	input  logic clk,
 	input  logic rst,
-	input  logic signed [DATA_WIDTH-1:0] data_in [0:DOT_LENGTH-1],
+	input  logic [FLAT_DATA_WIDTH-1:0] data_in,
 	input  logic [DATA_WIDTH-1:0] data_in_sh_exp,
 	input  logic load_bb_one,
 	input  logic load_bb_two,
 	input  logic load_buf_sel,
-	output logic signed [DATA_WIDTH-1:0] w_reg_c1 [0:DOT_LENGTH-1],
+	output logic [FLAT_DATA_WIDTH-1:0] w_reg_c1,
 	output logic [DATA_WIDTH-1:0] w_reg_c1_sh_exp,
-	output logic signed [DATA_WIDTH-1:0] w_reg_c2 [0:DOT_LENGTH-1],
+	output logic [FLAT_DATA_WIDTH-1:0] w_reg_c2,
 	output logic [DATA_WIDTH-1:0] w_reg_c2_sh_exp
 
 );
@@ -20,14 +20,14 @@ logic load_bb_two_ff;
 logic load_buf_sel_ff;
 
 
-logic signed [DATA_WIDTH-1:0] bb_one_c1 [0:DOT_LENGTH-1];
+logic [FLAT_DATA_WIDTH-1:0] bb_one_c1;
 logic [DATA_WIDTH-1:0] bb_one_c1_sh_exp;
-logic signed [DATA_WIDTH-1:0] bb_one_c2 [0:DOT_LENGTH-1];
+logic [FLAT_DATA_WIDTH-1:0] bb_one_c2;
 logic [DATA_WIDTH-1:0] bb_one_c2_sh_exp;
 
-logic signed [DATA_WIDTH-1:0] bb_two_c1 [0:DOT_LENGTH-1];
+logic [FLAT_DATA_WIDTH-1:0] bb_two_c1;
 logic [DATA_WIDTH-1:0] bb_two_c1_sh_exp;
-logic signed [DATA_WIDTH-1:0] bb_two_c2 [0:DOT_LENGTH-1];
+logic [FLAT_DATA_WIDTH-1:0] bb_two_c2;
 logic [DATA_WIDTH-1:0] bb_two_c2_sh_exp;
 
 // Control signals register

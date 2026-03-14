@@ -1,108 +1,259 @@
-print("")
-print("CHECKING RESULTS FROM TRANSCRIPT")
-
-with open("transcript") as f:
-    lines = f.readlines()
-lines = [line.removeprefix('#').strip() for line in lines]
-
 i = 0
-while '!!!START!!!' not in lines[i]:
-    i += 1
-i += 1  # Skip the '!!!START!!!' line
-mantissa_width = int(lines[i].removeprefix('mantissa_width='))
-i += 1
-exponent_width = int(lines[i].removeprefix('exponent_width='))
-i += 1
-num_ops = int(lines[i].removeprefix('num_ops='))
-i += 1  
-block_size = int(lines[i].removeprefix('block_size='))
-i += 1
-shared_operands = []
-operands = []
-for j in range(block_size):
-    shared_operands.append(lines[i].removeprefix(f'sharedOperand[{j}]='))
-    i += 1
-    operands_row = []
-    for k in range(num_ops):
-        operands_row.append(lines[i].removeprefix(f'operand[{j}][{k}]='))
+lines = []
+
+def get(prefix):
+    global i
+    while i < len(lines):
+        if lines[i].startswith(prefix):
+            value = lines[i].removeprefix(prefix)
+            i += 1
+            return value
         i += 1
-    operands.append(operands_row)
-results = []
-for j in range(num_ops):
-    results.append(lines[i].removeprefix(f'result[{j}]='))
-    i += 1
 
-bias = (2 ** exponent_width) // 2 - 1
+def check_packed_dot_product():
+    mantissa_width = int(get('mantissa_width='))
+    exponent_width = int(get('exponent_width='))
+    num_ops = int(get('num_ops='))
+    block_size = int(get('block_size='))
+    tests = int(get('tests='))
 
-print("")
-print(f"mantissa_width: {mantissa_width}")
-print(f"exponent_width: {exponent_width}")
-print(f"num_ops: {num_ops}")
-print(f"block_size: {block_size}")
-print(f"bias: {bias}")
-print("shared_operands", shared_operands)
-print("operands", operands)
-print("results", results)
+    print(f"mantissa_width: {mantissa_width}")
+    print(f"exponent_width: {exponent_width}")
+    print(f"num_ops: {num_ops}")
+    print(f"block_size: {block_size}")
+    print(f"tests: {tests}")
 
-def mxfp_to_float(mxfp_str):
-    #MXFP-8 E4M3
-    #SEEEEMMM
-    #print("mxfp_str:", mxfp_str)
-    sign = int(mxfp_str[0])
-    #print("sign:", sign)
-    #print("exponent bits:", mxfp_str[1:1+exponent_width])
-    exponent = int(mxfp_str[1:1+exponent_width], 2) - bias
-    #print("exponent:", exponent)
-    #print("mantissa bits:", mxfp_str[1+exponent_width:])
-    mantissa = int('1' + mxfp_str[1+exponent_width:], 2) / (2 ** mantissa_width)
-    #print("mantissa:", mantissa)
-    if sign == 1:
-        mantissa = -mantissa
-    value = mantissa * (2 ** (exponent))
-    return value
+    bias = (2 ** exponent_width) // 2 - 1
+    print(f"bias: {bias}")
 
-shared_operands = [mxfp_to_float(so) for so in shared_operands]
-operands = [[mxfp_to_float(operand) for operand in row] for row in operands]
+    def mxfp_to_float(mxfp_str):
+        sign = int(mxfp_str[0])
+        exponent = int(mxfp_str[1:1+exponent_width], 2) - bias
+        mantissa = int('1' + mxfp_str[1+exponent_width:], 2) / (2 ** mantissa_width)
+        if sign == 1:
+            mantissa = -mantissa
+        value = mantissa * (2 ** (exponent))
+        return value
 
-def fixed_to_float(fixed_str):
-    # fixed point is 1 sign bit, X int bits, 2*bias frac bits
-    total_width = len(fixed_str)
-    int_width = total_width - (2 * bias) - 1
-    sign = int(fixed_str[0])
-    int_part = int(fixed_str[1:1+int_width], 2)
-    frac_part = int(fixed_str[1+int_width:], 2) / (2 ** (2 * bias))
-    value = int_part + frac_part
-    if sign == 1:
-        value = -value
-    return value
+    def fixed_to_float(fixed_str):
+        width = len(fixed_str)
+        value = int(fixed_str, 2)
+        if value >= (1 << (width - 1)):
+            value -= (1 << width)
+        return value / (2 ** (2 * bias + 2 * mantissa_width))
 
-results = [fixed_to_float(res) for res in results]
+    all_passed = True
+    for t in range(tests):
+        test_num = int(get('test='))
 
-print("")
-print("shared_operands (float)", shared_operands)
-print("operands (float)", operands)
-print("results (float)", results)
+        shared_operands = []
+        operands = []
+        for j in range(block_size):
+            shared_operands.append(get(f'sharedOperand[{j}]='))
+            operands_row = []
+            for k in range(num_ops):
+                operands_row.append(get(f'operand[{j}][{k}]='))
+            operands.append(operands_row)
+        results = []
+        for j in range(num_ops):
+            results.append(get(f'result[{j}]='))
 
-# Compute expected results
-expected_results = []
-for op_idx in range(num_ops):
-    acc = 0.0
-    for block_idx in range(block_size):
-        a = operands[block_idx][op_idx]
-        b = shared_operands[block_idx]
-        acc += a * b
-    expected_results.append(acc)
+        shared_operands = [mxfp_to_float(so) for so in shared_operands]
+        operands = [[mxfp_to_float(operand) for operand in row] for row in operands]
+        results = [fixed_to_float(res) for res in results]
 
-print("")
-print("expected_results (float)", expected_results)
+        # Compute expected results
+        expected_results = []
+        for op_idx in range(num_ops):
+            acc = 0.0
+            for block_idx in range(block_size):
+                a = operands[block_idx][op_idx]
+                b = shared_operands[block_idx]
+                acc += a * b
+            expected_results.append(acc)
 
-# Compare results
-tolerance = 0.1
-all_passed = True
-for i in range(num_ops):
-    diff = abs(results[i] - expected_results[i])
-    if diff <= tolerance:
-        print(f"Result {i} PASSED: got {results[i]}, expected {expected_results[i]}, diff {diff}")
+        # Compare results
+        tolerance = 0.1
+        for i in range(num_ops):
+            diff = abs(results[i] - expected_results[i])
+            if diff <= tolerance:
+                #print(f"Test {t} Result {i} PASSED: got {results[i]}, expected {expected_results[i]}, diff {diff}")
+                pass
+            else:
+                print(f"Test {t} Result {i} FAILED: got {results[i]}, expected {expected_results[i]}, diff {diff}")
+                all_passed = False
+    return all_passed
+
+def check_packed_multiplier():
+    op_width = int(get('op_width='))
+    num_ops = int(get('num_ops='))
+    tests = int(get('tests='))
+
+    print(f"op_width: {op_width}")
+    print(f"num_ops: {num_ops}")
+    print(f"tests: {tests}")
+
+    all_passed = True
+    for t in range(tests):
+        test_num = int(get('test='))
+        shared_a = int(get('sharedOperand_a='), 2)
+        shared_b = int(get('sharedOperand_b='), 2)
+        ops_a = []
+        ops_b = []
+        for j in range(num_ops):
+            ops_a.append(int(get(f'operand_a[{j}]='), 2))
+            ops_b.append(int(get(f'operand_b[{j}]='), 2))
+        prods_a = []
+        prods_b = []
+        for j in range(num_ops):
+            prods_a.append(int(get(f'product_a[{j}]='), 2))
+            prods_b.append(int(get(f'product_b[{j}]='), 2))
+        for j in range(num_ops):
+            expected_a = ops_a[j] * shared_a
+            expected_b = ops_b[j] * shared_b
+            if prods_a[j] != expected_a:
+                print(f"Test {t} FAILED: operand_a[{j}]={ops_a[j]} * sharedOperand_a={shared_a} = expected {expected_a}, got {prods_a[j]}")
+                all_passed = False
+            if prods_b[j] != expected_b:
+                print(f"Test {t} FAILED: operand_b[{j}]={ops_b[j]} * sharedOperand_b={shared_b} = expected {expected_b}, got {prods_b[j]}")
+                all_passed = False
+    return all_passed
+
+def check_dsp_2x18x18():
+    tests = int(get('tests='))
+
+    print(f"tests: {tests}")
+
+    all_passed = True
+    for t in range(tests):
+        test_num = int(get('test='))
+        ax = int(get('ax='), 2)
+        ay = int(get('ay='), 2)
+        bx = int(get('bx='), 2)
+        by = int(get('by='), 2)
+        resulta = int(get('resulta='), 2)
+        resultb = int(get('resultb='), 2)
+
+        expected_a = ax * ay
+        expected_b = bx * by
+        if resulta != expected_a:
+            print(f"Test {t}a FAILED: ax={ax} * ay={ay} = expected {expected_a}, got {resulta}")
+            all_passed = False
+        if resultb != expected_b:
+            print(f"Test {t}b FAILED: bx={bx} * by={by} = expected {expected_b}, got {resultb}")
+            all_passed = False
+    return all_passed
+
+def check_packed_dot_product_fp32():
+    mantissa_width = int(get('mantissa_width='))
+    exponent_width = int(get('exponent_width='))
+    num_ops = int(get('num_ops='))
+    block_size = int(get('block_size='))
+    tests = int(get('tests='))
+
+    print(f"mantissa_width: {mantissa_width}")
+    print(f"exponent_width: {exponent_width}")
+    print(f"num_ops: {num_ops}")
+    print(f"block_size: {block_size}")
+    print(f"tests: {tests}")
+
+    bias = (2 ** exponent_width) // 2 - 1
+    print(f"bias: {bias}")
+
+    def mxfp_to_float(mxfp_str):
+        sign = int(mxfp_str[0])
+        exponent = int(mxfp_str[1:1+exponent_width], 2) - bias
+        mantissa = int('1' + mxfp_str[1+exponent_width:], 2) / (2 ** mantissa_width)
+        if sign == 1:
+            mantissa = -mantissa
+        value = mantissa * (2 ** (exponent))
+        return value
+
+    def fp32_to_float(bits_str):
+        import struct
+        value = int(bits_str, 2)
+        return struct.unpack('!f', struct.pack('!I', value))[0]
+
+    all_passed = True
+    for t in range(tests):
+        test_num = int(get('test='))
+        shared_exponents = []
+        for j in range(num_ops):
+            shared_exponents.append(int(get(f'shared_exponent[{j}]='), 2))
+
+        shared_operands = []
+        operands = []
+        for j in range(block_size):
+            shared_operands.append(get(f'sharedOperand[{j}]='))
+            operands_row = []
+            for k in range(num_ops):
+                operands_row.append(get(f'operand[{j}][{k}]='))
+            operands.append(operands_row)
+        results = []
+        for j in range(num_ops):
+            results.append(get(f'result[{j}]='))
+
+        shared_operands = [mxfp_to_float(so) for so in shared_operands]
+        operands = [[mxfp_to_float(operand) for operand in row] for row in operands]
+        results = [fp32_to_float(res) for res in results]
+
+        # Compute expected results
+        expected_results = []
+        for op_idx in range(num_ops):
+            scale = 2.0 ** shared_exponents[op_idx]
+            acc = 0.0
+            for block_idx in range(block_size):
+                a = operands[block_idx][op_idx]
+                b = shared_operands[block_idx]
+                acc += a * b
+            expected_results.append(acc * scale)
+
+        # Compare results
+        if exponent_width == 2 and mantissa_width == 1:
+            tolerance = 0.15
+        elif exponent_width == 2 and mantissa_width == 3:
+            tolerance = 0.05
+        else:
+            tolerance = 0.01
+        for i in range(num_ops):
+            expected = expected_results[i]
+            got = results[i]
+            if expected == 0.0:
+                rel_diff = abs(got)
+            else:
+                rel_diff = abs(got - expected) / abs(expected)
+            if rel_diff <= tolerance:
+                pass
+            else:
+                print(f"Test {t} Result {i} FAILED: got {got}, expected {expected}, rel_diff {rel_diff}")
+                
+                all_passed = False
+    return all_passed
+
+
+if __name__ == "__main__":
+
+    print("\nREADING RESULTS FROM TRANSCRIPT")
+
+    with open("transcript") as f:
+        lines = [line.removeprefix('#').strip() for line in f.readlines()]
+
+    tag = get('!!!DUT=')
+    print(f"\nDUT: {tag}")
+
+    if tag == 'packed_dot_product':
+        all_passed = check_packed_dot_product()
+    elif tag == 'packed_dot_product_fp32':
+        all_passed = check_packed_dot_product_fp32()
+    elif tag == 'packed_multiplier':
+        all_passed = check_packed_multiplier()
+    elif tag == 'DSP_2x18x18':
+        all_passed = check_dsp_2x18x18()
     else:
-        print(f"Result {i} FAILED: got {results[i]}, expected {expected_results[i]}, diff {diff}")
+        print(f"Unknown tag: {tag}")
         all_passed = False
+
+    if all_passed:
+        print("\nALL TESTS PASSED\n")
+    else:
+        print("\nSOME TESTS FAILED\n")

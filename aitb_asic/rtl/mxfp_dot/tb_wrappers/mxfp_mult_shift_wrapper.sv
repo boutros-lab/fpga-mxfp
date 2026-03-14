@@ -6,18 +6,22 @@ module mxfp_mult_shift_wrapper #(
 	parameter exp_width = 5,
 	parameter man_width = 2,
 	parameter k = 1,
-
-    	parameter bit_width = 1 + exp_width + man_width,
+	
+	parameter bit_width = 1 + exp_width + man_width,
 	parameter out_width = 2 * ((1 << exp_width) + man_width) + $clog2(k)
 )(
 	input  logic clk,
 	input  logic rst,
 	input  logic i_valid,
 	output logic o_valid,
-        input  logic [bit_width-1:0] i_vec_a [k],
-        input  logic [bit_width-1:0] i_vec_b [k],
-        output logic [out_width-1:0] o_result
+	input  logic [bit_width-1:0] i_vec_a [k],
+	input  logic [bit_width-1:0] i_vec_b [k],
+	output logic [out_width-1:0] o_result
 );
+localparam exp_mask = (1 << exp_width) - 1;
+localparam man_mask = (1 << man_width) - 1;
+
+localparam FIXED_MULT      = 1;
 localparam MAX_EXP_BITS    = 5;
 localparam MAX_MAN_BITS    = 3;
 localparam MXFP_WIDTH      = 8;
@@ -30,12 +34,15 @@ logic inf, nan;
 mxfp_mult_shift #(
 	.MAX_EXP_BITS(MAX_EXP_BITS),
 	.MAX_MAN_BITS(MAX_MAN_BITS),
-	.MXFP_WIDTH(MXFP_WIDTH)
-//	OUTPUT_WIDTH = 2 * ((1 << MAX_EXP_BITS) + MAX_MAN_BITS),
+	.MXFP_WIDTH(MXFP_WIDTH),
+	.FIXED_MULT(FIXED_MULT)
 ) u_mxfp_mult_shift (
+	.fixed(1'b0),
 	.sign_shift(exp_width + man_width),
 	.exp_bits(exp_width),
 	.man_bits(man_width),
+	.exp_mask(exp_mask),
+	.man_mask(man_mask),
 	.mxfp_a(i_vec_a[0]),
 	.mxfp_b(i_vec_b[0]),
 	.mxfp_mult_fixed(mxfp_mult_result),
