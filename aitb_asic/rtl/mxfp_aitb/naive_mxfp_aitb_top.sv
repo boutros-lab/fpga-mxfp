@@ -467,6 +467,7 @@ ieee_fp32_add FP32_ALU_col1 (
 	.Y(acc_mux_out_col1),
 	.R(fp32_alu_out_col1)
 );
+
 ieee_fp32_add FP32_ALU_col2 (
 	.X(fix2float_out_col2_pipe),
 	.Y(acc_mux_out_col2),
@@ -487,6 +488,7 @@ pipeline #(.W(32), .STAGES(1)) PIPE_OUT_col2 (
 	.pipe_in(fp32_alu_out_col2),
 	.pipe_out(fp32_dot_out_col2)
 );
+
 assign fp32_cascade_out_col1 = fp32_dot_out_col1;
 assign fp32_cascade_out_col2 = fp32_dot_out_col2;
 

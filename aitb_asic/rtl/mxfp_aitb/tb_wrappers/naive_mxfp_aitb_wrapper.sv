@@ -5,6 +5,7 @@ module naive_mxfp_aitb_wrapper (
 	input logic rst,
 	input logic i_load_en,
 	input logic i_valid,
+	mxfp_mode_e i_mxfp_mode,
 	input logic [79:0] i_data,
 	input logic [7:0] i_sh_exp,
 	output logic [31:0] o_result0,
@@ -15,7 +16,6 @@ module naive_mxfp_aitb_wrapper (
 localparam LATENCY = 5;
 
 logic [LATENCY-1:0] valid;
-mxfp_mode_e         mxfp_mode;
 
 always_ff @ (posedge clk) begin
 	if (rst) begin
@@ -26,7 +26,6 @@ always_ff @ (posedge clk) begin
 end
 
 assign o_valid = valid[LATENCY-1];
-assign mxfp_mode = FIXED;
 
 naive_mxfp_aitb_top aitb (
 	.clk(clk),
@@ -36,7 +35,7 @@ naive_mxfp_aitb_top aitb (
 	.load_bb_one(i_load_en),
 	.load_bb_two('0),
 	.load_buf_sel('0),
-	.i_mxfp_mode(mxfp_mode),
+	.i_mxfp_mode(i_mxfp_mode),
 	.data_in(i_data),
 	.shared_exponent(i_sh_exp),
 	.fp32_cascade_in_col1('0),

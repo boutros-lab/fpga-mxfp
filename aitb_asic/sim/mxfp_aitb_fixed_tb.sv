@@ -1,6 +1,13 @@
+/*
+* Fixed Point TB for mxfp AITB
+* Compares with reference AITB as well as golden results
+*/
+
 `timescale 1ns / 1ps
 
-module mxfp_aitb_wrapper_tb();
+import pkg_aitb::*;
+
+module mxfp_aitb_fixed_tb();
 
 localparam CLK_PERIOD = 2;   // Clock period in ns
 localparam NUM_LOADS = 10;    // Number of times AITB is loaded with new pair of vectors
@@ -21,6 +28,11 @@ logic [31:0] o_ref_result1;
 logic o_valid;
 logic o_valid_golden;
 
+mxfp_mode_e i_mxfp_mode;
+
+// Constant for test
+assign i_mxfp_mode = FIXED;
+
 // Flatten input
 always_comb begin
 	for (int i = 0; i < 10; i++) begin
@@ -34,6 +46,7 @@ naive_mxfp_aitb_wrapper dut (
 	.rst(rst),
 	.i_load_en(i_load_en),
 	.i_valid(i_valid),
+	.i_mxfp_mode(i_mxfp_mode),
 	.i_data(i_data_flat),
 	.i_sh_exp(i_sh_exp),
 	.o_result0(o_result0),
