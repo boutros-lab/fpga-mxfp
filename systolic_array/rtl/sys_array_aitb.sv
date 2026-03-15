@@ -36,7 +36,7 @@ module sys_array_aitb #(
 );
     
     // Weight pipeline (row, col, k)
-    logic [DATA_MW_W-1:0] w_pipe [0:N-1][0:N-1][0:DOT_LEN-1];
+    logic [DATA_MX_W-1:0] w_pipe [0:N-1][0:N-1][0:DOT_LEN-1];
     logic [SHARED_EXP_W-1:0] w_scale_pipe [0:N-1][0:N-1];
 
     // Activation pipeline (row, col, k)
@@ -49,6 +49,7 @@ module sys_array_aitb #(
     // - Driver must make sure to pulse load_en_all_i, 
     //   at the appropriate cycle for the weights to load
     always_ff @( posedge clk) begin
+        integer r, c, i;
         if (rst) begin
             // In every row, reset every column
             for (r = 0; r < N; r++) begin
@@ -84,6 +85,7 @@ module sys_array_aitb #(
     // - Activations go down every cycle
     // - Driver must make activations provided when weight loading is done
     always_ff @( posedge clk) begin
+        integer r, c, i;
         if (rst) begin
             // In every row, reset every column
             for (r = 0; r < N; r++) begin
@@ -110,7 +112,7 @@ module sys_array_aitb #(
 
                 for (r = 1; r < N; r++) begin
                     valid_pipe[r][c] <= valid_pipe[r-1][c];
-                    x_scale_pipe[r][c] <= x_scale_pipe[r-1][c]
+                    x_scale_pipe[r][c] <= x_scale_pipe[r-1][c];
                     for (i = 0; i < DOT_LEN; i++) begin
                         x_pipe[r][c][i] <= x_pipe[r-1][c][i];
                     end
@@ -154,12 +156,12 @@ module sys_array_aitb #(
                     .clk(clk),
                     .rst(rst),
                     .load_en(load_en_all),
-                    .valid_in(pe_valid_in),
-                    .mx_data_in(pe_data_in),
-                    .shared_exponent(pe_shared_exp),
-                    .fp32_dot_out(dot_fp32_o),
-                    .valid_out(valid_o),
-                    .fp32_flags(fp32_flags_o)
+                    .valid_in(pe_valid_in[gr][gc]),
+                    .mx_data_in(pe_data_in[gr][gc]),
+                    .shared_exponent(pe_shared_exp[gr][gc]),
+                    .fp32_dot_out(dot_fp32_o[gr][gc]),
+                    .valid_out(valid_o[gr][gc]),
+                    .fp32_flags(fp32_flags_o[gr][gc])
                 );
 
             end

@@ -10,6 +10,27 @@ module sys_array_aitb_tb;
     localparam DOT_LEN = 32;
     localparam DATA_OUT_W = 32;
     
+    // Read hex files
+    logic hex_loaded_done;
+    logic [DATA_MX_W-1:0] w0_vec_mem [0:DOT_LEN-1];
+    logic [DATA_MX_W-1:0] x0_vec_mem [0:DOT_LEN-1];
+    logic [SHARED_EXP_W-1:0] w0_shared_exp_mem [0:0];
+    logic [SHARED_EXP_W-1:0] x0_shared_exp_mem [0:0];
+    logic [DATA_OUT_W-1:0] gold_dot_mem [0:0];
+    initial begin : LOAD_HEX
+        hex_loaded_done = 1'b0;
+        $display("[%0t] Reading hex files...", $time);
+
+        $readmemh("../data_e2_m3_t1/w0_vector_a.hex", w0_vec_mem);
+        $readmemh("../data_e2_m3_t1/x0_vector_b.hex", x0_vec_mem);
+        $readmemh("../data_e2_m3_t1/w0_shared_exp_a.hex", w0_shared_exp_mem);
+        $readmemh("../data_e2_m3_t1/x0_shared_exp_b.hex", x0_shared_exp_mem);
+        $readmemh("../data_e2_m3_t1/w0_dot_x0_fp32_result.hex", gold_dot_mem);
+
+        $display("[%0t] Finished reading hex files.", $time);
+        hex_loaded_done = 1'b1;
+    end
+
     // Signals for DUT
     logic clk;
     logic rst;
@@ -65,11 +86,10 @@ module sys_array_aitb_tb;
     // Golden signals
     logic [DATA_OUT_W-1:0] dot_fp32_o_gold [0:N-1][0:N-1];
 
+    integer i, j;
     initial begin : DRIVER
         wait(hex_loaded_done);
         // Initialize inputs
-        integer i, j;
-
         is_load_phase_i_dut = 1'b0;
         load_en_all_i_dut = 1'b0;
 
@@ -87,13 +107,13 @@ module sys_array_aitb_tb;
         @(negedge rst);
         
         // Load in hex values
-        weight_shared_exp_left_i_dut[0] = w0_shexp_mem[0];
-        x_shared_exp_top_i_dut[0] = x0_shexp_mem[0];
+        weight_shared_exp_left_i_dut[0] = w0_shared_exp_mem[0];
+        x_shared_exp_top_i_dut[0] = x0_shared_exp_mem[0];
         for (j = 0; j < DOT_LEN; j = j + 1) begin
             weight_left_i_dut[0][j] = w0_vec_mem[j];
             x_top_i_dut[0][j] = x0_vec_mem[j];
         end
-        dot_fp32_o_gold[0][0] = w0_dot_mem[0];
+        dot_fp32_o_gold[0][0] = gold_dot_mem[0];
 
         // Wait a few cycles for clarity
         repeat (4) @(posedge clk);
@@ -105,28 +125,6 @@ module sys_array_aitb_tb;
         $finish;
 
     end
-
-    // Read hex files
-    logic hex_loaded_done;
-    logic [DATA_MX_W-1:0] w0_vec_mem [0:DOT_LEN-1];
-    logic [DATA_MX_W-1:0] x0_vec_mem [0:DOT_LEN-1];
-    logic [SHARED_EXP_W-1:0] w0_shared_exp_mem [0:0];
-    logic [SHARED_EXP_W-1:0] x0_shared_exp_mem [0:0];
-    logic [DATA_OUT_W-1:0] gold_dot_mem [0:0];
-    initial begin : LOAD_HEX
-        hex_loaded_done = 1'b0;
-        $display("[%0t] Reading hex files...", $time);
-
-        $readmemh("../data_e2_m3_t1/w0_vector_a.hex", w0_vec_mem);
-        $readmemh("../data_e2_m3_t1/x0_vector_b.hex", x0_vec_mem);
-        $readmemh("../data_e2_m3_t1/w0_shared_exp_a.hex", w0_shared_exp_mem);
-        $readmemh("../data_e2_m3_t1/x0_shared_exp_b.hex", x0_shared_exp_mem);
-        $readmemh("../data_e2_m3_t1/w0_dot_x0_fp32_result.hex", gold_dot_mem);
-
-        $display("[%0t] Finished reading hex files.", $time);
-        hex_loaded_done = 1'b1;
-    end
-
 
     // "Golden" model
     function automatic shortreal dot (shortreal vec1[], shortreal vec2[], byte shared_exp1, byte shared_exp2);
