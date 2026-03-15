@@ -35,10 +35,10 @@ localparam PADDING     = FP8_LEVELS;
 localparam PADDING_FP4 = PADDING + FP6_INPUT_WIDTH - FP4_INPUT_WIDTH;
 localparam OFFSET      = FP6_INPUT_WIDTH + PADDING;
 
-input logic signed [FP8_INPUT_WIDTH-1:0]  adder_in [FP8_INPUTS];
-logic signed       [FP8_OUTPUT_WIDTH-1:0] tree_sum;
-logic signed       [FP6_OUTPUT_WIDTH-2:0] fp6_fp4_op0, fp6_fp4_op1;
-logic signed       [FP6_OUTPUT_WIDTH-1:0] fp6_fp4_sum;
+logic signed [FP8_INPUT_WIDTH-1:0]  adder_in [FP8_INPUTS];
+logic signed [FP8_OUTPUT_WIDTH-1:0] tree_sum;
+logic signed [FP6_OUTPUT_WIDTH-2:0] fp6_fp4_op0, fp6_fp4_op1;
+logic signed [FP6_OUTPUT_WIDTH-1:0] fp6_fp4_sum;
 
 // Assign adder inputs
 // If input is not MXFP8, pack 2 inputs into the first level of the adder tree
