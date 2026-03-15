@@ -155,7 +155,7 @@ module sys_array_aitb #(
                 ) pe_inst (
                     .clk(clk),
                     .rst(rst),
-                    .load_en(load_en_all),
+                    .load_en(load_en_all_i),
                     .valid_in(pe_valid_in[gr][gc]),
                     .mx_data_in(pe_data_in[gr][gc]),
                     .shared_exponent(pe_shared_exp[gr][gc]),
