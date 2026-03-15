@@ -21,11 +21,11 @@ module sys_array_aitb_tb;
         hex_loaded_done = 1'b0;
         $display("[%0t] Reading hex files...", $time);
 
-        $readmemh("../data_e2_m3_t1/w0_vector_a.hex", w0_vec_mem);
-        $readmemh("../data_e2_m3_t1/x0_vector_b.hex", x0_vec_mem);
-        $readmemh("../data_e2_m3_t1/w0_shared_exp_a.hex", w0_shared_exp_mem);
-        $readmemh("../data_e2_m3_t1/x0_shared_exp_b.hex", x0_shared_exp_mem);
-        $readmemh("../data_e2_m3_t1/w0_dot_x0_fp32_result.hex", gold_dot_mem);
+        $readmemh("../data/vector_a.hex", w0_vec_mem);
+        $readmemh("../data/vector_b.hex", x0_vec_mem);
+        $readmemh("../data/shared_exp_a.hex", w0_shared_exp_mem);
+        $readmemh("../data/shared_exp_a.hex", x0_shared_exp_mem);
+        $readmemh("../data/fp32_result.hex", gold_dot_mem);
 
         $display("[%0t] Finished reading hex files.", $time);
         hex_loaded_done = 1'b1;
@@ -35,6 +35,9 @@ module sys_array_aitb_tb;
     logic clk;
     logic rst;
     logic is_load_phase_i_dut;
+    // NOTE:
+    // The underlying mxfp_dot uses column 1 of the AITB to produce the output.
+    // The load signal has to be asserted 2 cycles before the corresponding weight is asserted
     logic load_en_all_i_dut;
     logic [DATA_MX_W-1:0] weight_left_i_dut [0:N-1][0:DOT_LEN-1];
     logic [SHARED_EXP_W-1:0] weight_shared_exp_left_i_dut [0:N-1];
@@ -106,24 +109,84 @@ module sys_array_aitb_tb;
         // Wait for out of reset
         @(negedge rst);
         
-        // Load in hex values
-        weight_shared_exp_left_i_dut[0] = w0_shared_exp_mem[0];
-        x_shared_exp_top_i_dut[0] = x0_shared_exp_mem[0];
-        for (j = 0; j < DOT_LEN; j = j + 1) begin
-            weight_left_i_dut[0][j] = w0_vec_mem[j];
-            x_top_i_dut[0][j] = x0_vec_mem[j];
-        end
-        dot_fp32_o_gold[0][0] = gold_dot_mem[0];
 
         // Wait a few cycles for clarity
         repeat (4) @(posedge clk);
 
         // Place ourselves on a negative edge
         @(negedge clk);
+        // We are loading weights
+        is_load_phase_i_dut <= 1'b1;
 
-        // Generate first weights, activations and the golden outputs
+        @(negedge clk);
+        // Assert load enable
+        load_en_all_i_dut <= 1'b1;
+
+        @ (negedge clk);
+        // Introduce weights
+        weight_shared_exp_left_i_dut[0] <= w0_shared_exp_mem[0];
+        for (j = 0; j < DOT_LEN; j = j + 1) begin
+            weight_left_i_dut[0][j] <= w0_vec_mem[j];
+        end
+
+        @(negedge clk);
+        // Deassert load enable
+        load_en_all_i_dut <= 1'b0;
+
+        @(negedge clk);
+        // Switch to "forward pass" mode
+        is_load_phase_i_dut <= 1'b0;
+        
+        @(negedge clk);
+        // Present the activations
+        x_shared_exp_top_i_dut[0] <= x0_shared_exp_mem[0];
+        for (j = 0; j < DOT_LEN; j = j + 1) begin
+            x_top_i_dut[0][j] <= x0_vec_mem[j];
+        end
+        for (i = 0; i < N; i = i + 1) begin
+            valid_top_i_dut[i] = 1'b1;
+        end
+
+        @(negedge clk);
+        for (i = 0; i < N; i = i + 1) begin
+            valid_top_i_dut[i] = 1'b0;
+        end
+
+        repeat (1000) @(negedge clk);
+
         $finish;
 
+    end
+
+    shortreal w0_vec_real [0:DOT_LEN-1];
+    shortreal x0_vec_real [0:DOT_LEN-1];
+    shortreal dot_gold_real;
+    logic [31:0] dot_gold_bits;
+    integer k;
+    initial begin : RECEIVER
+        wait(hex_loaded_done);
+
+        // Wait for out of reset
+        @(negedge rst);
+        
+        // Load in hex values
+        dot_fp32_o_gold[0][0] = gold_dot_mem[0];
+        // Convert to shortreal
+        for (k = 0; k < DOT_LEN; k = k + 1) begin
+            w0_vec_real[k] = to_fp32(w0_vec_mem[k]);
+            x0_vec_real[k] = to_fp32(x0_vec_mem[k]);
+        end
+
+        // Compute golden shortreal
+        dot_gold_real = dot(
+            w0_vec_real,
+            x0_vec_real,
+            byte'(w0_shared_exp_mem[0]),
+            byte'(x0_shared_exp_mem[0])
+        );
+
+        // Convert shortreal to FP32 bits
+        dot_gold_bits = $shortrealtobits(dot_gold_real);
     end
 
     // "Golden" model
