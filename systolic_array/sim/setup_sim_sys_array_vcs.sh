@@ -3,8 +3,8 @@ TOP_LEVEL_NAME="sys_array_aitb_tb"
 
 QUARTUS_INSTALL_DIR=$QUARTUS_ROOT
 SKIP_SIM=1
-#USER_DEFINED_ELAB_OPTIONS="+vcs+lic+wait -debug_access+pp"
-USER_DEFINED_ELAB_OPTIONS="+vcs+lic+wait"
+USER_DEFINED_ELAB_OPTIONS="+vcs+lic+wait -debug_access+pp"
+#USER_DEFINED_ELAB_OPTIONS="+vcs+lic+wait"
 USER_DEFINED_ELAB_OPTIONS_APPEND=""
 USER_DEFINED_SIM_OPTIONS=""
 
@@ -48,7 +48,8 @@ $QUARTUS_INSTALL_DIR/eda/sim_lib/tennm_atoms.sv \
 $QUARTUS_INSTALL_DIR/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv \
 $design_files \
 $USER_DEFINED_ELAB_OPTIONS_APPEND \
--top $TOP_LEVEL_NAME -R
+-top $TOP_LEVEL_NAME
+#-top $TOP_LEVEL_NAME -R
 #-top $TOP_LEVEL_NAME -R -gui &
 
 # simulate
