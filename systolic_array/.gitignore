@@ -4,3 +4,6 @@ simv.vdb
 simv.daidir
 csrc
 rtl_sim_log
+DVEfiles
+inter.vpd
+.restartSimSession.tcl.old
