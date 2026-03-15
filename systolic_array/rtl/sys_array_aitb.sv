@@ -35,12 +35,22 @@ module sys_array_aitb #(
     output [3:0] fp32_flags_o [0:N-1][0:N-1][0:3]
 );
     
+    logic load_en_all_ff;
+    always_ff @( posedge clk ) begin
+        if (rst) begin
+            load_en_all_ff <= 1'b0;
+        end
+        else begin
+            load_en_all_ff <= load_en_all_i;
+        end
+    end
+
     // Weight pipeline (row, col, k)
     logic [DATA_MX_W-1:0] w_pipe [0:N-1][0:N-1][0:DOT_LEN-1];
     logic [SHARED_EXP_W-1:0] w_scale_pipe [0:N-1][0:N-1];
 
     // Activation pipeline (row, col, k)
-    logic [DATA_MX_W-1] x_pipe [0:N-1][0:N-1][0:DOT_LEN-1];
+    logic [DATA_MX_W-1:0] x_pipe [0:N-1][0:N-1][0:DOT_LEN-1];
     logic [SHARED_EXP_W-1:0] x_scale_pipe [0:N-1][0:N-1];
     logic valid_pipe [0:N-1][0:N-1];
 
@@ -155,7 +165,7 @@ module sys_array_aitb #(
                 ) pe_inst (
                     .clk(clk),
                     .rst(rst),
-                    .load_en(load_en_all_i),
+                    .load_en(load_en_all_ff),
                     .valid_in(pe_valid_in[gr][gc]),
                     .mx_data_in(pe_data_in[gr][gc]),
                     .shared_exponent(pe_shared_exp[gr][gc]),
