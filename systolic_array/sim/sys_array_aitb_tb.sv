@@ -10,6 +10,7 @@ module sys_array_aitb_tb;
     localparam DOT_LEN = 32;
     localparam DATA_OUT_W = 32;
     
+    // Signals for DUT
     logic clk;
     logic rst;
     logic is_load_phase_i_dut;
@@ -61,6 +62,9 @@ module sys_array_aitb_tb;
         rst = 1'b0;
     end
 
+    // Golden signals
+    logic [DATA_OUT_W-1:0] dot_fp32_o_gold [0:N-1][0:N-1];
+
     initial begin : DRIVER
         // Initialize inputs
         integer i, j;
@@ -86,6 +90,45 @@ module sys_array_aitb_tb;
 
         // Place ourselves on a negative edge
         @(negedge clk);
-        
+
+        // Generate first weights, activations and the golden outputs
+
     end
+
+    // "Golden" model
+    function automatic shortreal dot (shortreal vec1[], shortreal vec2[], byte shared_exp1, byte shared_exp2);
+        int corrected_exp = shared_exp1-127+shared_exp2-127;
+        dot = 0.0;
+
+        foreach (vec1[i])
+            dot += vec1[i] * vec2[i]; 
+        dot = shortreal'(dot * (2.0 ** (corrected_exp))); // 127 is exponent bias from OCP-MX Standard
+    endfunction
+
+    function automatic shortreal to_fp32 (int fp_bits);
+
+        localparam int M = MAN_W;
+        localparam int E = EXP_W;
+
+        int BIAS = (1 << (E-1)) - 1;
+        //logic [M+E:0] fp_bits = bits[M+E:0];
+
+        shortreal sign = fp_bits[M+E] ? -1.0 : 1.0;
+        int M_bits = fp_bits[M-1:0];
+        int E_bits = fp_bits[M+E-1:M];
+
+
+
+        if (M_bits == 0 && E_bits == 0) begin // ZERO
+            to_fp32 = sign * 0.0;
+        end
+        else if (E_bits == 0) begin //CURSED SUBNORMALS
+            to_fp32 = sign * (2.0 ** (1 - BIAS)) * (M_bits / shortreal'(1 << M));
+        end
+        else begin // NORMALs
+            to_fp32 = sign * (2.0 ** (E_bits - BIAS)) * (1.0 + M_bits / shortreal'(1 << M));
+        end
+
+    endfunction
+
 endmodule
