@@ -10,25 +10,75 @@ module sys_array_aitb_tb;
     localparam DOT_LEN = 32;
     localparam DATA_OUT_W = 32;
     
-    // Read hex files
-    logic hex_loaded_done;
+    // If want to use hex files
+    // NOTE: issue with this is the hex from testbench/scripts/generate_data.py does not seem to be exactly like our PEs
+    //logic hex_loaded_done;
+    //logic [DATA_MX_W-1:0] w0_vec_mem [0:DOT_LEN-1];
+    //logic [DATA_MX_W-1:0] x0_vec_mem [0:DOT_LEN-1];
+    //logic [SHARED_EXP_W-1:0] w0_shared_exp_mem [0:0];
+    //logic [SHARED_EXP_W-1:0] x0_shared_exp_mem [0:0];
+    //logic [DATA_OUT_W-1:0] gold_dot_mem [0:0];
+    //initial begin : LOAD_HEX
+    //    hex_loaded_done = 1'b0;
+    //    $display("[%0t] Reading hex files...", $time);
+    //    $readmemh("../data/vector_a.hex", w0_vec_mem);
+    //    $readmemh("../data/vector_b.hex", x0_vec_mem);
+    //    $readmemh("../data/shared_exp_a.hex", w0_shared_exp_mem);
+    //    $readmemh("../data/shared_exp_a.hex", x0_shared_exp_mem);
+    //    $readmemh("../data/fp32_result.hex", gold_dot_mem);
+    //    $display("[%0t] Finished reading hex files.", $time);
+    //    hex_loaded_done = 1'b1;
+    //end
+
+    // Generate the inputs ourselves
+    shortreal w0_vec_real [0:DOT_LEN-1];
+    shortreal x0_vec_real [0:DOT_LEN-1];
+    shortreal dot_gold_real;
+
+    // Stimulus
     logic [DATA_MX_W-1:0] w0_vec_mem [0:DOT_LEN-1];
     logic [DATA_MX_W-1:0] x0_vec_mem [0:DOT_LEN-1];
     logic [SHARED_EXP_W-1:0] w0_shared_exp_mem [0:0];
     logic [SHARED_EXP_W-1:0] x0_shared_exp_mem [0:0];
-    logic [DATA_OUT_W-1:0] gold_dot_mem [0:0];
-    initial begin : LOAD_HEX
-        hex_loaded_done = 1'b0;
-        $display("[%0t] Reading hex files...", $time);
 
-        $readmemh("../data/vector_a.hex", w0_vec_mem);
-        $readmemh("../data/vector_b.hex", x0_vec_mem);
-        $readmemh("../data/shared_exp_a.hex", w0_shared_exp_mem);
-        $readmemh("../data/shared_exp_a.hex", x0_shared_exp_mem);
-        $readmemh("../data/fp32_result.hex", gold_dot_mem);
+    // Golden result bits
+    logic gen_done;
+    logic [DATA_OUT_W-1:0] dot_fp32_o_gold [0:N-1][0:N-1];
+    integer k;
+    initial begin : DATA_GEN
+        gen_done = 1'b0;
+        // Reset everything
+        for (k = 0; k < DOT_LEN; k = k + 1) begin
+            w0_vec_mem[k] = '0;
+            x0_vec_mem[k] = '0;
+            w0_vec_real[k] = 0.0;
+            x0_vec_real[k] = 0.0;
+        end
 
-        $display("[%0t] Finished reading hex files.", $time);
-        hex_loaded_done = 1'b1;
+        // Sensible values to be in normal range
+        w0_shared_exp_mem[0] = 8'd127;
+        x0_shared_exp_mem[0] = 8'd126;
+
+        for (k = 0; k < DOT_LEN; k = k + 1) begin
+            w0_vec_mem[k] = $random;
+            x0_vec_mem[k] = $random;
+
+            w0_vec_real[k] = to_fp32(int'(w0_vec_mem[k]));
+            x0_vec_real[k] = to_fp32(int'(x0_vec_mem[k]));
+        end
+
+        // Golden values
+        dot_gold_real = dot(
+            w0_vec_real,
+            x0_vec_real,
+            byte'(w0_shared_exp_mem[0]),
+            byte'(x0_shared_exp_mem[0])
+        );
+
+        // Golden result in FP32 bits
+        dot_fp32_o_gold[0][0] = $shortrealtobits(dot_gold_real);
+
+        gen_done = 1'b1;
     end
 
     // Signals for DUT
@@ -86,12 +136,9 @@ module sys_array_aitb_tb;
         rst = 1'b0;
     end
 
-    // Golden signals
-    logic [DATA_OUT_W-1:0] dot_fp32_o_gold [0:N-1][0:N-1];
-
     integer i, j;
     initial begin : DRIVER
-        wait(hex_loaded_done);
+        wait(gen_done);
         // Initialize inputs
         is_load_phase_i_dut = 1'b0;
         load_en_all_i_dut = 1'b0;
@@ -133,6 +180,7 @@ module sys_array_aitb_tb;
         // Deassert load enable
         load_en_all_i_dut <= 1'b0;
 
+        @(negedge clk); // Have to wait an extra cycle before deassert load phase
         @(negedge clk);
         // Switch to "forward pass" mode
         is_load_phase_i_dut <= 1'b0;
@@ -152,41 +200,37 @@ module sys_array_aitb_tb;
             valid_top_i_dut[i] = 1'b0;
         end
 
-        repeat (1000) @(negedge clk);
+        repeat (100) @(negedge clk);
 
         $finish;
 
     end
 
-    shortreal w0_vec_real [0:DOT_LEN-1];
-    shortreal x0_vec_real [0:DOT_LEN-1];
-    shortreal dot_gold_real;
-    logic [31:0] dot_gold_bits;
-    integer k;
+    integer recv_count;
     initial begin : RECEIVER
-        wait(hex_loaded_done);
+        recv_count = 0;
 
-        // Wait for out of reset
+        wait(gen_done);
         @(negedge rst);
-        
-        // Load in hex values
-        dot_fp32_o_gold[0][0] = gold_dot_mem[0];
-        // Convert to shortreal
-        for (k = 0; k < DOT_LEN; k = k + 1) begin
-            w0_vec_real[k] = to_fp32(w0_vec_mem[k]);
-            x0_vec_real[k] = to_fp32(x0_vec_mem[k]);
+
+        forever begin
+            @(posedge clk);
+
+            if (valid_o_dut[0][0]) begin
+                recv_count = recv_count + 1;
+
+                $display("[%0t] RECEIVER: valid_o_dut[0][0]=1, dut=0x%08h, gold=0x%08h",
+                        $time, dot_fp32_o_dut[0][0], dot_fp32_o_gold[0][0]);
+
+                if (dot_fp32_o_dut[0][0] !== dot_fp32_o_gold[0][0]) begin
+                    $error("[%0t] MISMATCH: dut=0x%08h, gold=0x%08h",
+                        $time, dot_fp32_o_dut[0][0], dot_fp32_o_gold[0][0]);
+                end
+                else begin
+                    $display("[%0t] MATCH: dut output equals golden result.", $time);
+                end
+            end
         end
-
-        // Compute golden shortreal
-        dot_gold_real = dot(
-            w0_vec_real,
-            x0_vec_real,
-            byte'(w0_shared_exp_mem[0]),
-            byte'(x0_shared_exp_mem[0])
-        );
-
-        // Convert shortreal to FP32 bits
-        dot_gold_bits = $shortrealtobits(dot_gold_real);
     end
 
     // "Golden" model
