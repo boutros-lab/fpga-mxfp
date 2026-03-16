@@ -6,7 +6,7 @@
 
 import pkg_aitb::*;
 
-module naive_reduction #(
+module packed_reduction #(
 	parameter FP8_INPUTS = 8,
 	parameter FP6_INPUTS = 4,
 	parameter FP4_INPUTS = 4,

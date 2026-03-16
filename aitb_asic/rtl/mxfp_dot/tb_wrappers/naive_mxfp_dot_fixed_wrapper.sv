@@ -100,8 +100,9 @@ generate
 endgenerate
 
 // Only works with MXFP8 K=8, MXFP6 K=12, MXFP4 K=16, INT8 K=10
-naive_mxfp_dot_fixed 
-u_naive_mxfp_dot_fixed (
+naive_mxfp_dot_fixed #(
+	.PACKED_REDUCTION(0)
+) u_naive_mxfp_dot_fixed (
 	.i_sign_shift(exp_width + man_width),
 	.i_exp_bits(exp_width),
 	.i_man_bits(man_width),

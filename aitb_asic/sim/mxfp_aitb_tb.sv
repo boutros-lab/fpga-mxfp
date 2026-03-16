@@ -267,11 +267,11 @@ initial begin
 		$display("Simulation FAILED!");
 		$display("%0d/%0d Tests Failed", mistakes, TEST_LENGTH);
 		$display("%0d/%0d Inexact", inexact, TEST_LENGTH);
-		$display("Max Error 0: %f, Tolerance: %f", max_error, tolerance);
+		$display("Max Error 0: %f%%, Tolerance: %f", max_error, tolerance);
 	end else begin
 		$display("Simulation PASSED!");
 		$display("%0d/%0d Inexact", inexact, TEST_LENGTH);
-		$display("Max Error 0: %f, Tolerance: %f", max_error, tolerance);
+		$display("Max Error 0: %f%%, Tolerance: %f", max_error, tolerance);
 	end
 
 	$stop;
