@@ -4,7 +4,9 @@
 
 import pkg_aitb::*;
 
-module naive_mxfp_aitb_top (
+module naive_mxfp_aitb_top #(
+	parameter PACKED_REDUCTION = 0
+)(
 	input logic clk,
 	input logic rst,
 	input logic acc_en,
@@ -311,8 +313,9 @@ pipeline #(.W(SH_EXP_WIDTH), .STAGES(1)) PIPE_2_w_reg_c2 (
 );
 
 // Dot engine (out: 70b vector)
-naive_mxfp_dot_fixed 
-u_naive_mxfp_dot_fixed_col1 (
+naive_mxfp_dot_fixed #(
+	.PACKED_REDUCTION(PACKED_REDUCTION)
+) u_naive_mxfp_dot_fixed_col1 (
 	.i_sign_shift(sign_shift),
 	.i_exp_bits(exp_bits),
 	.i_man_bits(man_bits),
@@ -333,8 +336,9 @@ u_naive_mxfp_dot_fixed_col1 (
 	.o_fixed_result(dot_out_col1)
 );
 
-naive_mxfp_dot_fixed 
-u_naive_mxfp_dot_fixed_col2 (
+naive_mxfp_dot_fixed #(
+	.PACKED_REDUCTION(PACKED_REDUCTION)
+) u_naive_mxfp_dot_fixed_col2 (
 	.i_sign_shift(sign_shift),
 	.i_exp_bits(exp_bits),
 	.i_man_bits(man_bits),

@@ -41,7 +41,7 @@ synthesis.inputs.input_files: [
    "rtl/mxfp_dot.sv",
    "rtl/normalizer.sv",
    "rtl/pipeline.sv",
-   "rtl/ieee_fp32_add.vhd"
+   "rtl/ieee_fp32_add.vhdl"
 
 ]
 synthesis.inputs.top_module: "aitb_top"
