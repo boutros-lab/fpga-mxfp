@@ -193,9 +193,11 @@ module sys_array_aitb_tb;
 
         @ (negedge clk);
         // Introduce weights
-        weight_shared_exp_left_i_dut[0] <= w0_shared_exp_mem[0];
-        for (j = 0; j < DOT_LEN; j = j + 1) begin
-            weight_left_i_dut[0][j] <= w0_vec_mem[j];
+        for (i = 0; i < N; i = i + 1) begin
+            weight_shared_exp_left_i_dut[i] <= w0_shared_exp_mem[i];
+            for (j = 0; j < DOT_LEN; j = j + 1) begin
+                weight_left_i_dut[i][j] <= w0_vec_mem[j];
+            end 
         end
 
         @(negedge clk);
@@ -209,11 +211,11 @@ module sys_array_aitb_tb;
         
         @(negedge clk);
         // Present the activations
-        x_shared_exp_top_i_dut[0] <= x0_shared_exp_mem[0];
-        for (j = 0; j < DOT_LEN; j = j + 1) begin
-            x_top_i_dut[0][j] <= x0_vec_mem[j];
-        end
         for (i = 0; i < N; i = i + 1) begin
+            x_shared_exp_top_i_dut[0] <= x0_shared_exp_mem[0];
+            for (j = 0; j < DOT_LEN; j = j + 1) begin
+                x_top_i_dut[0][j] <= x0_vec_mem[j];
+            end
             valid_top_i_dut[i] = 1'b1;
         end
 
