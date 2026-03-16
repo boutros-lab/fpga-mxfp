@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 module sys_array_aitb_tb;
-    localparam N = 1;
+    localparam N = 2;
     localparam MAN_W = 3;
     localparam EXP_W = 2;
     localparam DATA_MX_W = 1 + MAN_W + EXP_W;
@@ -31,52 +31,74 @@ module sys_array_aitb_tb;
     //end
 
     // Generate the inputs ourselves
-    shortreal w0_vec_real [0:DOT_LEN-1];
-    shortreal x0_vec_real [0:DOT_LEN-1];
-    shortreal dot_gold_real;
+    shortreal w_vec_real [0:N-1][0:DOT_LEN-1];
+    shortreal x_vec_real [0:N-1][0:DOT_LEN-1];
+    shortreal dot_gold_real [0:N-1][0:N-1]; // This is for only 1 set of activations
 
     // Stimulus
-    logic [DATA_MX_W-1:0] w0_vec_mem [0:DOT_LEN-1];
-    logic [DATA_MX_W-1:0] x0_vec_mem [0:DOT_LEN-1];
-    logic [SHARED_EXP_W-1:0] w0_shared_exp_mem [0:0];
-    logic [SHARED_EXP_W-1:0] x0_shared_exp_mem [0:0];
+    logic [DATA_MX_W-1:0] w_vec_mem [0:N-1][0:DOT_LEN-1];
+    logic [DATA_MX_W-1:0] x_vec_mem [0:N-1][0:DOT_LEN-1];
+    logic [SHARED_EXP_W-1:0] w_shared_exp_mem [0:N-1];
+    logic [SHARED_EXP_W-1:0] x_shared_exp_mem [0:N-1];
 
     // Golden result bits
     logic gen_done;
     logic [DATA_OUT_W-1:0] dot_fp32_o_gold [0:N-1][0:N-1];
-    integer k;
+    integer r, c, k;
     initial begin : DATA_GEN
         gen_done = 1'b0;
         // Reset everything
-        for (k = 0; k < DOT_LEN; k = k + 1) begin
-            w0_vec_mem[k] = '0;
-            x0_vec_mem[k] = '0;
-            w0_vec_real[k] = 0.0;
-            x0_vec_real[k] = 0.0;
+        for (r = 0; r < N; r = r + 1) begin
+            w_shared_exp_mem[r] = '0;
+            x_shared_exp_mem[r] = '0;
+            for (k = 0; k < DOT_LEN; k = k + 1) begin
+                w_vec_mem[r][k] = '0;
+                x_vec_mem[r][k] = '0;
+                w_vec_real[r][k] = 0.0;
+                x_vec_real[r][k] = 0.0;
+            end
+        end
+        
+        for (r = 0; r < N; r = r + 1) begin
+            for (c = 0; c < N; c = c + 1) begin
+                dot_fp32_o_gold[r][c] = '0;
+                dot_gold_real[r][c] = 0.0;
+            end
         end
 
-        // Sensible values to be in normal range
-        w0_shared_exp_mem[0] = 8'd127;
-        x0_shared_exp_mem[0] = 8'd126;
-
-        for (k = 0; k < DOT_LEN; k = k + 1) begin
-            w0_vec_mem[k] = $random;
-            x0_vec_mem[k] = $random;
-
-            w0_vec_real[k] = to_fp32(int'(w0_vec_mem[k]));
-            x0_vec_real[k] = to_fp32(int'(x0_vec_mem[k]));
+        // Shared exponents
+        for (r = 0; r < N; r = r + 1) begin
+            // Sensible values to be in normal range
+            w_shared_exp_mem[r] = 8'd127;
+            x_shared_exp_mem[r] = 8'd126;
         end
 
-        // Golden values
-        dot_gold_real = dot(
-            w0_vec_real,
-            x0_vec_real,
-            byte'(w0_shared_exp_mem[0]),
-            byte'(x0_shared_exp_mem[0])
-        );
+        // Generate N weight vectors / N activation vectors
+        // since array is symmetric using "row" as iterator, but,
+        // for the activations these are the different columns
+        for (r = 0; r < N; r = r + 1) begin
+           for (k = 0; k < DOT_LEN; k = k + 1) begin
+                w_vec_mem[r][k] = $random;
+                x_vec_mem[r][k] = $random;
 
-        // Golden result in FP32 bits
-        dot_fp32_o_gold[0][0] = $shortrealtobits(dot_gold_real);
+                w_vec_real[r][k] = to_fp32(int'(w_vec_mem[r][k]));
+                x_vec_real[r][k] = to_fp32(int'(x_vec_mem[r][k]));
+            end 
+        end
+
+        // For a set of weights and a set of activations, NxN dot products
+        for (r = 0; r < N; r = r + 1) begin
+            for (c = 0; c < N; c = c + 1) begin
+                dot_gold_real[r][c] = dot(
+                    w_vec_real[r],
+                    x_vec_real[c],
+                    byte'(w_shared_exp_mem[r]),
+                    byte'(x_shared_exp_mem[c])
+                );
+
+                dot_fp32_o_gold[r][c] = $shortrealtobits(dot_gold_real[r][c]);
+            end
+        end
 
         gen_done = 1'b1;
     end
