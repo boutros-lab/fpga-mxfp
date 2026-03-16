@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 module sys_array_aitb_tb;
-    localparam N = 2;
+    localparam N = 3;
     localparam MAN_W = 3;
     localparam EXP_W = 2;
     localparam DATA_MX_W = 1 + MAN_W + EXP_W;
@@ -100,6 +100,44 @@ module sys_array_aitb_tb;
             end
         end
 
+        // -----------------------------------------------------------------------------
+        // Print generated weights, activations, and golden results
+        // -----------------------------------------------------------------------------
+        $display("============================================================");
+        $display("DATA_GEN: Generated test data");
+        $display("============================================================");
+
+        // Weights
+        for (r = 0; r < N; r = r + 1) begin
+            $display("Weight row %0d : shared_exp = %0d (0x%02h)", 
+                    r, w_shared_exp_mem[r], w_shared_exp_mem[r]);
+            for (k = 0; k < DOT_LEN; k = k + 1) begin
+                $display("  w_vec_mem[%0d][%0d] = 0x%0h   -> fp32 = %f",
+                        r, k, w_vec_mem[r][k], w_vec_real[r][k]);
+            end
+        end
+
+        // Activations
+        for (c = 0; c < N; c = c + 1) begin
+            $display("Activation col %0d : shared_exp = %0d (0x%02h)", 
+                    c, x_shared_exp_mem[c], x_shared_exp_mem[c]);
+            for (k = 0; k < DOT_LEN; k = k + 1) begin
+                $display("  x_vec_mem[%0d][%0d] = 0x%0h   -> fp32 = %f",
+                        c, k, x_vec_mem[c][k], x_vec_real[c][k]);
+            end
+        end
+
+        // Golden results
+        $display("Golden dot products:");
+        for (r = 0; r < N; r = r + 1) begin
+            for (c = 0; c < N; c = c + 1) begin
+                $display("  gold[%0d][%0d] = 0x%08h   -> fp32 = %f",
+                        r, c, dot_fp32_o_gold[r][c], dot_gold_real[r][c]);
+            end
+        end
+
+        $display("============================================================");
+
         gen_done = 1'b1;
     end
 
@@ -188,19 +226,20 @@ module sys_array_aitb_tb;
         is_load_phase_i_dut <= 1'b1;
 
         @(negedge clk);
-        // Assert load enable
-        load_en_all_i_dut <= 1'b1;
 
         @ (negedge clk);
         // Introduce weights
         for (i = 0; i < N; i = i + 1) begin
-            weight_shared_exp_left_i_dut[i] <= w0_shared_exp_mem[i];
+            weight_shared_exp_left_i_dut[i] <= w_shared_exp_mem[i];
             for (j = 0; j < DOT_LEN; j = j + 1) begin
-                weight_left_i_dut[i][j] <= w0_vec_mem[j];
+                weight_left_i_dut[i][j] <= w_vec_mem[i][j];
             end 
         end
+        // Assert load enable
+        // NOTE: Need to hold load_en_all_i_dut for N cycles
+        load_en_all_i_dut <= 1'b1;
 
-        @(negedge clk);
+        repeat (N) @(negedge clk);
         // Deassert load enable
         load_en_all_i_dut <= 1'b0;
 
@@ -212,9 +251,9 @@ module sys_array_aitb_tb;
         @(negedge clk);
         // Present the activations
         for (i = 0; i < N; i = i + 1) begin
-            x_shared_exp_top_i_dut[0] <= x0_shared_exp_mem[0];
+            x_shared_exp_top_i_dut[i] <= x_shared_exp_mem[i];
             for (j = 0; j < DOT_LEN; j = j + 1) begin
-                x_top_i_dut[0][j] <= x0_vec_mem[j];
+                x_top_i_dut[i][j] <= x_vec_mem[i][j];
             end
             valid_top_i_dut[i] = 1'b1;
         end
@@ -230,7 +269,9 @@ module sys_array_aitb_tb;
 
     end
 
+    integer rr, cc;
     integer recv_count;
+
     initial begin : RECEIVER
         recv_count = 0;
 
@@ -240,18 +281,26 @@ module sys_array_aitb_tb;
         forever begin
             @(posedge clk);
 
-            if (valid_o_dut[0][0]) begin
-                recv_count = recv_count + 1;
+            for (rr = 0; rr < N; rr = rr + 1) begin
+                for (cc = 0; cc < N; cc = cc + 1) begin
+                    if (valid_o_dut[rr][cc]) begin
+                        recv_count = recv_count + 1;
 
-                $display("[%0t] RECEIVER: valid_o_dut[0][0]=1, dut=0x%08h, gold=0x%08h",
-                        $time, dot_fp32_o_dut[0][0], dot_fp32_o_gold[0][0]);
+                        $display("[%0t] RECEIVER: valid_o_dut[%0d][%0d]=1, dut=0x%08h, gold=0x%08h",
+                                $time, rr, cc,
+                                dot_fp32_o_dut[rr][cc],
+                                dot_fp32_o_gold[rr][cc]);
 
-                if (dot_fp32_o_dut[0][0] !== dot_fp32_o_gold[0][0]) begin
-                    $error("[%0t] MISMATCH: dut=0x%08h, gold=0x%08h",
-                        $time, dot_fp32_o_dut[0][0], dot_fp32_o_gold[0][0]);
-                end
-                else begin
-                    $display("[%0t] MATCH: dut output equals golden result.", $time);
+                        if (dot_fp32_o_dut[rr][cc] !== dot_fp32_o_gold[rr][cc]) begin
+                            $error("[%0t] MISMATCH at [%0d][%0d]: dut=0x%08h, gold=0x%08h",
+                                $time, rr, cc,
+                                dot_fp32_o_dut[rr][cc],
+                                dot_fp32_o_gold[rr][cc]);
+                        end
+                        else begin
+                            $display("[%0t] MATCH at [%0d][%0d]", $time, rr, cc);
+                        end
+                    end
                 end
             end
         end
