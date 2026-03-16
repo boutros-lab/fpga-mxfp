@@ -1,6 +1,8 @@
 `timescale 1ns/1ps
 module sys_array_aitb_tb;
     localparam N = 3;
+    // Number of sets of activations to stream in.
+    localparam P = 1;
     localparam MAN_W = 3;
     localparam EXP_W = 2;
     localparam DATA_MX_W = 1 + MAN_W + EXP_W;
@@ -32,71 +34,86 @@ module sys_array_aitb_tb;
 
     // Generate the inputs ourselves
     shortreal w_vec_real [0:N-1][0:DOT_LEN-1];
-    shortreal x_vec_real [0:N-1][0:DOT_LEN-1];
-    shortreal dot_gold_real [0:N-1][0:N-1]; // This is for only 1 set of activations
+    shortreal x_vec_real [0:P-1][0:N-1][0:DOT_LEN-1];
+    shortreal dot_gold_real [0:P-1][0:N-1][0:N-1];
 
     // Stimulus
     logic [DATA_MX_W-1:0] w_vec_mem [0:N-1][0:DOT_LEN-1];
-    logic [DATA_MX_W-1:0] x_vec_mem [0:N-1][0:DOT_LEN-1];
+    logic [DATA_MX_W-1:0] x_vec_mem [0:P-1][0:N-1][0:DOT_LEN-1];
     logic [SHARED_EXP_W-1:0] w_shared_exp_mem [0:N-1];
-    logic [SHARED_EXP_W-1:0] x_shared_exp_mem [0:N-1];
+    logic [SHARED_EXP_W-1:0] x_shared_exp_mem [0:P-1][0:N-1];
 
     // Golden result bits
     logic gen_done;
-    logic [DATA_OUT_W-1:0] dot_fp32_o_gold [0:N-1][0:N-1];
-    integer r, c, k;
+    logic [DATA_OUT_W-1:0] dot_fp32_o_gold [0:P-1][0:N-1][0:N-1];
+    integer r, c, k, p;
     initial begin : DATA_GEN
         gen_done = 1'b0;
-        // Reset everything
+
+        // Clear everything
         for (r = 0; r < N; r = r + 1) begin
             w_shared_exp_mem[r] = '0;
-            x_shared_exp_mem[r] = '0;
             for (k = 0; k < DOT_LEN; k = k + 1) begin
-                w_vec_mem[r][k] = '0;
-                x_vec_mem[r][k] = '0;
+                w_vec_mem[r][k]  = '0;
                 w_vec_real[r][k] = 0.0;
-                x_vec_real[r][k] = 0.0;
-            end
-        end
-        
-        for (r = 0; r < N; r = r + 1) begin
-            for (c = 0; c < N; c = c + 1) begin
-                dot_fp32_o_gold[r][c] = '0;
-                dot_gold_real[r][c] = 0.0;
             end
         end
 
-        // Shared exponents
+        for (p = 0; p < P; p = p + 1) begin
+            for (c = 0; c < N; c = c + 1) begin
+                x_shared_exp_mem[p][c] = '0;
+                for (k = 0; k < DOT_LEN; k = k + 1) begin
+                    x_vec_mem[p][c][k]  = '0;
+                    x_vec_real[p][c][k] = 0.0;
+                end
+            end
+        end
+
+        for (p = 0; p < P; p = p + 1) begin
+            for (r = 0; r < N; r = r + 1) begin
+                for (c = 0; c < N; c = c + 1) begin
+                    dot_gold_real[p][r][c]   = 0.0;
+                    dot_fp32_o_gold[p][r][c] = '0;
+                end
+            end
+        end
+
+        // Weights, one vector per row
         for (r = 0; r < N; r = r + 1) begin
             // Sensible values to be in normal range
             w_shared_exp_mem[r] = 8'd127;
-            x_shared_exp_mem[r] = 8'd126;
-        end
-
-        // Generate N weight vectors / N activation vectors
-        // since array is symmetric using "row" as iterator, but,
-        // for the activations these are the different columns
-        for (r = 0; r < N; r = r + 1) begin
-           for (k = 0; k < DOT_LEN; k = k + 1) begin
+            for (k = 0; k < DOT_LEN; k = k + 1) begin
                 w_vec_mem[r][k] = $random;
-                x_vec_mem[r][k] = $random;
-
                 w_vec_real[r][k] = to_fp32(int'(w_vec_mem[r][k]));
-                x_vec_real[r][k] = to_fp32(int'(x_vec_mem[r][k]));
-            end 
+            end
         end
 
-        // For a set of weights and a set of activations, NxN dot products
-        for (r = 0; r < N; r = r + 1) begin
+        // Activations
+        // P sets of activations
+        for (p = 0; p < P; p = p + 1) begin
             for (c = 0; c < N; c = c + 1) begin
-                dot_gold_real[r][c] = dot(
-                    w_vec_real[r],
-                    x_vec_real[c],
-                    byte'(w_shared_exp_mem[r]),
-                    byte'(x_shared_exp_mem[c])
-                );
+                x_shared_exp_mem[p][c] = 8'd126;
+                for (k = 0; k < DOT_LEN; k = k + 1) begin
+                    x_vec_mem[p][c][k] = $random;
 
-                dot_fp32_o_gold[r][c] = $shortrealtobits(dot_gold_real[r][c]);
+                    x_vec_real[p][c][k] = to_fp32(int'(x_vec_mem[p][c][k]));
+                end
+            end
+        end
+
+        // For a set of weights and a P sets of activations, PxNxN dot products
+        for (p = 0; p < P; p = p + 1) begin
+            for (r = 0; r < N; r = r + 1) begin
+                for (c = 0; c < N; c = c + 1) begin
+                    dot_gold_real[p][r][c] = dot(
+                        w_vec_real[r],
+                        x_vec_real[p][c],
+                        byte'(w_shared_exp_mem[r]),
+                        byte'(x_shared_exp_mem[p][c])
+                    );
+
+                    dot_fp32_o_gold[p][r][c] = $shortrealtobits(dot_gold_real[p][r][c]);
+                end
             end
         end
 
@@ -104,38 +121,42 @@ module sys_array_aitb_tb;
         // Print generated weights, activations, and golden results
         // -----------------------------------------------------------------------------
         $display("============================================================");
-        $display("DATA_GEN: Generated test data");
+        $display("DATA_GEN: Generated weights");
         $display("============================================================");
-
-        // Weights
         for (r = 0; r < N; r = r + 1) begin
-            $display("Weight row %0d : shared_exp = %0d (0x%02h)", 
-                    r, w_shared_exp_mem[r], w_shared_exp_mem[r]);
+            $write("W[%0d] exp=%0d :", r, w_shared_exp_mem[r]);
             for (k = 0; k < DOT_LEN; k = k + 1) begin
-                $display("  w_vec_mem[%0d][%0d] = 0x%0h   -> fp32 = %f",
-                        r, k, w_vec_mem[r][k], w_vec_real[r][k]);
+                $write(" %0h", w_vec_mem[r][k]);
             end
+            $write("\n");
         end
 
-        // Activations
-        for (c = 0; c < N; c = c + 1) begin
-            $display("Activation col %0d : shared_exp = %0d (0x%02h)", 
-                    c, x_shared_exp_mem[c], x_shared_exp_mem[c]);
-            for (k = 0; k < DOT_LEN; k = k + 1) begin
-                $display("  x_vec_mem[%0d][%0d] = 0x%0h   -> fp32 = %f",
-                        c, k, x_vec_mem[c][k], x_vec_real[c][k]);
-            end
-        end
-
-        // Golden results
-        $display("Golden dot products:");
-        for (r = 0; r < N; r = r + 1) begin
+        $display("============================================================");
+        $display("DATA_GEN: Generated activation sets");
+        $display("============================================================");
+        // Limit ourselves to the first set, can put in <P if want more
+        for (p = 0; p < 0; p = p + 1) begin
             for (c = 0; c < N; c = c + 1) begin
-                $display("  gold[%0d][%0d] = 0x%08h   -> fp32 = %f",
-                        r, c, dot_fp32_o_gold[r][c], dot_gold_real[r][c]);
+                $write("X[p=%0d][c=%0d] exp=%0d :", p, c, x_shared_exp_mem[p][c]);
+                for (k = 0; k < DOT_LEN; k = k + 1) begin
+                    $write(" %0h", x_vec_mem[p][c][k]);
+                end
+                $write("\n");
             end
         end
 
+        $display("============================================================");
+        $display("DATA_GEN: Golden dot products");
+        $display("============================================================");
+        // Limit ourselves to the first set, can put in <P if want more
+        for (p = 0; p < 0; p = p + 1) begin
+            for (r = 0; r < N; r = r + 1) begin
+                for (c = 0; c < N; c = c + 1) begin
+                    $display("G[p=%0d][%0d][%0d] = 0x%08h (%f)",
+                            p, r, c, dot_fp32_o_gold[p][r][c], dot_gold_real[p][r][c]);
+                end
+            end
+        end
         $display("============================================================");
 
         gen_done = 1'b1;
