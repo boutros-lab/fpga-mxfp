@@ -60,6 +60,10 @@ V. `ieee_fp32_add.vhdl` Flopoco-generated IEEE single-precision FP32 adder
 ---
 
 ### Design Notes
-- The output pipeline has 2 register stages to compensate for an unknown register placing to achieve 5-cycle latency
 - There is a `pipeline.sv` module. This is just a module that encapsulates the pipeline register logic.
  
+## Running the ASIC flow
+ 1. Double check that all the files you need are listed under `synthesis.inputs.input_files` in `asic/asap7.yml". Note the that is a YAML style list.
+ 2. Activate the conda environment with `conda activate hammer`.
+ 3. Run `make fit` for running the full ASIC flow (RTL to GDSII)
+ 4. Check the files asic/obj-dir/par-rundir/{area|timing}.rpt for area and timing results.
