@@ -14,13 +14,13 @@ sim_mxfp:
 
 syn:
 	hammer-vlsi -p asic/asap7.yml -e asic/asap7.yml --obj_dir asic/obj-dir syn
-	quartus_sh -t syn/setup.tcl mxfp_dot_cli E$E_M$M $E $M ${PIPE}
-	quartus_sh -t syn/syn.tcl mxfp_dot_cli syn E$E_M$M
+#	quartus_sh -t syn/setup.tcl mxfp_dot_cli E$E_M$M $E $M ${PIPE}
+#	quartus_sh -t syn/syn.tcl mxfp_dot_cli syn E$E_M$M
 
 fit:
 	hammer-vlsi -p asic/asap7.yml -e asic/asap7.yml --obj_dir asic/obj-dir syn-par
-	quartus_sh -t syn/setup.tcl mxfp_dot_cli E$E_M$M $E $M ${PIPE}
-	quartus_sh -t syn/fit.tcl mxfp_dot_cli syn E$E_M$M
+#	quartus_sh -t syn/setup.tcl mxfp_dot_cli E$E_M$M $E $M ${PIPE}
+#	quartus_sh -t syn/fit.tcl mxfp_dot_cli syn E$E_M$M
 
 clean:
 	rm *.log *.json asic/obj-dir -r
