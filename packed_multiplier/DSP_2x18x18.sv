@@ -1,7 +1,4 @@
-module DSP_2x18x18 # (
-    parameter registered_input = 1, // doesn't do anything yet !!!
-    parameter registered_output = 1 // doesn't do anything yet !!!
-) (
+module DSP_2x18x18 # () (
     input logic [17:0] ax, ay, bx, by,
     input logic clk, 
     output logic [35:0] resulta, resultb

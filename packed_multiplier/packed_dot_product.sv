@@ -5,14 +5,14 @@ module packed_dot_product #(
     parameter block_size = 32, // must be divisible by 2 since the DSP can handle 2 multiplications at once
     localparam num_ops = mul_width / 2 / (1+mantissa_width), 
     // Sign + Mantissa_Multiplied + Max_Exponent_Sum_Shift + Block_Sum
-    // 1 + 2(M+1) + 2^(E+1) + log2(B)
-    localparam fixed_point_width = 1 + 2 * (mantissa_width + 1) + 2 ** (exponent_width + 1) + $clog2(block_size)
+    localparam fixed_point_product_width = 1 + 2 * (mantissa_width + 1) + 2 ** (exponent_width + 1) - 2,
+    localparam fixed_point_result_width = 1 + 2 * (mantissa_width + 1) + 2 ** (exponent_width + 1) -2 + $clog2(block_size)
 ) (
     input logic clk,
     // NOTE: operands are a sequence of block-length vectors
     input logic [1 + mantissa_width + exponent_width -1:0] operands [block_size-1:0][num_ops-1:0], sharedOperands [block_size-1:0],
     // output size is 1 + 2(M+1) + 2^(E+1) + log2(B)
-    output logic [fixed_point_width-1:0] results [num_ops-1:0]
+    output logic [fixed_point_result_width-1:0] results [num_ops-1:0]
 );
 
 // MXFP format example
@@ -32,12 +32,19 @@ module packed_dot_product #(
 // shift left mantissa by 2^E
 
 // intermediate between multiplication and reduction trees
-logic [fixed_point_width-1:0] fixed_point_products [block_size-1:0][num_ops-1:0];
+logic [fixed_point_product_width-1:0] fixed_point_products [block_size-1:0][num_ops-1:0];
 
 // MULTIPLICATION AND CONVERSION
 for (genvar i = 0; i < block_size/2; i++) begin
 
-    // extract mantissas 
+    // Connections between packed multipliers and DSP
+    logic [17:0] ax, ay, bx, by;
+    logic [35:0] resulta, resultb;
+    // Connections between packed multipliers and float-fix conversion
+    logic [2*(mantissa_width + 1)-1:0] mantissa_products_a [num_ops-1:0], mantissa_products_b [num_ops-1:0];
+    logic [exponent_width:0] exponent_sums_a [num_ops-1:0], exponent_sums_b [num_ops-1:0];
+
+    // Extract mantissas 
     logic [mantissa_width:0] mantissas_a [num_ops-1:0], mantissas_b [num_ops-1:0], shared_mantissa_a , shared_mantissa_b;
     assign shared_mantissa_a = {1'b1, sharedOperands[i*2][mantissa_width-1:0]};
     assign shared_mantissa_b = {1'b1, sharedOperands[i*2+1][mantissa_width-1:0]};
@@ -45,18 +52,11 @@ for (genvar i = 0; i < block_size/2; i++) begin
         assign mantissas_a[n] = {1'b1, operands[i*2][n][mantissa_width-1:0]};
         assign mantissas_b[n] = {1'b1, operands[i*2+1][n][mantissa_width-1:0]};
     end
-    // connections between packed multipliers and DSP
-    logic [17:0] ax, ay, bx, by;
-    logic [35:0] resulta, resultb;
-    // connections between packed multipliers and fxp-flp conversion
-    logic [2*(mantissa_width + 1)-1:0] mantissa_products_a [num_ops-1:0], mantissa_products_b [num_ops-1:0];
 
-    // use packed multipliers and DSP to multiply mantissas
+    // Use packed multipliers and DSP to multiply mantissas
     packed_multiplier #(
         .op_width(mantissa_width + 1),
-        .mul_width(mul_width),
-        .registered_input(0),
-        .registered_output(0)
+        .mul_width(mul_width)
     ) pm_a (
         .clk(clk),
         .operands(mantissas_a),
@@ -68,9 +68,7 @@ for (genvar i = 0; i < block_size/2; i++) begin
     );
     packed_multiplier #(
         .op_width(mantissa_width + 1),
-        .mul_width(mul_width),
-        .registered_input(0),
-        .registered_output(0)
+        .mul_width(mul_width)
     ) pm_b (
         .clk(clk),
         .operands(mantissas_b),
@@ -80,10 +78,7 @@ for (genvar i = 0; i < block_size/2; i++) begin
         .mul_y(by),
         .mul_result(resultb)
     );
-    DSP_2x18x18 #(
-        .registered_input(0),
-        .registered_output(0)
-    ) dsp_inst (
+    DSP_2x18x18 dsp_inst (
         .ax(ax),
         .ay(ay),
         .bx(bx),
@@ -93,15 +88,22 @@ for (genvar i = 0; i < block_size/2; i++) begin
         .clk(clk)
     );
 
+    // Just add exponents
+    for (genvar n = 0; n < num_ops; n++) begin
+        always_comb begin
+            exponent_sums_a[n] = operands[i*2][n][exponent_width+mantissa_width-1:mantissa_width] 
+                + sharedOperands[i*2][exponent_width+mantissa_width-1:mantissa_width];
+            exponent_sums_b[n] = operands[i*2+1][n][exponent_width+mantissa_width-1:mantissa_width] 
+                + sharedOperands[i*2+1][exponent_width+mantissa_width-1:mantissa_width];
+        end
+    end
+
+    // Convert to fixed point
     for (genvar n = 0; n < num_ops; n++) begin
         always_comb begin
             // shift left mantissa by exponent
-            fixed_point_products[i*2][n] = mantissa_products_a[n] 
-                << (operands[i*2][n][exponent_width+mantissa_width-1:mantissa_width] 
-                    + sharedOperands[i*2][exponent_width+mantissa_width-1:mantissa_width]);
-            fixed_point_products[i*2+1][n] = mantissa_products_b[n] 
-                << (operands[i*2+1][n][exponent_width+mantissa_width-1:mantissa_width] 
-                    + sharedOperands[i*2+1][exponent_width+mantissa_width-1:mantissa_width]);
+            fixed_point_products[i*2][n] = fixed_point_product_width'(mantissa_products_a[n]) << exponent_sums_a[n];
+            fixed_point_products[i*2+1][n] = fixed_point_product_width'(mantissa_products_b[n]) << exponent_sums_b[n];
             // handle sign
             if (operands[i*2][n][exponent_width+mantissa_width] ^ sharedOperands[i*2][exponent_width+mantissa_width]) begin
                 fixed_point_products[i*2][n] = -fixed_point_products[i*2][n];
@@ -116,18 +118,27 @@ end
 
 // REDUCTION TREE
 for (genvar i = 0; i < num_ops; i++) begin
+
+    logic [fixed_point_result_width*block_size-1:0] din_packed;
+    for (genvar j = 0; j < block_size; j++) begin
+        // Sign-extend fixed_point_products to match fixed_point_result_width
+        assign din_packed[j*fixed_point_result_width +: fixed_point_result_width] = 
+            {{(fixed_point_result_width - fixed_point_product_width){fixed_point_products[j][i][fixed_point_product_width-1]}}, fixed_point_products[j][i]};
+    end
+    
     reduction #(
-        .DW(fixed_point_width),
+        .DW(fixed_point_result_width),
         .L(1),
         .N(block_size)
     ) red_inst (
-        .din({{($clog2(block_size)){1'b1}},fixed_point_products}),  // DW is set as result width
+        .din(din_packed),
         .dout(results[i]),
         .valid_in(1'b1),
         .valid_out(),
         .clk(clk),
         .rst(1'b0)
     );
+
 end
 
 endmodule

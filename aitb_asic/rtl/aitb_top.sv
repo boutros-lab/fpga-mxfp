@@ -24,17 +24,17 @@ module aitb_top (
 
 // Input
 logic [FLAT_DATA_WIDTH-1:0] data_in_pipe;
-logic [DATA_WIDTH-1:0] data_in_sh_exp_pipe;
-logic [DATA_WIDTH-1:0] data_in_sh_exp_pipe2;
-logic [DATA_WIDTH-1:0] data_in_sh_exp_pipe3;
+logic [SH_EXP_WIDTH-1:0]    data_in_sh_exp_pipe;
+logic [SH_EXP_WIDTH-1:0]    data_in_sh_exp_pipe2;
+logic [SH_EXP_WIDTH-1:0]    data_in_sh_exp_pipe3;
 logic [FLAT_DATA_WIDTH-1:0] w_reg_c1;
-logic [DATA_WIDTH-1:0] w_reg_c1_sh_exp;
-logic [DATA_WIDTH-1:0] w_reg_c1_sh_exp_pipe2;
-logic [DATA_WIDTH-1:0] w_reg_c1_sh_exp_pipe3;
+logic [SH_EXP_WIDTH-1:0]    w_reg_c1_sh_exp;
+logic [SH_EXP_WIDTH-1:0]    w_reg_c1_sh_exp_pipe2;
+logic [SH_EXP_WIDTH-1:0]    w_reg_c1_sh_exp_pipe3;
 logic [FLAT_DATA_WIDTH-1:0] w_reg_c2;
-logic [DATA_WIDTH-1:0] w_reg_c2_sh_exp;
-logic [DATA_WIDTH-1:0] w_reg_c2_sh_exp_pipe2;
-logic [DATA_WIDTH-1:0] w_reg_c2_sh_exp_pipe3;
+logic [SH_EXP_WIDTH-1:0]    w_reg_c2_sh_exp;
+logic [SH_EXP_WIDTH-1:0]    w_reg_c2_sh_exp_pipe2;
+logic [SH_EXP_WIDTH-1:0]    w_reg_c2_sh_exp_pipe3;
 
 // Unpacked data
 logic signed [FIXED_DATA_WIDTH-1:0] fixed_c1 [FIXED_ELEMENTS];
@@ -88,7 +88,7 @@ pipeline #(.W(FLAT_DATA_WIDTH), .STAGES(1)) PIPE_1_data_in (
 	.pipe_out(data_in_pipe)
 );
 
-pipeline #(.W(8), .STAGES(1)) PIPE_1_sh_exp (
+pipeline #(.W(SH_EXP_WIDTH), .STAGES(1)) PIPE_1_sh_exp (
 	.clk(clk),
 	.rst(rst),
 	.pipe_in(shared_exponent),
@@ -106,16 +106,18 @@ input_preparation #(
 );
 
 input_preparation #(
-	.FLAT_WIDTH(DATA_WIDTH * DOT_LENGTH), 
-	.ELEMENT_WIDTH(DATA_WIDTH)
+	.FLAT_WIDTH(FLAT_DATA_WIDTH), 
+	.ELEMENT_WIDTH(FIXED_DATA_WIDTH),
+	.ELEMENT_COUNT(FIXED_ELEMENTS)
 ) u_input_preparation_col2 (
 	.i_flat(w_reg_c2),
 	.o_elements(fixed_c2)
 );
 
 input_preparation #(
-	.FLAT_WIDTH(DATA_WIDTH * DOT_LENGTH), 
-	.ELEMENT_WIDTH(DATA_WIDTH)
+	.FLAT_WIDTH(FLAT_DATA_WIDTH), 
+	.ELEMENT_WIDTH(FIXED_DATA_WIDTH),
+	.ELEMENT_COUNT(FIXED_ELEMENTS)
 ) u_input_preparation_data_in (
 	.i_flat(data_in_pipe),
 	.o_elements(fixed_data_in)
@@ -123,7 +125,7 @@ input_preparation #(
 
 // Pipe 2
 generate
-	for (genvar i = 0; i < DOT_LENGTH; i++) begin
+	for (genvar i = 0; i < FIXED_ELEMENTS; i++) begin
 		pipeline #(.W(FIXED_DATA_WIDTH), .STAGES(1)) PIPE_2_fixed_c1 (
 			.clk(clk),
 			.rst(rst),
@@ -147,21 +149,21 @@ generate
 	end
 endgenerate
 
-pipeline #(.W(8), .STAGES(1)) PIPE_2_sh_exp (
+pipeline #(.W(SH_EXP_WIDTH), .STAGES(1)) PIPE_2_sh_exp (
 	.clk(clk),
 	.rst(rst),
 	.pipe_in(data_in_sh_exp_pipe),
 	.pipe_out(data_in_sh_exp_pipe2)
 );
 
-pipeline #(.W(8), .STAGES(1)) PIPE_2_w_reg_c1 (
+pipeline #(.W(SH_EXP_WIDTH), .STAGES(1)) PIPE_2_w_reg_c1 (
 	.clk(clk),
 	.rst(rst),
 	.pipe_in(w_reg_c1_sh_exp),
 	.pipe_out(w_reg_c1_sh_exp_pipe2)
 );
 
-pipeline #(.W(8), .STAGES(1)) PIPE_2_w_reg_c2 (
+pipeline #(.W(SH_EXP_WIDTH), .STAGES(1)) PIPE_2_w_reg_c2 (
 	.clk(clk),
 	.rst(rst),
 	.pipe_in(w_reg_c2_sh_exp),
@@ -196,21 +198,21 @@ pipeline #(.W(DOT_OUT_WIDTH), .STAGES(1)) PIPE_3_dot_col2 (
 	.pipe_out(dot_out_col2_pipe)
 );
 
-pipeline #(.W(8), .STAGES(1)) PIPE_3_in_sh_exp (
+pipeline #(.W(SH_EXP_WIDTH), .STAGES(1)) PIPE_3_in_sh_exp (
 	.clk(clk),
 	.rst(rst),
 	.pipe_in(data_in_sh_exp_pipe2),
 	.pipe_out(data_in_sh_exp_pipe3)
 );
 
-pipeline #(.W(8), .STAGES(1)) PIPE_3_w_reg_c1 (
+pipeline #(.W(SH_EXP_WIDTH), .STAGES(1)) PIPE_3_w_reg_c1 (
 	.clk(clk),
 	.rst(rst),
 	.pipe_in(w_reg_c1_sh_exp_pipe2),
 	.pipe_out(w_reg_c1_sh_exp_pipe3)
 );
 
-pipeline #(.W(8), .STAGES(1)) PIPE_3_w_reg_c2 (
+pipeline #(.W(SH_EXP_WIDTH), .STAGES(1)) PIPE_3_w_reg_c2 (
 	.clk(clk),
 	.rst(rst),
 	.pipe_in(w_reg_c2_sh_exp_pipe2),

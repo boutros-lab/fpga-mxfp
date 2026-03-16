@@ -2,6 +2,7 @@
 * Sum/reduce input fixed point numbers (converted 
 * from MXFP) for naive dot product structure
 */
+import pkg_aitb::*;
 
 module naive_reduction #(
 	parameter FP8_INPUTS = 8,
@@ -20,7 +21,7 @@ module naive_reduction #(
 	parameter FP6_OUTPUT_WIDTH = FP6_INPUT_WIDTH + FP6_LEVELS,
 	parameter FP4_OUTPUT_WIDTH = FP4_INPUT_WIDTH + FP4_LEVELS
 )(
-	input logic [2:0] mxfp_mode, // 000: E2M1, 001: E2M3, 010: E3M2, 011: E4M3, 100: E5M2 // TODO - create enum
+	input mxfp_mode_e i_mxfp_mode,
 
 	input logic signed [FP8_INPUT_WIDTH-1:0] i_fp8_ops [FP8_INPUTS],
 	input logic signed [FP6_INPUT_WIDTH-1:0] i_fp6_ops [FP6_INPUTS],
@@ -64,11 +65,11 @@ pow2_reduction #(
 	.o_sum(fp4_sum)
 );
 
-assign fp6_fp4_sum = mxfp_mode == 3'b000 ? $signed(fp4_sum) + $signed(fp6_sum) // FP4
-					 : $signed(fp6_sum); // FP6/8 and fixed point
+assign fp6_fp4_sum = i_mxfp_mode == MXFP4 ? $signed(fp4_sum) + $signed(fp6_sum) // FP4
+					  : $signed(fp6_sum); // FP6/8 and fixed point
 
-assign fp8_fp6_sum = (mxfp_mode == 3'b011 || mxfp_mode == 3'b100) ? $signed(fp8_sum) // FP8
-								  : $signed(fp8_sum) + $signed(fp6_fp4_sum); // FP4/6 and fixed point
+assign fp8_fp6_sum = (i_mxfp_mode == MXFP8_43 || i_mxfp_mode == MXFP8_52) ? $signed(fp8_sum) // FP8
+									  : $signed(fp8_sum) + $signed(fp6_fp4_sum); // FP4/6 and fixed point
 
 assign o_sum = fp8_fp6_sum;
 
