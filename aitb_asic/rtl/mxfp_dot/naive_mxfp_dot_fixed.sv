@@ -177,7 +177,7 @@ endgenerate
 
 // Sum products
 generate
-	if (PACKED_REDUCTION == 0) begin
+	if (PACKED_REDUCTION == 0) begin : naive_reduction
 		naive_reduction #(
 			.FP8_INPUTS(FP8_OPS),
 			.FP6_INPUTS(FP6_OPS),
@@ -195,7 +195,7 @@ generate
 		
 			.o_sum(o_fixed_result)
 		);
-	end else begin
+	end else begin : packed_reduction
 		packed_reduction #(
 			.FP8_INPUTS(FP8_OPS),
 			.FP6_INPUTS(FP6_OPS),

@@ -1,6 +1,6 @@
 import pkg_aitb::*;
 
-module pow2_reduction_wrapper #(
+module pow2_reduction_norecurse_wrapper #(
 	parameter FP8_OPS = 8
 )(
 	input clk,
@@ -28,7 +28,7 @@ always_ff @(posedge clk) begin
 	end
 end
 
-pow2_reduction #(
+pow2_reduction_norecurse #(
 	.INPUTS(FP8_OPS), 
 	.INPUT_WIDTH(MXFP8_PRODUCT_WIDTH)
 ) u_fp8_reduction (

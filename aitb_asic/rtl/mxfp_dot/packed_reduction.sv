@@ -16,8 +16,8 @@ module packed_reduction #(
 	parameter FP4_INPUT_WIDTH = 10,
 
 	parameter FP8_LEVELS = $clog2(FP8_INPUTS),
-	parameter FP6_LEVELS = $clog2(FP6_INPUTS),
-	parameter FP4_LEVELS = $clog2(FP4_INPUTS),
+	parameter FP6_LEVELS = $clog2(FP6_INPUTS + FP8_INPUTS),
+	parameter FP4_LEVELS = $clog2(FP4_INPUTS + FP6_INPUTS + FP8_INPUTS),
 
 	parameter FP8_OUTPUT_WIDTH = FP8_INPUT_WIDTH + FP8_LEVELS,
 	parameter FP6_OUTPUT_WIDTH = FP6_INPUT_WIDTH + FP6_LEVELS,
@@ -33,11 +33,11 @@ module packed_reduction #(
 );
 localparam PADDING     = FP8_LEVELS;
 localparam PADDING_FP4 = PADDING + FP6_INPUT_WIDTH - FP4_INPUT_WIDTH;
+localparam EXTEND_FP4  = FP6_INPUT_WIDTH - FP4_INPUT_WIDTH;
 localparam OFFSET      = FP6_INPUT_WIDTH + PADDING;
 
 logic signed [FP8_INPUT_WIDTH-1:0]  adder_in [FP8_INPUTS];
 logic signed [FP8_OUTPUT_WIDTH-1:0] tree_sum;
-logic signed [FP6_OUTPUT_WIDTH-2:0] fp6_fp4_op0, fp6_fp4_op1;
 logic signed [FP6_OUTPUT_WIDTH-1:0] fp6_fp4_sum;
 
 // Assign adder inputs
@@ -59,7 +59,9 @@ always_comb begin
 				end
 			end else begin
 				// Pack FP4 results
-				adder_in[i] = i_mxfp_mode == MXFP4 ? $signed({1'b0, i_fp8_ops[i][FP6_INPUT_WIDTH-1:0], {PADDING_FP4{1'b0}}, i_fp4_ops[i-(FP8_INPUTS/2)]}) 
+				// Extend FP4 to FP6 bits
+				adder_in[i] = i_mxfp_mode == MXFP4 ? $signed({1'b0, i_fp8_ops[i][FP6_INPUT_WIDTH-1:0], {PADDING{1'b0}}, 
+								     {EXTEND_FP4{i_fp4_ops[i-(FP8_INPUTS/2)][FP4_INPUT_WIDTH-1]}}, i_fp4_ops[i-(FP8_INPUTS/2)]})
 								   : $signed({1'b0, i_fp8_ops[i][FP6_INPUT_WIDTH-1:0]});
 			end
 		end
@@ -77,13 +79,12 @@ pow2_reduction #(
 
 // Output at final stage of reduction is 2 numbers for non-MXFP8 modes
 // Add them together to form final output
-assign fp6_fp4_op0 = i_mxfp_mode == MXFP4 ? $signed(tree_sum[0+:(FP4_OUTPUT_WIDTH-1)]) 
-					  : $signed(tree_sum[0+:(FP6_OUTPUT_WIDTH-1)]); // FP6, FIXED
+logic [FP6_OUTPUT_WIDTH:0] op0, op1;
 
-assign fp6_fp4_op1 = i_mxfp_mode == MXFP4 ? $signed(tree_sum[OFFSET+:(FP4_OUTPUT_WIDTH-1)]) 
-					  : $signed(tree_sum[OFFSET+:(FP6_OUTPUT_WIDTH-1)]); // FP6, FIXED
+assign op0 = tree_sum[OFFSET+:(FP6_OUTPUT_WIDTH-1)];
+assign op1 = tree_sum[0+:(FP6_OUTPUT_WIDTH-1)];
 
-assign fp6_fp4_sum = fp6_fp4_op0 + fp6_fp4_op1;
+assign fp6_fp4_sum = $signed(tree_sum[OFFSET+:(FP6_OUTPUT_WIDTH-1)]) + $signed(tree_sum[0+:(FP6_OUTPUT_WIDTH-1)]);
 
 assign o_sum = (i_mxfp_mode == MXFP8_43 || i_mxfp_mode == MXFP8_52) ? tree_sum
 								    : fp6_fp4_sum;

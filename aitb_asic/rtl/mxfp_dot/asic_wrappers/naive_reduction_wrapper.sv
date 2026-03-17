@@ -14,11 +14,11 @@ module naive_reduction_wrapper #(
 	output logic signed [FIXED_RESULT_WIDTH-1:0] o_fixed_result
 );
 
-mxfp_mode_e i_mxfp_mode_q,
-logic signed [MXFP8_PRODUCT_WIDTH-1:0] mxfp8_mult_result_q [FP8_OPS],
-logic signed [MXFP6_PRODUCT_WIDTH-1:0] mxfp6_mult_result_q [FP6_OPS],
-logic signed [MXFP4_PRODUCT_WIDTH-1:0] mxfp4_mult_result_q [FP4_OPS],
-logic signed [FIXED_RESULT_WIDTH-1:0]  o_fixed_result_d
+mxfp_mode_e i_mxfp_mode_q;
+logic signed [MXFP8_PRODUCT_WIDTH-1:0] mxfp8_mult_result_q [FP8_OPS];
+logic signed [MXFP6_PRODUCT_WIDTH-1:0] mxfp6_mult_result_q [FP6_OPS];
+logic signed [MXFP4_PRODUCT_WIDTH-1:0] mxfp4_mult_result_q [FP4_OPS];
+logic signed [FIXED_RESULT_WIDTH-1:0]  o_fixed_result_d;
 
 always_ff @(posedge clk) begin
 	if (rst) begin
