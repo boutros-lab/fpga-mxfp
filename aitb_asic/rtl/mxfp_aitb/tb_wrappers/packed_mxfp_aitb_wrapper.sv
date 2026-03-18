@@ -27,9 +27,9 @@ end
 
 assign o_valid = valid[LATENCY-1];
 
-naive_mxfp_aitb_top aitb #(
+naive_mxfp_aitb_top #(
 	.PACKED_REDUCTION(1)
-)(
+) aitb (
 	.clk(clk),
 	.rst(rst),
 	.acc_en(1'b0),

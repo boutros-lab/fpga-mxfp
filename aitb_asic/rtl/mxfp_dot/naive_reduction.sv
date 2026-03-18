@@ -69,7 +69,7 @@ assign fp6_fp4_sum = i_mxfp_mode == MXFP4 ? $signed(fp4_sum) + $signed(fp6_sum) 
 					  : $signed(fp6_sum); // FP6/8 and fixed point
 
 assign fp8_fp6_sum = (i_mxfp_mode == MXFP8_43 || i_mxfp_mode == MXFP8_52) ? $signed(fp8_sum) // FP8
-									  : $signed(fp8_sum) + $signed(fp6_fp4_sum); // FP4/6 and fixed point
+									  : $signed(fp8_sum) + $signed(fp6_fp4_sum); // FP4/6 and fixed point TODO: Inferring 70x70, use only LSB
 
 assign o_sum = fp8_fp6_sum;
 

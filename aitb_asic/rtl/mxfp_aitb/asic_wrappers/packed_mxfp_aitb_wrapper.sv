@@ -30,9 +30,9 @@ module packed_mxfp_aitb_wrapper (
 
 );
 
-naive_mxfp_aitb_top aitb #(
+naive_mxfp_aitb_top #(
 	.PACKED_REDUCTION(1)
-)(
+) aitb (
 	.clk(clk),
 	.rst(rst),
 	.acc_en(acc_en),
