@@ -35,7 +35,7 @@ synthesis.inputs.input_files: [
    "rtl/mxfp_dot/flopoco_normalizers/normalizer_69b.vhdl",
    "rtl/mxfp_dot/mxfp_multiply.sv",
    "rtl/mxfp_dot/mxfp_mult_shift.sv",
-   "rtl/mxfp_dot/pow2_reduction.sv",
+   "rtl/mxfp_dot/pow2_reduction_norecurse.sv",
    "rtl/mxfp_dot/naive_reduction.sv",
    "rtl/mxfp_dot/config_fix2fp32.sv",
    "rtl/mxfp_dot/naive_mxfp_dot_fixed.sv",
@@ -46,7 +46,7 @@ synthesis.inputs.input_files: [
 ]
 synthesis.inputs.top_module: "naive_mxfp_aitb_top"
 synthesis.clock_gating_mode: "empty"
-synthesis.flatten_hierarchy: True
+synthesis.flatten_hierarchy: False
 
 # PaR options
 vlsi.core.par_tool: "hammer.par.innovus"

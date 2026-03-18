@@ -39,25 +39,25 @@ logic signed [FP8_OUTPUT_WIDTH-1:0] fp8_fp6_sum;
 
 // Reduce the different fixed point formats separately
 // FP8
-pow2_reduction #(
+pow2_reduction_norecurse #(
 	.INPUTS(FP8_INPUTS), 
 	.INPUT_WIDTH(FP8_INPUT_WIDTH)
-) u_fp8_reduction (
+) u_fp8_reduction_norecurse (
 	.i_op(i_fp8_ops),
 	.o_sum(fp8_sum)
 );
 
 // FP6
-pow2_reduction #(
+pow2_reduction_norecurse #(
 	.INPUTS(FP6_INPUTS), 
 	.INPUT_WIDTH(FP6_INPUT_WIDTH)
-) u_fp6_reduction (
+) u_fp6_reduction_norecurse (
 	.i_op(i_fp6_ops),
 	.o_sum(fp6_sum)
 );
 
 // FP4
-pow2_reduction #(
+pow2_reduction_norecurse #(
 	.INPUTS(FP4_INPUTS), 
 	.INPUT_WIDTH(FP4_INPUT_WIDTH)
 ) u_fp4_reduction (
