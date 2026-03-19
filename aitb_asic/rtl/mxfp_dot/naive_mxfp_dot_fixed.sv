@@ -12,7 +12,9 @@ module naive_mxfp_dot_fixed #(
 	parameter FIXED_OPS = FIXED_DOT_LENGTH,
 	parameter FP8_OPS   = FP8_DOT_LENGTH,
 	parameter FP6_OPS   = FP6_DOT_LENGTH - FP8_DOT_LENGTH,
-	parameter FP4_OPS   = FP4_DOT_LENGTH - FP6_DOT_LENGTH
+	parameter FP4_OPS   = FP4_DOT_LENGTH - FP6_DOT_LENGTH,
+
+	parameter PACKED_REDUCTION = 0
 )(
 	// Configuration
 	//   MXFP Multiply
@@ -174,22 +176,44 @@ generate
 endgenerate
 
 // Sum products
-naive_reduction #(
-	.FP8_INPUTS(FP8_OPS),
-	.FP6_INPUTS(FP6_OPS),
-	.FP4_INPUTS(FP4_OPS),
-
-	.FP8_INPUT_WIDTH(MXFP8_PRODUCT_WIDTH),
-	.FP6_INPUT_WIDTH(MXFP6_PRODUCT_WIDTH),
-	.FP4_INPUT_WIDTH(MXFP4_PRODUCT_WIDTH)
-) u_naive_reduction (
-	.i_mxfp_mode(i_mxfp_mode),
-
-	.i_fp8_ops(mxfp8_mult_result),
-	.i_fp6_ops(mxfp6_mult_result),
-	.i_fp4_ops(mxfp4_mult_result),
-
-	.o_sum(o_fixed_result)
-);
+generate
+	if (PACKED_REDUCTION == 0) begin : naive_reduction
+		naive_reduction #(
+			.FP8_INPUTS(FP8_OPS),
+			.FP6_INPUTS(FP6_OPS),
+			.FP4_INPUTS(FP4_OPS),
+		
+			.FP8_INPUT_WIDTH(MXFP8_PRODUCT_WIDTH),
+			.FP6_INPUT_WIDTH(MXFP6_PRODUCT_WIDTH),
+			.FP4_INPUT_WIDTH(MXFP4_PRODUCT_WIDTH)
+		) u_naive_reduction (
+			.i_mxfp_mode(i_mxfp_mode),
+		
+			.i_fp8_ops(mxfp8_mult_result),
+			.i_fp6_ops(mxfp6_mult_result),
+			.i_fp4_ops(mxfp4_mult_result),
+		
+			.o_sum(o_fixed_result)
+		);
+	end else begin : packed_reduction
+		packed_reduction #(
+			.FP8_INPUTS(FP8_OPS),
+			.FP6_INPUTS(FP6_OPS),
+			.FP4_INPUTS(FP4_OPS),
+		
+			.FP8_INPUT_WIDTH(MXFP8_PRODUCT_WIDTH),
+			.FP6_INPUT_WIDTH(MXFP6_PRODUCT_WIDTH),
+			.FP4_INPUT_WIDTH(MXFP4_PRODUCT_WIDTH)
+		) u_packed_reduction (
+			.i_mxfp_mode(i_mxfp_mode),
+		
+			.i_fp8_ops(mxfp8_mult_result),
+			.i_fp6_ops(mxfp6_mult_result),
+			.i_fp4_ops(mxfp4_mult_result),
+		
+			.o_sum(o_fixed_result)
+		);
+	end
+endgenerate
 
 endmodule

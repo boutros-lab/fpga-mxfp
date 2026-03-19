@@ -10,7 +10,8 @@ localparam num_ops = mul_width / 2 / (1+mantissa_width);
 logic clk;
 logic valid_in, valid_out;
 logic [1 + mantissa_width + exponent_width -1:0] operands [block_size-1:0][num_ops-1:0], sharedOperands [block_size-1:0];
-logic [7:0] shared_exponent [num_ops-1:0];
+logic [7:0] block_exponent [num_ops-1:0];
+logic [7:0] sharedBlock_exponent;
 logic [31:0] results [num_ops-1:0];
 packed_dot_product_fp32 #(
     .exponent_width(exponent_width),
@@ -23,7 +24,8 @@ packed_dot_product_fp32 #(
     .valid_out(valid_out),
     .operands(operands),
     .sharedOperands(sharedOperands),
-    .shared_exponent(shared_exponent),
+    .block_exponent(block_exponent),
+    .sharedBlock_exponent(sharedBlock_exponent),
     .results(results)
 );
 
@@ -45,8 +47,9 @@ initial begin
     $display("tests=%0d", num_tests);
 
     for (int t = 0; t < num_tests; t++) begin
+        sharedBlock_exponent = $urandom_range(0, 50);
         for (int j = 0; j < num_ops; j++) begin
-            shared_exponent[j] = 8'b1000000;
+            block_exponent[j] = $urandom_range(0, 50);
         end
         for (int i = 0; i < block_size; i++) begin
             sharedOperands[i] = $urandom;
@@ -59,8 +62,9 @@ initial begin
         #200;
 
         $display("test=%0d", t);
+        $display("sharedBlock_exponent=%b", sharedBlock_exponent);
         for (int j = 0; j < num_ops; j++) begin
-            $display("shared_exponent[%0d]=%b", j, shared_exponent[j]);
+            $display("block_exponent[%0d]=%b", j, block_exponent[j]);
         end
 
         for (int i = 0; i < block_size; i++) begin

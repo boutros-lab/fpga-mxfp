@@ -4,7 +4,7 @@
 */
 import pkg_aitb::*;
 
-module naive_mxfp_dot_fixed_wrapper #(
+module packed_mxfp_dot_fixed_wrapper #(
 	parameter exp_width = 5,
 	parameter man_width = 2,
 	parameter k = 8,
@@ -101,8 +101,8 @@ endgenerate
 
 // Only works with MXFP8 K=8, MXFP6 K=12, MXFP4 K=16, INT8 K=10
 naive_mxfp_dot_fixed #(
-	.PACKED_REDUCTION(0)
-) u_naive_mxfp_dot_fixed (
+	.PACKED_REDUCTION(1)
+) u_packed_mxfp_dot_fixed (
 	.i_sign_shift(exp_width + man_width),
 	.i_exp_bits(exp_width),
 	.i_man_bits(man_width),

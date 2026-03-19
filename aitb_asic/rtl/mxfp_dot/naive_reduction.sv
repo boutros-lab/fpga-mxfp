@@ -39,25 +39,25 @@ logic signed [FP8_OUTPUT_WIDTH-1:0] fp8_fp6_sum;
 
 // Reduce the different fixed point formats separately
 // FP8
-pow2_reduction #(
+pow2_reduction_norecurse #(
 	.INPUTS(FP8_INPUTS), 
 	.INPUT_WIDTH(FP8_INPUT_WIDTH)
-) u_fp8_reduction (
+) u_fp8_reduction_norecurse (
 	.i_op(i_fp8_ops),
 	.o_sum(fp8_sum)
 );
 
 // FP6
-pow2_reduction #(
+pow2_reduction_norecurse #(
 	.INPUTS(FP6_INPUTS), 
 	.INPUT_WIDTH(FP6_INPUT_WIDTH)
-) u_fp6_reduction (
+) u_fp6_reduction_norecurse (
 	.i_op(i_fp6_ops),
 	.o_sum(fp6_sum)
 );
 
 // FP4
-pow2_reduction #(
+pow2_reduction_norecurse #(
 	.INPUTS(FP4_INPUTS), 
 	.INPUT_WIDTH(FP4_INPUT_WIDTH)
 ) u_fp4_reduction (
@@ -69,7 +69,7 @@ assign fp6_fp4_sum = i_mxfp_mode == MXFP4 ? $signed(fp4_sum) + $signed(fp6_sum) 
 					  : $signed(fp6_sum); // FP6/8 and fixed point
 
 assign fp8_fp6_sum = (i_mxfp_mode == MXFP8_43 || i_mxfp_mode == MXFP8_52) ? $signed(fp8_sum) // FP8
-									  : $signed(fp8_sum) + $signed(fp6_fp4_sum); // FP4/6 and fixed point
+									  : $signed(fp8_sum) + $signed(fp6_fp4_sum); // FP4/6 and fixed point TODO: Inferring 70x70, use only LSB
 
 assign o_sum = fp8_fp6_sum;
 

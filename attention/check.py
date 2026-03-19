@@ -1,44 +1,75 @@
+i = 0
+lines = []
 
-FORMAT = "E5M2"
-# Options
-# MXFP-8 E5M2 SEEEEEMM
-# MXFP-8 E4M3 SEEEEMMM
-# MXFP-6 E3M2 SEEEMM
+def get(prefix):
+    global i
+    while i < len(lines):
+        if lines[i].startswith(prefix):
+            value = lines[i].removeprefix(prefix)
+            i += 1
+            return value
+        i += 1
 
-# Generate W_Q, W_K, W_V, W_O, X in MXFP format
+def check_transpose():
+    M = int(get('M='))
+    N = int(get('N='))
+    DATA_WIDTH = int(get('DATA_WIDTH='))
+    tests = int(get('tests='))
 
-def generate_mxfp_array(width, height):
-    # Generate a random array of the specified width and height
-    # Each element is a dict with sign, mantissa, exponent
-    # Each a string bits representing the MXFP format
+    print(f"M: {M}")
+    print(f"N: {N}")
+    print(f"DATA_WIDTH: {DATA_WIDTH}")
+    print(f"tests: {tests}")
 
-    # Convert the array to MXFP format (E5M2)
-    mxfp_array = []
-    for i in range(height):
-        mxfp_row = []
-        for j in range(width):
-            if FORMAT == "E5M2":
-                mxfp_row.append({
-                    "sign": "0",
-                    'exponent': "00000",
-                    'mantissa': "00",
-                })
-            elif FORMAT == "E4M3":
-                mxfp_row.append({
-                    "sign": "0",
-                    'exponent': "0000",
-                    'mantissa': "000",
-                })
-            elif FORMAT == "E3M2":
-                mxfp_row.append({
-                    "sign": "0",
-                    'exponent': "000",
-                    'mantissa': "00",
-                })
-            else:
-                raise ValueError("Unsupported format")
-        mxfp_array.append(mxfp_row)
-    
-    return mxfp_array
+    all_passed = True
+    for t in range(tests):
+        test_num = int(get('test='))
 
-print(generate_mxfp_array(4, 4))
+        in_data = []
+        for row in range(M):
+            row_data = []
+            for col in range(N):
+                val = get(f'in_data[{row}][{col}]=')
+                row_data.append(val)
+            in_data.append(row_data)
+
+        out_data = []
+        for row in range(N):
+            row_data = []
+            for col in range(M):
+                val = get(f'out_data[{row}][{col}]=')
+                row_data.append(val)
+            out_data.append(row_data)
+
+        # Verify transpose: out_data[j][i] should equal in_data[i][j]
+        for row in range(M):
+            for col in range(N):
+                expected = in_data[row][col]
+                got = out_data[col][row]
+                if got != expected:
+                    print(f"Test {t} FAILED: out_data[{col}][{row}]={got} != in_data[{row}][{col}]={expected}")
+                    all_passed = False
+
+    return all_passed
+
+
+if __name__ == "__main__":
+
+    print("\nREADING RESULTS FROM TRANSCRIPT")
+
+    with open("transcript") as f:
+        lines = [line.removeprefix('#').strip() for line in f.readlines()]
+
+    tag = get('!!!DUT=')
+    print(f"\nDUT: {tag}")
+
+    if tag == 'transpose':
+        all_passed = check_transpose()
+    else:
+        print(f"Unknown tag: {tag}")
+        all_passed = False
+
+    if all_passed:
+        print("\nALL TESTS PASSED\n")
+    else:
+        print("\nSOME TESTS FAILED\n")

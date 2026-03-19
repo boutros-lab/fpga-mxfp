@@ -40,7 +40,7 @@ assign shared_exponent_sum = $signed({1'b0, i_shared_exp_a}) + $signed({1'b0, i_
 
 // Get sign bit, take two's complement if necessary
 assign sign = i_fixed[INPUT_WIDTH-1];
-assign unsigned_fixed = sign ? -i_fixed : i_fixed;
+assign unsigned_fixed = sign ? -i_fixed : i_fixed; // TODO: CHANGE
 
 // Currently using RTZ
 generate

@@ -12,7 +12,7 @@ module packed_dot_product_fp32 #(
     output logic valid_out,
     // NOTE: operands are a sequence of block-length vectors
     input logic [1 + mantissa_width + exponent_width -1:0] operands [block_size-1:0][num_ops-1:0], sharedOperands [block_size-1:0],
-    input logic [7:0] shared_exponent [num_ops-1:0],
+    input logic [7:0] block_exponent [num_ops-1:0], sharedBlock_exponent, 
     output logic [31:0] results [num_ops-1:0]
 );
 
@@ -41,7 +41,7 @@ packed_dot_product #(
 
 for (genvar n = 0; n < num_ops; n++) begin
     assign shifted_results[n] = $signed(fixed_point_results[n]) >>> 2;
-    assign results[n] = {flopoco_results[n][31], flopoco_results[n][30:23] + shared_exponent[n], flopoco_results[n][22:0]};
+    assign results[n] = {flopoco_results[n][31], flopoco_results[n][30:23] + block_exponent[n] + sharedBlock_exponent, flopoco_results[n][22:0]};
 
     if (exponent_width == 2 && mantissa_width == 1) begin
         MXFP_E2M1_to_FP32 fx2fp (
