@@ -25,6 +25,7 @@ module sys_array_packed_mult #(
     // Weights shifted from left to right
     input logic weights_valid_left_i [N-1:0],
     input logic [DATA_MX_W-1:0] weight_left_i [N-1:0][DOT_LEN-1:0],
+    input logic [SHARED_EXP_W-1:0] weight_shared_exp_left_i [N-1:0],
     // Activation interface (from top of the array)
     input logic x_valid_top_i [N-1:0],
     input logic [DATA_MX_W-1:0] x_top_i [N-1:0][DOT_LEN-1:0][NUM_OPS-1:0],
@@ -39,6 +40,7 @@ module sys_array_packed_mult #(
     // Each column has its input delayed by 1 cycle compared to the previous col.
     logic [DATA_MX_W-1:0] w_row_delayed [N-1:0][N-1:0][DOT_LEN-1:0];
     logic w_row_valid_delayed [N-1:0][N-1:0];
+    logic [SHARED_EXP_W-1:0] w_shared_exp_row_delayed [N-1:0][N-1:0];
 
     logic [DATA_MX_W-1:0] x_col_delayed [N-1:0][N-1:0][DOT_LEN-1:0][NUM_OPS-1:0];
     logic x_col_valid_delayed [N-1:0][N-1:0];
@@ -50,6 +52,7 @@ module sys_array_packed_mult #(
         if (rst) begin
             w_row_delayed <= '0;
             w_row_valid_delayed <= '0;
+            w_shared_exp_row_delayed <= '0;
             x_col_delayed <= '0;
             x_col_valid_delayed <= '0;
             x_shared_exp_col_delayed <= '0;
@@ -60,6 +63,7 @@ module sys_array_packed_mult #(
             for (r = 0; r < N; r++) begin
                 // First "column" of the pipeline gets the inputs
                 w_row_valid_delayed[r][0] <= weights_valid_left_i[r];
+                w_shared_exp_row_delayed[r][0] <= weight_shared_exp_left_i[r];
                 for (i = 0; i < DOT_LEN; i++) begin
                     w_row_delayed[r][0][i] <= weight_left_i[r][i];
                 end
@@ -67,6 +71,7 @@ module sys_array_packed_mult #(
                 // Additional delays get delay from previous stage
                 for (c = 1; c < N; c++) begin
                     w_row_valid_delayed[r][c] <= w_row_valid_delayed[r][c-1];
+                    w_shared_exp_row_delayed[r][c] <= w_shared_exp_row_delayed[r][c-1];
                     for (i = 0; i < DOT_LEN; i++) begin
                         w_row_delayed[r][c][i] <= w_row_delayed[r][c-1][i];
                     end
@@ -107,6 +112,7 @@ module sys_array_packed_mult #(
     // Weight pipeline (weights shift to the right)
     logic [DATA_MX_W-1:0] w_pipe [N-1:0][N-1:0][DOT_LEN-1:0];
     logic w_valid_pipe [N-1:0][N-1:0];
+    logic [SHARED_EXP_W-1:0] w_shared_exp_pipe [N-1:0][N-1:0];
     
     // Activation pipeline (activations shift down)
     logic [DATA_MX_W-1:0] x_pipe [N-1:0][N-1:0][DOT_LEN-1:0][NUM_OPS-1:0];
@@ -119,6 +125,7 @@ module sys_array_packed_mult #(
         if (rst) begin
             w_pipe <= '0;
             w_valid_pipe <= '0;
+            w_shared_exp_pipe <= '0;
         end
         else begin
             for (r = 0; r < N; r++) begin
@@ -126,6 +133,7 @@ module sys_array_packed_mult #(
                 if (r == 0) begin
                     // Row 0 has no delay
                     w_valid_pipe[r][0] <= weights_valid_left_i[r];
+                    w_shared_exp_pipe[r][0] <= weight_shared_exp_left_i[r];
                     for (i = 0; i < DOT_LEN; i++) begin
                         w_pipe[r][0][i] <= weight_left_i[r][i];
                     end
@@ -134,6 +142,7 @@ module sys_array_packed_mult #(
                     // Other rows have delay
                     // row 1 has a 1 cycle delay so from delayed[r-1 = 1-1 = 0]
                     w_valid_pipe[r][0] <= w_row_valid_delayed[r][r-1];
+                    w_shared_exp_pipe[r][0] <= w_shared_exp_row_delayed[r][r-1];
                     for (i = 0; i < DOT_LEN; i++) begin
                         w_pipe[r][0][i] <= w_row_delayed[r][r-1][i];
                     end
@@ -142,6 +151,7 @@ module sys_array_packed_mult #(
                 // Other columns take from the previous column
                 for (c = 1; c < N; c++) begin
                     w_valid_pipe[r][c] <= w_valid_pipe[r][c-1];
+                    w_shared_exp_pipe[r][c] <= w_shared_exp_pipe[r][c-1];
                     for (i = 0; i < DOT_LEN; i++) begin
                         w_pipe[r][c][i] <= w_pipe[r][c-1][i];
                     end
@@ -220,7 +230,8 @@ module sys_array_packed_mult #(
                     .valid_out(valid_o[gr][gc]),
                     .operands(x_pipe[gr][gc]),
                     .sharedOperands(w_pipe[gr][gc]),
-                    .shared_exponent(x_shared_exp_pipe[gr][gc]),
+                    .block_exponent(x_shared_exp_pipe[gr][gc]),
+                    .sharedBlock_exponent(w_shared_exp_pipe[gr][gc]),
                     .results(dot_fp32_o[gr][gc])
                 );
             end
