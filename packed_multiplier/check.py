@@ -177,9 +177,10 @@ def check_packed_dot_product_fp32():
     all_passed = True
     for t in range(tests):
         test_num = int(get('test='))
-        shared_exponents = []
+        sharedBlock_exponent = int(get('sharedBlock_exponent='), 2)
+        block_exponents = []
         for j in range(num_ops):
-            shared_exponents.append(int(get(f'shared_exponent[{j}]='), 2))
+            block_exponents.append(int(get(f'block_exponent[{j}]='), 2))
 
         shared_operands = []
         operands = []
@@ -200,7 +201,7 @@ def check_packed_dot_product_fp32():
         # Compute expected results
         expected_results = []
         for op_idx in range(num_ops):
-            scale = 2.0 ** shared_exponents[op_idx]
+            scale = 2.0 ** (block_exponents[op_idx] + sharedBlock_exponent)
             acc = 0.0
             for block_idx in range(block_size):
                 a = operands[block_idx][op_idx]
@@ -223,6 +224,7 @@ def check_packed_dot_product_fp32():
             else:
                 rel_diff = abs(got - expected) / abs(expected)
             if rel_diff <= tolerance:
+                #print(f"Test {t} Result {i} PASSED: got {got}, expected {expected}, rel_diff {rel_diff}")
                 pass
             else:
                 print(f"Test {t} Result {i} FAILED: got {got}, expected {expected}, rel_diff {rel_diff}")
