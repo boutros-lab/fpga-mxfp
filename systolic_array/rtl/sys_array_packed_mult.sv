@@ -1,4 +1,4 @@
-module sys_array_aitb #(
+module sys_array_packed_mult #(
     // Size of the array (NxN)
     parameter N = 2,
     // Number format params
@@ -17,10 +17,7 @@ module sys_array_aitb #(
     parameter DATA_OUT_W = 32,
 
     // Local params
-    // TODO: need to know what the PE output latency ...
-    localparam int PE_OUT_LAT = 0,
-    localparam NUM_OPS = MUL_WIDTH / 2 / (1 + MAN_W),
-    localparam FIXED_POINT_W = 1 + 2 * (MAN_W + 1) + 2 ** (EXP_W + 1) + $clog2(DOT_LEN)
+    localparam NUM_OPS = MUL_WIDTH / 2 / (1 + MAN_W)
 ) (
     input clk,
     input rst,
@@ -31,21 +28,21 @@ module sys_array_aitb #(
     // Activation interface (from top of the array)
     input logic x_valid_top_i [N-1:0],
     input logic [DATA_MX_W-1:0] x_top_i [N-1:0][DOT_LEN-1:0][NUM_OPS-1:0],
+    input logic [SHARED_EXP_W-1:0] x_shared_exp_top_i [N-1:0][NUM_OPS-1:0],
     // Outputs (from bottom of the array)
-    output logic [FIXED_POINT_W-1:0] dot_fixed_o [N-1:0][N-1:0][NUM_OPS-1:0],
+    output logic [DATA_OUT_W-1:0] dot_fp32_o [N-1:0][N-1:0][NUM_OPS-1:0],
     output logic valid_o [N-1:0][N-1:0]
 );
-
-    // TODO: Currently no scales because the underlying packed_mult dot does not support them yet
 
     // Boundary delay
     // Each row has its input delayed by 1 cycle compared to the previous row.
     // Each column has its input delayed by 1 cycle compared to the previous col.
     logic [DATA_MX_W-1:0] w_row_delayed [N-1:0][N-1:0][DOT_LEN-1:0];
-    logic w_row_valid_delayed [N-1:0][N-1:0]; // redundant, will only keep the activation like for the other SA
+    logic w_row_valid_delayed [N-1:0][N-1:0];
 
     logic [DATA_MX_W-1:0] x_col_delayed [N-1:0][N-1:0][DOT_LEN-1:0][NUM_OPS-1:0];
     logic x_col_valid_delayed [N-1:0][N-1:0];
+    logic [SHARED_EXP_W-1:0] x_shared_exp_col_delayed [N-1:0][N-1:0][NUM_OPS-1:0];
 
     // Boundary delay
     integer r, c, i, n;
@@ -55,6 +52,7 @@ module sys_array_aitb #(
             w_row_valid_delayed <= '0;
             x_col_delayed <= '0;
             x_col_valid_delayed <= '0;
+            x_shared_exp_col_delayed <= '0;
         end
         else begin
             // Weight delay
@@ -70,7 +68,7 @@ module sys_array_aitb #(
                 for (c = 1; c < N; c++) begin
                     w_row_valid_delayed[r][c] <= w_row_valid_delayed[r][c-1];
                     for (i = 0; i < DOT_LEN; i++) begin
-                        w_row_delayed[r][0][i] <= w_row_delayed[r][c-1][i];
+                        w_row_delayed[r][c][i] <= w_row_delayed[r][c-1][i];
                     end
                 end
             end
@@ -85,13 +83,20 @@ module sys_array_aitb #(
                        x_col_delayed[c][0][i][n] <= x_top_i[c][i][n]; 
                     end
                 end
+                for (n = 0; n < NUM_OPS; n++) begin
+                    x_shared_exp_col_delayed[c][0][n] <= x_shared_exp_top_i[c][n];
+                end
 
-                for (r = 0; r < N; r++) begin
+                // Additional delays get delay from previous stage
+                for (r = 1; r < N; r++) begin
                     x_col_valid_delayed[c][r] <= x_col_valid_delayed[c][r-1];
                     for (i = 0; i < DOT_LEN; i++) begin
                         for (n = 0; n < NUM_OPS; n++) begin
                             x_col_delayed[c][r][i][n] <= x_col_delayed[c][r-1][i][n];
                         end
+                    end
+                    for (n = 0; n < NUM_OPS; n++) begin
+                        x_shared_exp_col_delayed[c][r][n] <= x_shared_exp_col_delayed[c][r-1][n];
                     end
                 end
             end
@@ -106,6 +111,7 @@ module sys_array_aitb #(
     // Activation pipeline (activations shift down)
     logic [DATA_MX_W-1:0] x_pipe [N-1:0][N-1:0][DOT_LEN-1:0][NUM_OPS-1:0];
     logic x_valid_pipe [N-1:0][N-1:0];
+    logic [SHARED_EXP_W-1:0] x_shared_exp_pipe [N-1:0][N-1:0][NUM_OPS-1:0];
 
     // Weight pipeline implementation
     // - Weights go right every cycle
@@ -150,7 +156,8 @@ module sys_array_aitb #(
     always_ff @( posedge clk ) begin
         if (rst) begin
             x_pipe <= '0;
-            x_valid_pipe <= '0; 
+            x_valid_pipe <= '0;
+            x_shared_exp_pipe <= '0;
         end
         else begin
             for (c = 0; c < N; c++) begin
@@ -163,12 +170,18 @@ module sys_array_aitb #(
                             x_pipe[0][c][i][n] <= x_top_i[c][i][n];
                         end
                     end
+                    for (n = 0; n < NUM_OPS; n++) begin
+                        x_shared_exp_pipe[0][c][n] <= x_shared_exp_top_i[c][n];
+                    end
                 end
                 else begin
                     // Next columns has delays
                     x_valid_pipe[0][c] <= x_col_valid_delayed[c][c-1];
                     for (i = 0; i < DOT_LEN; i++) begin
                         x_pipe[0][c][i][n] <= x_col_delayed[c][c-1][i][n];
+                    end
+                    for (n = 0; n < NUM_OPS; n++) begin
+                        x_shared_exp_pipe[0][c][n] <= x_shared_exp_col_delayed[c][c-1][n];
                     end
                 end
 
@@ -180,11 +193,36 @@ module sys_array_aitb #(
                             x_pipe[r][c][i][n] <= x_pipe[r-1][c][i][n];
                         end
                     end
+                    for (n = 0; n < NUM_OPS; n++) begin
+                        x_shared_exp_pipe[r][c][n] <= x_shared_exp_pipe[r-1][c][n];
+                    end
                 end
                 
             end
         end
     end
 
+    // Instantiate PEs
+    genvar gr, gc;
+    generate
+        for (gr = 0; gr < N; gr++) begin : GEN_ROW
+            for (gc = 0; gc < N; gc++) begin : GEN_COL
+                packed_dot_product_fp32 #(
+                    .exponent_width(EXP_W),
+                    .mantissa_width(MAN_W),
+                    .mul_width(MUL_WIDTH),
+                    .block_size(DOT_LEN)
+                ) u_packed_dot_product_fp32 (
+                    .clk(clk),
+                    .valid_in(w_valid_pipe[gr][gc] & x_valid_pipe[gr][gc]),
+                    .valid_out(valid_o[gr][gc]),
+                    .operands(x_pipe[gr][gc]),
+                    .sharedOperands(w_pipe[gr][gc]),
+                    .shared_exponent(x_shared_exp_pipe[gr][gc]),
+                    .results(dot_fp32_o[gr][gc])
+                );
+            end
+        end
+    endgenerate
 
 endmodule
