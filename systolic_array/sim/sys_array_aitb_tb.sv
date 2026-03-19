@@ -2,7 +2,7 @@
 module sys_array_aitb_tb;
     localparam N = 3;
     // Number of sets of activations to stream in.
-    localparam P = 1;
+    localparam P = 2;
     localparam MAN_W = 3;
     localparam EXP_W = 2;
     localparam DATA_MX_W = 1 + MAN_W + EXP_W;
@@ -135,7 +135,7 @@ module sys_array_aitb_tb;
         $display("DATA_GEN: Generated activation sets");
         $display("============================================================");
         // Limit ourselves to the first set, can put in <P if want more
-        for (p = 0; p < 0; p = p + 1) begin
+        for (p = 0; p < P; p = p + 1) begin
             for (c = 0; c < N; c = c + 1) begin
                 $write("X[p=%0d][c=%0d] exp=%0d :", p, c, x_shared_exp_mem[p][c]);
                 for (k = 0; k < DOT_LEN; k = k + 1) begin
@@ -149,7 +149,7 @@ module sys_array_aitb_tb;
         $display("DATA_GEN: Golden dot products");
         $display("============================================================");
         // Limit ourselves to the first set, can put in <P if want more
-        for (p = 0; p < 0; p = p + 1) begin
+        for (p = 0; p < P; p = p + 1) begin
             for (r = 0; r < N; r = r + 1) begin
                 for (c = 0; c < N; c = c + 1) begin
                     $display("G[p=%0d][%0d][%0d] = 0x%08h (%f)",
@@ -278,23 +278,34 @@ module sys_array_aitb_tb;
                 for (j = 0; j < DOT_LEN; j = j + 1) begin
                     x_top_i_dut[i][j] <= x_vec_mem[p][i][j];
                 end
-                valid_top_i_dut[i] = 1'b1;
+                valid_top_i_dut[i] <= 1'b1;
             end
+
+            @(negedge clk);
+            for (i = 0; i < N; i = i + 1) begin
+                valid_top_i_dut[i] <= 1'b0;
+            end
+
+            repeat (N+2) @(negedge clk);  // temporary debug bubble
+
         end
         
         @(negedge clk);
         // Deassert once done streaming
         for (i = 0; i < N; i = i + 1) begin
-            valid_top_i_dut[i] = 1'b0;
+            valid_top_i_dut[i] <= 1'b0;
         end
 
-        repeat (100) @(negedge clk);
-
+        repeat (1000) @(negedge clk);
+        $error("Timeout.");
         $finish;
 
     end
 
+    localparam TOTAL_EXPECTED_OUTPUTS = P * N * N;
+
     integer rr, cc;
+    logic mismatch_seen;
     integer total_recv_count;
     // Each row should give P outputs
     integer expect_p_per_row [0:N-1];
@@ -303,6 +314,7 @@ module sys_array_aitb_tb;
 
     initial begin : RECEIVER
         total_recv_count = 0;
+        mismatch_seen    = 1'b0;
 
         // Set the counters to 0
         for (rr = 0; rr < N; rr = rr + 1) begin
@@ -336,10 +348,13 @@ module sys_array_aitb_tb;
 
                         if (dot_fp32_o_dut[rr][cc] !==
                             dot_fp32_o_gold[expect_p_per_row[rr]][rr][cc]) begin
+                            mismatch_seen = 1'b1;
                             $error("[%0t] MISMATCH row=%0d col=%0d expect_p=%0d dut=0x%08h gold=0x%08h",
                                 $time, rr, cc, expect_p_per_row[rr],
                                 dot_fp32_o_dut[rr][cc],
                                 dot_fp32_o_gold[expect_p_per_row[rr]][rr][cc]);
+                            $display("[%0t] TEST FAILED: ending simulation.", $time);
+                            $finish;
                         end
                         else begin
                             $display("[%0t] MATCH row=%0d col=%0d expect_p=%0d",
@@ -358,6 +373,14 @@ module sys_array_aitb_tb;
                     recv_count_per_row[rr] = 0;
                     expect_p_per_row[rr] = expect_p_per_row[rr] + 1;
                 end
+            end
+
+            if (total_recv_count == TOTAL_EXPECTED_OUTPUTS) begin
+                $display("============================================================");
+                $display("[%0t] TEST PASSED: received all expected outputs (%0d).",
+                        $time, TOTAL_EXPECTED_OUTPUTS);
+                $display("============================================================");
+                $finish;
             end
 
         end
