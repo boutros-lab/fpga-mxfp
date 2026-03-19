@@ -3,8 +3,8 @@ module sys_array_aitb_tb;
     localparam N = 3;
     // Number of sets of activations to stream in.
     localparam P = 2;
-    localparam MAN_W = 3;
     localparam EXP_W = 2;
+    localparam MAN_W = 3;
     localparam DATA_MX_W = 1 + MAN_W + EXP_W;
     localparam SHARED_EXP_W = 8;
     localparam FP_BIAS = 1;
