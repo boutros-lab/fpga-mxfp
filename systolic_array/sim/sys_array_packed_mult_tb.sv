@@ -17,6 +17,7 @@ module sys_array_packed_mult_tb;
 
     // Test vectors
     logic [DATA_MX_W-1:0] w_vec_mem [0:N-1][0:DOT_LEN-1];
+    logic [SHARED_EXP_W-1:0] w_shared_exp_mem [0:N-1];
     logic [DATA_MX_W-1:0] x_vec_mem [0:P-1][0:N-1][0:DOT_LEN-1][0:NUM_OPS-1];
     logic [SHARED_EXP_W-1:0] x_shared_exp_mem [0:P-1][0:N-1][0:NUM_OPS-1];
 
@@ -62,6 +63,7 @@ module sys_array_packed_mult_tb;
         gold_done = 1'b0;
 
         for (r = 0; r < N; r = r + 1) begin
+            w_shared_exp_mem[r] = 8'(127 + (r % 2));
             for (i = 0; i < DOT_LEN; i = i + 1) begin
                 w_vec_mem[r][i] = make_mxfp(100 + r*37 + i);
             end
@@ -85,7 +87,7 @@ module sys_array_packed_mult_tb;
         $display("Generated weights");
         $display("============================================================");
         for (r = 0; r < N; r = r + 1) begin
-            $write("W[%0d] :", r);
+            $write("W[%0d] shared_exp=%0d :", r, w_shared_exp_mem[r]);
             for (i = 0; i < DOT_LEN; i = i + 1) begin
                 $write(" %0h", w_vec_mem[r][i]);
             end
@@ -123,6 +125,7 @@ module sys_array_packed_mult_tb;
 
     logic weights_valid_left_i_dut [0:N-1];
     logic [DATA_MX_W-1:0] weight_left_i_dut [0:N-1][0:DOT_LEN-1];
+    logic [SHARED_EXP_W-1:0] weight_shared_exp_left_i_dut [0:N-1];
 
     logic x_valid_top_i_dut [0:N-1];
     logic [DATA_MX_W-1:0] x_top_i_dut [0:N-1][0:DOT_LEN-1][0:NUM_OPS-1];
@@ -145,6 +148,7 @@ module sys_array_packed_mult_tb;
         .rst(rst),
         .weights_valid_left_i(weights_valid_left_i_dut),
         .weight_left_i(weight_left_i_dut),
+        .weight_shared_exp_left_i(weight_shared_exp_left_i_dut),
         .x_valid_top_i(x_valid_top_i_dut),
         .x_top_i(x_top_i_dut),
         .x_shared_exp_top_i(x_shared_exp_top_i_dut),
@@ -158,7 +162,8 @@ module sys_array_packed_mult_tb;
 
     logic [DATA_MX_W-1:0] gold_operands [0:N-1][0:N-1][0:DOT_LEN-1][0:NUM_OPS-1];
     logic [DATA_MX_W-1:0] gold_sharedOperands [0:N-1][0:N-1][0:DOT_LEN-1];
-    logic [SHARED_EXP_W-1:0] gold_shared_exp [0:N-1][0:N-1][0:NUM_OPS-1];
+    logic [SHARED_EXP_W-1:0] gold_block_exp [0:N-1][0:N-1][0:NUM_OPS-1];
+    logic [SHARED_EXP_W-1:0] gold_sharedBlock_exp [0:N-1][0:N-1];
     logic [DATA_OUT_W-1:0] gold_results_wire [0:N-1][0:N-1][0:NUM_OPS-1];
 
     genvar gr, gc;
@@ -176,7 +181,8 @@ module sys_array_packed_mult_tb;
                     .valid_out(gold_valid_out[gr][gc]),
                     .operands(gold_operands[gr][gc]),
                     .sharedOperands(gold_sharedOperands[gr][gc]),
-                    .shared_exponent(gold_shared_exp[gr][gc]),
+                    .block_exponent(gold_block_exp[gr][gc]),
+                    .sharedBlock_exponent(gold_sharedBlock_exp[gr][gc]),
                     .results(gold_results_wire[gr][gc])
                 );
             end
@@ -199,6 +205,7 @@ module sys_array_packed_mult_tb;
         for (rr = 0; rr < N; rr = rr + 1) begin
             weights_valid_left_i_dut[rr] = 1'b0;
             x_valid_top_i_dut[rr]        = 1'b0;
+            weight_shared_exp_left_i_dut[rr] = '0;
             for (i = 0; i < DOT_LEN; i = i + 1) begin
                 weight_left_i_dut[rr][i] = '0;
                 for (n = 0; n < NUM_OPS; n = n + 1) begin
@@ -213,6 +220,7 @@ module sys_array_packed_mult_tb;
         for (rr = 0; rr < N; rr = rr + 1) begin
             for (cc = 0; cc < N; cc = cc + 1) begin
                 gold_valid_in[rr][cc] = 1'b0;
+                gold_sharedBlock_exp[rr][cc] = '0;
                 for (i = 0; i < DOT_LEN; i = i + 1) begin
                     gold_sharedOperands[rr][cc][i] = '0;
                     for (n = 0; n < NUM_OPS; n = n + 1) begin
@@ -220,7 +228,7 @@ module sys_array_packed_mult_tb;
                     end
                 end
                 for (n = 0; n < NUM_OPS; n = n + 1) begin
-                    gold_shared_exp[rr][cc][n] = '0;
+                    gold_block_exp[rr][cc][n] = '0;
                 end
             end
         end
@@ -255,8 +263,9 @@ module sys_array_packed_mult_tb;
                         end
                     end
 
+                    gold_sharedBlock_exp[rr][cc] <= w_shared_exp_mem[rr];
                     for (n = 0; n < NUM_OPS; n = n + 1) begin
-                        gold_shared_exp[rr][cc][n] <= x_shared_exp_mem[p][cc][n];
+                        gold_block_exp[rr][cc][n] <= x_shared_exp_mem[p][cc][n];
                     end
                 end
             end
@@ -320,6 +329,7 @@ module sys_array_packed_mult_tb;
                 weights_valid_left_i_dut[r] <= 1'b1;
                 x_valid_top_i_dut[r]        <= 1'b1;
 
+                weight_shared_exp_left_i_dut[r] <= w_shared_exp_mem[r];
                 for (i = 0; i < DOT_LEN; i = i + 1) begin
                     // Re-inject weights every cycle
                     weight_left_i_dut[r][i] <= w_vec_mem[r][i];
@@ -341,6 +351,7 @@ module sys_array_packed_mult_tb;
             weights_valid_left_i_dut[r] <= 1'b0;
             x_valid_top_i_dut[r]        <= 1'b0;
 
+            weight_shared_exp_left_i_dut[r] <= '0;
             for (i = 0; i < DOT_LEN; i = i + 1) begin
                 weight_left_i_dut[r][i] <= '0;
                 for (n = 0; n < NUM_OPS; n = n + 1) begin
