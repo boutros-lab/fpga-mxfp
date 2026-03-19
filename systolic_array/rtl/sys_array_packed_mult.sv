@@ -133,7 +133,7 @@ module sys_array_packed_mult #(
                 else begin
                     // Other rows have delay
                     // row 1 has a 1 cycle delay so from delayed[r-1 = 1-1 = 0]
-                    w_valid_pipe[r][0] <= w_row_valid_delayed[r-1];
+                    w_valid_pipe[r][0] <= w_row_valid_delayed[r][r-1];
                     for (i = 0; i < DOT_LEN; i++) begin
                         w_pipe[r][0][i] <= w_row_delayed[r][r-1][i];
                     end
@@ -178,7 +178,9 @@ module sys_array_packed_mult #(
                     // Next columns has delays
                     x_valid_pipe[0][c] <= x_col_valid_delayed[c][c-1];
                     for (i = 0; i < DOT_LEN; i++) begin
-                        x_pipe[0][c][i][n] <= x_col_delayed[c][c-1][i][n];
+                        for (n = 0; n < NUM_OPS; n++) begin
+                           x_pipe[0][c][i][n] <= x_col_delayed[c][c-1][i][n]; 
+                        end
                     end
                     for (n = 0; n < NUM_OPS; n++) begin
                         x_shared_exp_pipe[0][c][n] <= x_shared_exp_col_delayed[c][c-1][n];
