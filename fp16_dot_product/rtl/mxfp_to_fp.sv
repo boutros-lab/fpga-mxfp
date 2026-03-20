@@ -7,8 +7,6 @@ module mxfp_to_fp #(
 	parameter exp_bits_o = 5,
 	parameter man_bits_o = 10
 ) (
-	input  logic clk,
-	input  logic rst,
 	input  logic [exp_bits_i + man_bits_i:0] i_mxfp,
 	output logic [exp_bits_o + man_bits_o:0] o_fp
 );

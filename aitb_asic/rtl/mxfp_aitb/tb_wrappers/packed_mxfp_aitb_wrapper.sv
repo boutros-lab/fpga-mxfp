@@ -1,6 +1,6 @@
 import pkg_aitb::*;
 
-module naive_mxfp_aitb_wrapper (
+module packed_mxfp_aitb_wrapper (
 	input logic clk,
 	input logic rst,
 	input logic i_load_en,

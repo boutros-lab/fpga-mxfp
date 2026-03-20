@@ -1,5 +1,6 @@
 /*
 * Non-recursive reduction tree for power of 2 inputs
+* Adapted from MX-for-FPGA
 */
 
 module pow2_reduction_norecurse #(
@@ -17,31 +18,32 @@ localparam LEVELS = $clog2(INPUTS);
 genvar i, j;
 
 generate
-	for (i = 0; i < LEVELS; i++) begin : tree_add
-		// Declare adders.
-		logic signed [INPUT_WIDTH+i-1:0] p0_add0 [INPUTS>>(1+i)];
-		logic signed [INPUT_WIDTH+i-1:0] p0_add1 [INPUTS>>(1+i)];
-		logic signed [INPUT_WIDTH+i:0]   p0_sum  [INPUTS>>(1+i)];
+	// Generate reduction tree
+	for (i = 0; i < LEVELS; i++) begin : reduction
+		logic signed [INPUT_WIDTH+i-1:0] op0   [INPUTS >> (1 + i)];
+		logic signed [INPUT_WIDTH+i-1:0] op1   [INPUTS >> (1 + i)];
+		logic signed [INPUT_WIDTH+i:0]   sums  [INPUTS >> (1 + i)];
 
+		// Declare adders
 		for(j = 0; j < (INPUTS >> (1 + i)); j++) begin
-			assign p0_sum[j] = p0_add0[j] + p0_add1[j];
+			assign sums[j] = op0[j] + op1[j];
 		end
 
-		// Connections to previous layers.
+		// Connections to previous layers
 		if(i != 0) begin
 			for(j = 0; j < (INPUTS >> (1 + i)); j++) begin
-				assign p0_add0[j] = tree_add[i-1].p0_sum[2*j];
-				assign p0_add1[j] = tree_add[i-1].p0_sum[2*j+1];
+				assign op0[j] = reduction[i - 1].sums[j << 1];
+				assign op1[j] = reduction[i - 1].sums[(j << 1) + 1];
 			end
 		end else begin
 			for(j = 0; j < (INPUTS >> (1 + i)); j++) begin
-				assign p0_add0[j] = i_op[2*j];
-				assign p0_add1[j] = i_op[2*j+1];
+				assign op0[j] = i_op[j << 1];
+				assign op1[j] = i_op[(j << 1) + 1];
 			end
 		end
 	end
 endgenerate
 
-assign o_sum = tree_add[LEVELS-1].p0_sum[0];
+assign o_sum = reduction[LEVELS-1].sums[0];
 
 endmodule
