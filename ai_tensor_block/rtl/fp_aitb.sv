@@ -6,7 +6,7 @@ module fp_aitb #(
 	input logic acc_en,
 	input logic zero_en,
 	input logic load_en,
-	input logic [7:0] data_in [1:10],
+	input logic signed [7:0] data_in [1:10],
 	input logic [7:0] shared_exponent,
 	input logic [31:0] cascade_data_in_col_1,
 	input logic [31:0] cascade_data_in_col_2,

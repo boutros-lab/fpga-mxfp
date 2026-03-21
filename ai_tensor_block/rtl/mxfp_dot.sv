@@ -35,7 +35,7 @@ logic [7:0] corrected_E;
 logic [7:0] corrected_E_ff [0:3];
 logic [7:0] corrected_E_eff [0:3];
 
-logic [7:0] int8mant [0:DOT_LEN-1];
+logic signed [7:0] int8mant [0:DOT_LEN-1];
 logic signed [7:0] int8mant_ff [0:DOT_LEN-1];
 logic [7:0] int8mant_eff [0:DOT_LEN-1];
 logic internal_valid_out [0:3];
