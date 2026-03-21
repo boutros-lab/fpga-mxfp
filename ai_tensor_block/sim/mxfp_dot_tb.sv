@@ -4,8 +4,8 @@
 module mxfp_dot_tb();
 
 localparam CLK_PERIOD = 2;   // Clock period in ns
-localparam NUM_LOADS = 5;    // Number of times AITB is loaded with new pair of vectors
-localparam REUSE_FACTOR = 2; // Number of vector operands multiplied by the loaded vectors in the AITB
+localparam NUM_LOADS = 1;    // Number of times AITB is loaded with new pair of vectors
+localparam REUSE_FACTOR = 10; // Number of vector operands multiplied by the loaded vectors in the AITB
 
 localparam BIAS = 1;
 
@@ -50,7 +50,8 @@ mxfp_dot #(
 	.valid_in(i_valid),
 	.mx_data_in(i_data),
 	.shared_exponent(i_sh_exp),
-	.fp32_dot_out(o_result0),
+	.fp32_dot_out_col1(o_result0),
+	.fp32_dot_out_col2(o_result1),
 	.valid_out(o_valid)
 	//.fp32_flags(result_flags)
 );
@@ -166,11 +167,11 @@ initial begin
 			$display("result0   = %1b||%8b||%23b = %f", o_result0[31], o_result0[30:23], o_result0[22:0], $bitstoshortreal(o_result0));
 //			$display("ref_res0  = %1b||%8b||%23b = %f", o_ref_result0[31], o_ref_result0[30:23], o_ref_result0[22:0], $bitstoshortreal(o_ref_result0));
 			$display("o_golden0 = %1b||%8b||%23b = %f", golden_result0_bits[31], golden_result0_bits[30:23], golden_result0_bits[22:0], golden_result0[out_id]);
-//			$display("-----------------------------------------------------");
-//			$display("result1   = %1b||%8b||%23b = %f", o_result1[31], o_result1[30:23], o_result1[22:0], $bitstoshortreal(o_result1));
+			$display("-----------------------------------------------------");
+			$display("result1   = %1b||%8b||%23b = %f", o_result1[31], o_result1[30:23], o_result1[22:0], $bitstoshortreal(o_result1));
 //			$display("ref_res1  = %1b||%8b||%23b = %f", o_ref_result1[31], o_ref_result1[30:23], o_ref_result1[22:0], $bitstoshortreal(o_ref_result1));
-//			$display("o_golden1 = %1b||%8b||%23b = %f", golden_result1_bits[31], golden_result1_bits[30:23], golden_result1_bits[22:0], golden_result1[out_id]);
-			if ((o_result0 != golden_result0_bits)/* || (o_result1 != o_ref_result1)*/) begin
+			$display("o_golden1 = %1b||%8b||%23b = %f", golden_result1_bits[31], golden_result1_bits[30:23], golden_result1_bits[22:0], golden_result1[out_id]);
+			if ((o_result0 != golden_result0_bits) || (o_result1 != o_ref_result1)) begin
 				mistakes = mistakes + 1;
 				$display("FULL MISMATCH!!");
 			end else begin
