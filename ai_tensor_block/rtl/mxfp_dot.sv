@@ -15,6 +15,8 @@ module mxfp_dot #(
 	input logic [M+E:0] mx_data_in [0:DOT_LEN-1],
 	input logic [E_SHARED-1:0] shared_exponent,
 	output logic [31:0] fp32_dot_out,
+//	output logic [31:0] fp32_dot_out_0,
+//	output logic [31:0] fp32_dot_out_1,
 	output logic valid_out,
 	output logic [3:0] fp32_flags [0:3]
 
@@ -37,7 +39,7 @@ logic [7:0] int8mant_ff [0:DOT_LEN-1];
 logic [7:0] int8mant_eff [0:DOT_LEN-1];
 logic internal_valid_out [0:3];
 
-logic load_en_ff;
+logic load_en_ff [1:3];
 
 logic [M+E:0] mx_data_in_ff [0:DOT_LEN-1];
 logic [E_SHARED-1:0] shared_exponent_ff;
@@ -87,20 +89,22 @@ end
 
 
 integer j;
+/*
 always_comb begin
 	if (load_en_ff == 1'b1) begin
 		//for (i = 0; i < DOT_LEN; i++)
 			int8mant_eff = int8mant;
-		for (j = 0; j < 2; j++)
+		for (j = 0; j < 4; j++)
 			corrected_E_eff[j] = corrected_E;
 		end else begin
 
 		//for (i = 0; i < DOT_LEN; i++)
 			int8mant_eff = int8mant_ff;
-		for (j = 0; j < 2; j++)
+		for (j = 0; j < 4; j++)
 			corrected_E_eff[j] = corrected_E_ff[j];
 	end
 end
+*/
 generate
 		for (genvar j = 10; j < 20; j++) begin
 			pipeline #(.W(8), .STAGES(2)) DOT1_M_PIPE (
@@ -116,6 +120,12 @@ generate
 			.pipe_in(corrected_E),
 			.pipe_out(corrected_E_ff[1])
 		);
+		pipeline #(.W(1), .STAGES(2)) DOT1_LOAD_PIPE (
+			.clk(clk),
+			.rst(rst),
+			.pipe_in(load_en),
+			.pipe_out(load_en_ff[1])
+		);
 		for (genvar j = 20; j < 30; j++) begin
 			pipeline #(.W(8), .STAGES(4)) DOT2_M_PIPE (
 				.clk(clk),
@@ -129,6 +139,12 @@ generate
 			.rst(rst),
 			.pipe_in(corrected_E),
 			.pipe_out(corrected_E_ff[2])
+		);
+		pipeline #(.W(1), .STAGES(4)) DOT2_LOAD_PIPE (
+			.clk(clk),
+			.rst(rst),
+			.pipe_in(load_en),
+			.pipe_out(load_en_ff[2])
 		);
 		for (genvar j = 30; j < 32; j++) begin
 			pipeline #(.W(8), .STAGES(6)) DOT3_M_PIPE (
@@ -144,11 +160,18 @@ generate
 			.pipe_in(corrected_E),
 			.pipe_out(corrected_E_ff[3])
 		);
+		pipeline #(.W(1), .STAGES(6)) DOT3_LOAD_PIPE (
+			.clk(clk),
+			.rst(rst),
+			.pipe_in(load_en),
+			.pipe_out(load_en_ff[3])
+		);
 endgenerate
 
+/*
 pipeline #(.W(1), .STAGES(1)) load_PIPE (
 		.clk(clk),
-		.rst(rst),
+		.rst(load_en | rst),
 		.pipe_in(load_en),
 		.pipe_out(load_en_ff)
 );
@@ -177,7 +200,14 @@ pipeline #(.W(1), .STAGES(2)) valid3_PIPE (
 		.pipe_in(internal_valid_out[2]),
 		.pipe_out(internal_valid_out[3])
 );
-assign valid_out = internal_valid_out[3];
+*/
+pipeline #(.W(1), .STAGES(11)) valid3_PIPE (
+		.clk(clk),
+		.rst(rst),
+		.pipe_in(valid_in),
+		.pipe_out(valid_out)
+);
+//assign valid_out = internal_valid_out[3];
 
 fp_aitb #(.CHAIN_MODE("zero_tensor_chain_output")) dot_engine0 (
 .clk(clk),
@@ -196,9 +226,10 @@ fp_aitb dot_engine1 (
 .clk(clk),
 .rst(rst),
 .acc_mode(2'b00),
-.load_en(load_en),
-.data_in(int8mant_eff[10:19]),
-.shared_exponent(corrected_E_eff[1]),
+.load_en(load_en_ff[1]),
+.data_in(int8mant_ff[10:19]),
+.shared_exponent(corrected_E_ff[1]),
+//.shared_exponent(corrected_E),
 .fp32_cascade_in(cascade_out[0]),
 .fp32_dot_out(dot_out[1]),
 .fp32_cascade_out(cascade_out[1]),
@@ -209,9 +240,10 @@ fp_aitb dot_engine2 (
 .clk(clk),
 .rst(rst),
 .acc_mode(2'b00),
-.load_en(load_en),
-.data_in(int8mant[20:29]),
-.shared_exponent(corrected_E),
+.load_en(load_en_ff[2]),
+.data_in(int8mant_ff[20:29]),
+.shared_exponent(corrected_E_ff[2]),
+//.shared_exponent(corrected_E),
 .fp32_cascade_in(cascade_out[1]),
 .fp32_dot_out(dot_out[2]),
 .fp32_cascade_out(cascade_out[2]),
@@ -222,9 +254,10 @@ fp_aitb /*#(.CHAIN_MODE("zero_tensor_chain_output"))*/ dot_engine3 (
 .clk(clk),
 .rst(rst),
 .acc_mode(2'b00),
-.load_en(load_en),
-.data_in({int8mant[30], int8mant[31], 8'd0, 8'd0, 8'd0, 8'd0, 8'd0, 8'd0, 8'd0, 8'd0}),
-.shared_exponent(corrected_E),
+.load_en(load_en_ff[3]),
+.data_in({int8mant_ff[30], int8mant_ff[31], 8'd0, 8'd0, 8'd0, 8'd0, 8'd0, 8'd0, 8'd0, 8'd0}),
+.shared_exponent(corrected_E_ff[3]),
+//.shared_exponent(corrected_E),
 .fp32_cascade_in(cascade_out[2]),
 .fp32_dot_out(dot_out[3]),
 .fp32_cascade_out(/*cascade_out[3]*/),
