@@ -44,13 +44,23 @@ for (genvar i = 0; i < block_size/2; i++) begin
     logic [2*(mantissa_width + 1)-1:0] mantissa_products_a [num_ops-1:0], mantissa_products_b [num_ops-1:0];
     logic [exponent_width:0] exponent_sums_a [num_ops-1:0], exponent_sums_b [num_ops-1:0];
 
+    // Subnormal handling: if exponent is 0, the first bit of the mantissa is 0 instead of 1. 
+    logic shared_is_normal_a, shared_is_normal_b;
+    logic is_normal_a [num_ops-1:0], is_normal_b [num_ops-1:0];
+    assign shared_is_normal_a = sharedOperands[i*2][exponent_width+mantissa_width-1:mantissa_width] != 0;
+    assign shared_is_normal_b = sharedOperands[i*2+1][exponent_width+mantissa_width-1:mantissa_width] != 0;
+    for (genvar n = 0; n < num_ops; n++) begin
+        assign is_normal_a[n] = operands[i*2][n][exponent_width+mantissa_width-1:mantissa_width] != 0;
+        assign is_normal_b[n] = operands[i*2+1][n][exponent_width+mantissa_width-1:mantissa_width] != 0;
+    end 
+
     // Extract mantissas 
     logic [mantissa_width:0] mantissas_a [num_ops-1:0], mantissas_b [num_ops-1:0], shared_mantissa_a , shared_mantissa_b;
-    assign shared_mantissa_a = {1'b1, sharedOperands[i*2][mantissa_width-1:0]};
-    assign shared_mantissa_b = {1'b1, sharedOperands[i*2+1][mantissa_width-1:0]};
+    assign shared_mantissa_a = {shared_is_normal_a, sharedOperands[i*2][mantissa_width-1:0]};
+    assign shared_mantissa_b = {shared_is_normal_b, sharedOperands[i*2+1][mantissa_width-1:0]};
     for (genvar n = 0; n < num_ops; n++) begin
-        assign mantissas_a[n] = {1'b1, operands[i*2][n][mantissa_width-1:0]};
-        assign mantissas_b[n] = {1'b1, operands[i*2+1][n][mantissa_width-1:0]};
+        assign mantissas_a[n] = {is_normal_a[n], operands[i*2][n][mantissa_width-1:0]};
+        assign mantissas_b[n] = {is_normal_b[n], operands[i*2+1][n][mantissa_width-1:0]};
     end
 
     // Use packed multipliers and DSP to multiply mantissas
@@ -88,13 +98,13 @@ for (genvar i = 0; i < block_size/2; i++) begin
         .clk(clk)
     );
 
-    // Just add exponents
+    // Add exponents (subnormals use effective exponent of 1)
     for (genvar n = 0; n < num_ops; n++) begin
         always_comb begin
-            exponent_sums_a[n] = operands[i*2][n][exponent_width+mantissa_width-1:mantissa_width] 
-                + sharedOperands[i*2][exponent_width+mantissa_width-1:mantissa_width];
-            exponent_sums_b[n] = operands[i*2+1][n][exponent_width+mantissa_width-1:mantissa_width] 
-                + sharedOperands[i*2+1][exponent_width+mantissa_width-1:mantissa_width];
+            exponent_sums_a[n] = (is_normal_a[n] ? operands[i*2][n][exponent_width+mantissa_width-1:mantissa_width] : 1)
+                + (shared_is_normal_a ? sharedOperands[i*2][exponent_width+mantissa_width-1:mantissa_width] : 1);
+            exponent_sums_b[n] = (is_normal_b[n] ? operands[i*2+1][n][exponent_width+mantissa_width-1:mantissa_width] : 1)
+                + (shared_is_normal_b ? sharedOperands[i*2+1][exponent_width+mantissa_width-1:mantissa_width] : 1);
         end
     end
 
