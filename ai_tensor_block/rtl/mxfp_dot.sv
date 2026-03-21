@@ -14,11 +14,11 @@ module mxfp_dot #(
 	input logic valid_in,
 	input logic [M+E:0] mx_data_in [0:DOT_LEN-1],
 	input logic [E_SHARED-1:0] shared_exponent,
-	output logic [31:0] fp32_dot_out,
-//	output logic [31:0] fp32_dot_out_0,
-//	output logic [31:0] fp32_dot_out_1,
+	output logic [31:0] fp32_dot_out_col1,
+	output logic [31:0] fp32_dot_out_col2,
 	output logic valid_out,
-	output logic [3:0] fp32_flags [0:3]
+	output logic [3:0] fp32_flags_col1,
+	output logic [3:0] fp32_flags_col2
 
 );
 
@@ -28,14 +28,15 @@ logic  mx_Ss [0:DOT_LEN-1];
 
 //logic /*signed*/ [7:0] corrected_Ms [0:DOT_LEN-1];
 
-logic [31:0] dot_out [0:3];
-logic [31:0] cascade_out [0:3];
+//logic [31:0] dot_out [0:3];
+logic [31:0] cascade_out_col1 [0:2];
+logic [31:0] cascade_out_col2 [0:2];
 logic [7:0] corrected_E;
 logic [7:0] corrected_E_ff [0:3];
 logic [7:0] corrected_E_eff [0:3];
 
 logic [7:0] int8mant [0:DOT_LEN-1];
-logic [7:0] int8mant_ff [0:DOT_LEN-1];
+logic signed [7:0] int8mant_ff [0:DOT_LEN-1];
 logic [7:0] int8mant_eff [0:DOT_LEN-1];
 logic internal_valid_out [0:3];
 
@@ -76,11 +77,11 @@ always_comb begin
 	for (i = 0; i < DOT_LEN; i++) begin
 		// Normal and subnormal
 		if (mx_Es[i] == '0) begin
-			//int8mant[i] = (mx_Ss[i] == 1'b1) ? -(mx_Ms[i] << (mx_Es[i])) : mx_Ms[i] << (mx_Es[i]);
-			int8mant[i] = (mx_Ss[i] == 1'b1) ? ~(mx_Ms[i] << (mx_Es[i]))+1'b1 : mx_Ms[i] << (mx_Es[i]);
+			int8mant[i] = (mx_Ss[i] == 1'b1) ? -(mx_Ms[i] << (mx_Es[i])) : mx_Ms[i] << (mx_Es[i]);
+			//int8mant[i] = (mx_Ss[i] == 1'b1) ? ~(mx_Ms[i] << (mx_Es[i]))+1'b1 : mx_Ms[i] << (mx_Es[i]);
 		end else begin
-			//int8mant[i] = (mx_Ss[i] == 1'b1) ? -(((1 << M) + mx_Ms[i]) << (mx_Es[i] - FP_BIAS)) : ((1 << M) + mx_Ms[i]) << (mx_Es[i] - FP_BIAS);
-			int8mant[i] = (mx_Ss[i] == 1'b1) ? ~(((1 << M) + mx_Ms[i]) << (mx_Es[i] - FP_BIAS))+1'b1 : ((1 << M) + mx_Ms[i]) << (mx_Es[i] - FP_BIAS);
+			int8mant[i] = (mx_Ss[i] == 1'b1) ? -(((1 << M) + mx_Ms[i]) << (mx_Es[i] - FP_BIAS)) : ((1 << M) + mx_Ms[i]) << (mx_Es[i] - FP_BIAS);
+			//int8mant[i] = (mx_Ss[i] == 1'b1) ? ~(((1 << M) + mx_Ms[i]) << (mx_Es[i] - FP_BIAS))+1'b1 : ((1 << M) + mx_Ms[i]) << (mx_Es[i] - FP_BIAS);
 		end
 	end
 	corrected_E = shared_exponent_ff - M;
@@ -212,16 +213,40 @@ pipeline #(.W(1), .STAGES(11)) valid3_PIPE (
 fp_aitb #(.CHAIN_MODE("zero_tensor_chain_output")) dot_engine0 (
 .clk(clk),
 .rst(rst),
-.acc_mode(2'b10),
+.acc_en(1'b0),
+.zero_en(1'b1),
 .load_en(load_en),
 .data_in(int8mant[0:9]),
 .shared_exponent(corrected_E),
-.fp32_cascade_in(),
-.fp32_dot_out(dot_out[0]),
-.fp32_cascade_out(cascade_out[0]),
-.fp32_flags(fp32_flags[0])
+.cascade_data_in_col_1(),
+.cascade_data_in_col_2(),
+.fp32_col_1(/*dot_out[0]*/),
+.fp32_col_2(/*dot_out[0]*/),
+.cascade_data_out_col_1(cascade_out_col1[0]),
+.cascade_data_out_col_2(cascade_out_col2[0]),
+.fp32_col_1_flag(),
+.fp32_col_2_flag()
 );
 
+fp_aitb dot_engine1 (
+.clk(clk),
+.rst(rst),
+.acc_en(1'b0),
+.zero_en(1'b0),
+.load_en(load_en_ff[1]),
+.data_in(int8mant_ff[10:19]),
+.shared_exponent(corrected_E_ff[1]),
+.cascade_data_in_col_1(cascade_out_col1[0]),
+.cascade_data_in_col_2(cascade_out_col2[0]),
+.fp32_col_1(/*dot_out[0]*/),
+.fp32_col_2(/*dot_out[0]*/),
+.cascade_data_out_col_1(cascade_out_col1[1]),
+.cascade_data_out_col_2(cascade_out_col2[1]),
+.fp32_col_1_flag(),
+.fp32_col_2_flag()
+);
+
+/*
 fp_aitb dot_engine1 (
 .clk(clk),
 .rst(rst),
@@ -235,7 +260,25 @@ fp_aitb dot_engine1 (
 .fp32_cascade_out(cascade_out[1]),
 .fp32_flags(fp32_flags[1])
 );
-
+*/
+fp_aitb dot_engine2 (
+.clk(clk),
+.rst(rst),
+.acc_en(1'b0),
+.zero_en(1'b0),
+.load_en(load_en_ff[2]),
+.data_in(int8mant_ff[20:29]),
+.shared_exponent(corrected_E_ff[2]),
+.cascade_data_in_col_1(cascade_out_col1[1]),
+.cascade_data_in_col_2(cascade_out_col2[1]),
+.fp32_col_1(/*dot_out[0]*/),
+.fp32_col_2(/*dot_out[0]*/),
+.cascade_data_out_col_1(cascade_out_col1[2]),
+.cascade_data_out_col_2(cascade_out_col2[2]),
+.fp32_col_1_flag(),
+.fp32_col_2_flag()
+);
+/*
 fp_aitb dot_engine2 (
 .clk(clk),
 .rst(rst),
@@ -249,8 +292,26 @@ fp_aitb dot_engine2 (
 .fp32_cascade_out(cascade_out[2]),
 .fp32_flags(fp32_flags[2])
 );
-
-fp_aitb /*#(.CHAIN_MODE("zero_tensor_chain_output"))*/ dot_engine3 (
+*/
+fp_aitb dot_engine3 (
+.clk(clk),
+.rst(rst),
+.acc_en(1'b0),
+.zero_en(1'b0),
+.load_en(load_en_ff[3]),
+.data_in({int8mant_ff[30], int8mant_ff[31], 8'd0, 8'd0, 8'd0, 8'd0, 8'd0, 8'd0, 8'd0, 8'd0}),
+.shared_exponent(corrected_E_ff[3]),
+.cascade_data_in_col_1(cascade_out_col1[2]),
+.cascade_data_in_col_2(cascade_out_col2[2]),
+.fp32_col_1(fp32_dot_out_col1),
+.fp32_col_2(fp32_dot_out_col2),
+.cascade_data_out_col_1(/*cascade_out_col1[1]*/),
+.cascade_data_out_col_2(/*cascade_out_col2[1]*/),
+.fp32_col_1_flag(fp32_flags_col1),
+.fp32_col_2_flag(fp32_flags_col2)
+);
+/*
+fp_aitb #(.CHAIN_MODE("zero_tensor_chain_output")) dot_engine3 (
 .clk(clk),
 .rst(rst),
 .acc_mode(2'b00),
@@ -260,10 +321,10 @@ fp_aitb /*#(.CHAIN_MODE("zero_tensor_chain_output"))*/ dot_engine3 (
 //.shared_exponent(corrected_E),
 .fp32_cascade_in(cascade_out[2]),
 .fp32_dot_out(dot_out[3]),
-.fp32_cascade_out(/*cascade_out[3]*/),
+.fp32_cascade_out(cascade_out[3]),
 .fp32_flags(fp32_flags[3])
 );
-
-assign fp32_dot_out = dot_out[3];
+*/
+//assign fp32_dot_out = dot_out[3];
 
 endmodule
