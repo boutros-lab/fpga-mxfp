@@ -175,9 +175,11 @@ module sys_array_aitb_tb;
     logic valid_top_i_dut [0:N-1];
     logic [DATA_MX_W-1:0] x_top_i_dut [0:N-1][0:DOT_LEN-1];
     logic [SHARED_EXP_W-1:0] x_shared_exp_top_i_dut [0:N-1];
-    logic [DATA_OUT_W-1:0] dot_fp32_o_dut [0:N-1][0:N-1];
+    logic [DATA_OUT_W-1:0] dot_fp32_col1_o_dut [0:N-1][0:N-1];
+    logic [DATA_OUT_W-1:0] dot_fp32_col2_o_dut [0:N-1][0:N-1];
     logic valid_o_dut [0:N-1][0:N-1];
-    logic [3:0] fp32_flags_o_dut [0:N-1][0:N-1][0:3];
+    logic [3:0] fp32_flags_col1_o_dut [0:N-1][0:N-1];
+    logic [3:0] fp32_flags_col2_o_dut [0:N-1][0:N-1];
     // DUT
     sys_array_aitb #(
         .N(N),
@@ -199,9 +201,11 @@ module sys_array_aitb_tb;
         .valid_top_i(valid_top_i_dut),
         .x_top_i(x_top_i_dut),
         .x_shared_exp_top_i(x_shared_exp_top_i_dut),
-        .dot_fp32_o(dot_fp32_o_dut),
+        .dot_fp32_col1_o(dot_fp32_col1_o_dut),
+        .dot_fp32_col2_o(dot_fp32_col2_o_dut),
         .valid_o(valid_o_dut),
-        .fp32_flags_o(fp32_flags_o_dut)
+        .fp32_flags_col1_o(fp32_flags_col1_o_dut),
+        .fp32_flags_col2_o(fp32_flags_col2_o_dut)
     );
 
     // CLK Gen (100 MHz)
@@ -281,12 +285,12 @@ module sys_array_aitb_tb;
                 valid_top_i_dut[i] <= 1'b1;
             end
 
-            @(negedge clk);
-            for (i = 0; i < N; i = i + 1) begin
-                valid_top_i_dut[i] <= 1'b0;
-            end
+            //@(negedge clk);
+            //for (i = 0; i < N; i = i + 1) begin
+            //    valid_top_i_dut[i] <= 1'b0;
+            //end
 
-            repeat (N+2) @(negedge clk);  // temporary debug bubble
+            //repeat (N+2) @(negedge clk);  // temporary debug bubble
 
         end
         
@@ -341,17 +345,18 @@ module sys_array_aitb_tb;
                         row_valids_this_cycle[rr] = row_valids_this_cycle[rr] + 1;
                         total_recv_count = total_recv_count + 1;
 
-                        $display("[%0t] OUT row=%0d col=%0d expect_p=%0d dut=0x%08h gold=0x%08h",
+                        $display("[%0t] OUT row=%0d col=%0d expect_p=%0d dut_col1=0x%08h dut_col2=0x%08h gold=0x%08h",
                              $time, rr, cc, expect_p_per_row[rr],
-                             dot_fp32_o_dut[rr][cc],
+                             dot_fp32_col1_o_dut[rr][cc],
+                             dot_fp32_col2_o_dut[rr][cc],
                              dot_fp32_o_gold[expect_p_per_row[rr]][rr][cc]);
 
-                        if (dot_fp32_o_dut[rr][cc] !==
+                        if (dot_fp32_col1_o_dut[rr][cc] !==
                             dot_fp32_o_gold[expect_p_per_row[rr]][rr][cc]) begin
                             mismatch_seen = 1'b1;
-                            $error("[%0t] MISMATCH row=%0d col=%0d expect_p=%0d dut=0x%08h gold=0x%08h",
+                            $error("[%0t] MISMATCH row=%0d col=%0d expect_p=%0d dut_col1=0x%08h gold=0x%08h",
                                 $time, rr, cc, expect_p_per_row[rr],
-                                dot_fp32_o_dut[rr][cc],
+                                dot_fp32_col1_o_dut[rr][cc],
                                 dot_fp32_o_gold[expect_p_per_row[rr]][rr][cc]);
                             $display("[%0t] TEST FAILED: ending simulation.", $time);
                             $finish;

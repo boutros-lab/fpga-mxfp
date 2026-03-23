@@ -30,9 +30,11 @@ module sys_array_aitb #(
     input logic [DATA_MX_W-1:0] x_top_i [0:N-1][0:DOT_LEN-1],
     input logic [SHARED_EXP_W-1:0] x_shared_exp_top_i [0:N-1],
     // Outputs (from bottom of the array)
-    output logic [DATA_OUT_W-1:0] dot_fp32_o [0:N-1][0:N-1],
+    output logic [DATA_OUT_W-1:0] dot_fp32_col1_o [0:N-1][0:N-1],
+    output logic [DATA_OUT_W-1:0] dot_fp32_col2_o [0:N-1][0:N-1],
     output logic valid_o [0:N-1][0:N-1],
-    output [3:0] fp32_flags_o [0:N-1][0:N-1][0:3]
+    output [3:0] fp32_flags_col1_o [0:N-1][0:N-1],
+    output [3:0] fp32_flags_col2_o [0:N-1][0:N-1]
 );
     
     logic load_en_all_ff;
@@ -169,9 +171,11 @@ module sys_array_aitb #(
                     .valid_in(pe_valid_in[gr][gc]),
                     .mx_data_in(pe_data_in[gr][gc]),
                     .shared_exponent(pe_shared_exp[gr][gc]),
-                    .fp32_dot_out(dot_fp32_o[gr][gc]),
+                    .fp32_dot_out_col1(dot_fp32_col1_o[gr][gc]),
+                    .fp32_dot_out_col2(dot_fp32_col2_o[gr][gc]),
                     .valid_out(valid_o[gr][gc]),
-                    .fp32_flags(fp32_flags_o[gr][gc])
+                    .fp32_flags_col1(fp32_flags_col1_o[gr][gc]),
+                    .fp32_flags_col2(fp32_flags_col2_o[gr][gc])
                 );
 
             end
