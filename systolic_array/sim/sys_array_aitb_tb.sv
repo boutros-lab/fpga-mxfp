@@ -33,29 +33,39 @@ module sys_array_aitb_tb;
     //end
 
     // Generate the inputs ourselves
-    shortreal w_vec_real [0:N-1][0:DOT_LEN-1];
+    // Col1 weights (loaded second into PE, produces col1 output)
+    shortreal w1_vec_real [0:N-1][0:DOT_LEN-1];
+    // Col2 weights (loaded first into PE, produces col2 output)
+    shortreal w2_vec_real [0:N-1][0:DOT_LEN-1];
     shortreal x_vec_real [0:P-1][0:N-1][0:DOT_LEN-1];
-    shortreal dot_gold_real [0:P-1][0:N-1][0:N-1];
+    shortreal dot_gold_col1_real [0:P-1][0:N-1][0:N-1];
+    shortreal dot_gold_col2_real [0:P-1][0:N-1][0:N-1];
 
     // Stimulus
-    logic [DATA_MX_W-1:0] w_vec_mem [0:N-1][0:DOT_LEN-1];
+    logic [DATA_MX_W-1:0] w1_vec_mem [0:N-1][0:DOT_LEN-1];
+    logic [DATA_MX_W-1:0] w2_vec_mem [0:N-1][0:DOT_LEN-1];
     logic [DATA_MX_W-1:0] x_vec_mem [0:P-1][0:N-1][0:DOT_LEN-1];
-    logic [SHARED_EXP_W-1:0] w_shared_exp_mem [0:N-1];
+    logic [SHARED_EXP_W-1:0] w1_shared_exp_mem [0:N-1];
+    logic [SHARED_EXP_W-1:0] w2_shared_exp_mem [0:N-1];
     logic [SHARED_EXP_W-1:0] x_shared_exp_mem [0:P-1][0:N-1];
 
     // Golden result bits
     logic gen_done;
-    logic [DATA_OUT_W-1:0] dot_fp32_o_gold [0:P-1][0:N-1][0:N-1];
+    logic [DATA_OUT_W-1:0] dot_fp32_col1_o_gold [0:P-1][0:N-1][0:N-1];
+    logic [DATA_OUT_W-1:0] dot_fp32_col2_o_gold [0:P-1][0:N-1][0:N-1];
     integer r, c, k, p;
     initial begin : DATA_GEN
         gen_done = 1'b0;
 
         // Clear everything
         for (r = 0; r < N; r = r + 1) begin
-            w_shared_exp_mem[r] = '0;
+            w1_shared_exp_mem[r] = '0;
+            w2_shared_exp_mem[r] = '0;
             for (k = 0; k < DOT_LEN; k = k + 1) begin
-                w_vec_mem[r][k]  = '0;
-                w_vec_real[r][k] = 0.0;
+                w1_vec_mem[r][k]  = '0;
+                w1_vec_real[r][k] = 0.0;
+                w2_vec_mem[r][k]  = '0;
+                w2_vec_real[r][k] = 0.0;
             end
         end
 
@@ -72,19 +82,29 @@ module sys_array_aitb_tb;
         for (p = 0; p < P; p = p + 1) begin
             for (r = 0; r < N; r = r + 1) begin
                 for (c = 0; c < N; c = c + 1) begin
-                    dot_gold_real[p][r][c]   = 0.0;
-                    dot_fp32_o_gold[p][r][c] = '0;
+                    dot_gold_col1_real[p][r][c]   = 0.0;
+                    dot_gold_col2_real[p][r][c]   = 0.0;
+                    dot_fp32_col1_o_gold[p][r][c] = '0;
+                    dot_fp32_col2_o_gold[p][r][c] = '0;
                 end
             end
         end
 
-        // Weights, one vector per row
+        // Col1 weights, one vector per row
         for (r = 0; r < N; r = r + 1) begin
-            // Sensible values to be in normal range
-            w_shared_exp_mem[r] = 8'd127;
+            w1_shared_exp_mem[r] = 8'd127;
             for (k = 0; k < DOT_LEN; k = k + 1) begin
-                w_vec_mem[r][k] = $random;
-                w_vec_real[r][k] = to_fp32(int'(w_vec_mem[r][k]));
+                w1_vec_mem[r][k] = $random;
+                w1_vec_real[r][k] = to_fp32(int'(w1_vec_mem[r][k]));
+            end
+        end
+
+        // Col2 weights, one vector per row
+        for (r = 0; r < N; r = r + 1) begin
+            w2_shared_exp_mem[r] = 8'd127;
+            for (k = 0; k < DOT_LEN; k = k + 1) begin
+                w2_vec_mem[r][k] = $random;
+                w2_vec_real[r][k] = to_fp32(int'(w2_vec_mem[r][k]));
             end
         end
 
@@ -95,24 +115,32 @@ module sys_array_aitb_tb;
                 x_shared_exp_mem[p][c] = 8'd126;
                 for (k = 0; k < DOT_LEN; k = k + 1) begin
                     x_vec_mem[p][c][k] = $random;
-
                     x_vec_real[p][c][k] = to_fp32(int'(x_vec_mem[p][c][k]));
                 end
             end
         end
 
-        // For a set of weights and a P sets of activations, PxNxN dot products
+        // Golden dot products for both columns
         for (p = 0; p < P; p = p + 1) begin
             for (r = 0; r < N; r = r + 1) begin
                 for (c = 0; c < N; c = c + 1) begin
-                    dot_gold_real[p][r][c] = dot(
-                        w_vec_real[r],
+                    // Col1: w1 dot x
+                    dot_gold_col1_real[p][r][c] = dot(
+                        w1_vec_real[r],
                         x_vec_real[p][c],
-                        byte'(w_shared_exp_mem[r]),
+                        byte'(w1_shared_exp_mem[r]),
                         byte'(x_shared_exp_mem[p][c])
                     );
+                    dot_fp32_col1_o_gold[p][r][c] = $shortrealtobits(dot_gold_col1_real[p][r][c]);
 
-                    dot_fp32_o_gold[p][r][c] = $shortrealtobits(dot_gold_real[p][r][c]);
+                    // Col2: w2 dot x
+                    dot_gold_col2_real[p][r][c] = dot(
+                        w2_vec_real[r],
+                        x_vec_real[p][c],
+                        byte'(w2_shared_exp_mem[r]),
+                        byte'(x_shared_exp_mem[p][c])
+                    );
+                    dot_fp32_col2_o_gold[p][r][c] = $shortrealtobits(dot_gold_col2_real[p][r][c]);
                 end
             end
         end
@@ -121,12 +149,23 @@ module sys_array_aitb_tb;
         // Print generated weights, activations, and golden results
         // -----------------------------------------------------------------------------
         $display("============================================================");
-        $display("DATA_GEN: Generated weights");
+        $display("DATA_GEN: Generated col1 weights");
         $display("============================================================");
         for (r = 0; r < N; r = r + 1) begin
-            $write("W[%0d] exp=%0d :", r, w_shared_exp_mem[r]);
+            $write("W1[%0d] exp=%0d :", r, w1_shared_exp_mem[r]);
             for (k = 0; k < DOT_LEN; k = k + 1) begin
-                $write(" %0h", w_vec_mem[r][k]);
+                $write(" %0h", w1_vec_mem[r][k]);
+            end
+            $write("\n");
+        end
+
+        $display("============================================================");
+        $display("DATA_GEN: Generated col2 weights");
+        $display("============================================================");
+        for (r = 0; r < N; r = r + 1) begin
+            $write("W2[%0d] exp=%0d :", r, w2_shared_exp_mem[r]);
+            for (k = 0; k < DOT_LEN; k = k + 1) begin
+                $write(" %0h", w2_vec_mem[r][k]);
             end
             $write("\n");
         end
@@ -146,14 +185,25 @@ module sys_array_aitb_tb;
         end
 
         $display("============================================================");
-        $display("DATA_GEN: Golden dot products");
+        $display("DATA_GEN: Golden dot products (col1)");
         $display("============================================================");
-        // Limit ourselves to the first set, can put in <P if want more
         for (p = 0; p < P; p = p + 1) begin
             for (r = 0; r < N; r = r + 1) begin
                 for (c = 0; c < N; c = c + 1) begin
-                    $display("G[p=%0d][%0d][%0d] = 0x%08h (%f)",
-                            p, r, c, dot_fp32_o_gold[p][r][c], dot_gold_real[p][r][c]);
+                    $display("G_col1[p=%0d][%0d][%0d] = 0x%08h (%f)",
+                            p, r, c, dot_fp32_col1_o_gold[p][r][c], dot_gold_col1_real[p][r][c]);
+                end
+            end
+        end
+
+        $display("============================================================");
+        $display("DATA_GEN: Golden dot products (col2)");
+        $display("============================================================");
+        for (p = 0; p < P; p = p + 1) begin
+            for (r = 0; r < N; r = r + 1) begin
+                for (c = 0; c < N; c = c + 1) begin
+                    $display("G_col2[p=%0d][%0d][%0d] = 0x%08h (%f)",
+                            p, r, c, dot_fp32_col2_o_gold[p][r][c], dot_gold_col2_real[p][r][c]);
                 end
             end
         end
@@ -251,23 +301,34 @@ module sys_array_aitb_tb;
 
         @(negedge clk);
 
-        @ (negedge clk);
-        // Introduce weights
-        for (i = 0; i < N; i = i + 1) begin
-            weight_shared_exp_left_i_dut[i] <= w_shared_exp_mem[i];
-            for (j = 0; j < DOT_LEN; j = j + 1) begin
-                weight_left_i_dut[i][j] <= w_vec_mem[i][j];
-            end 
-        end
-        // Assert load enable
-        // NOTE: Need to hold load_en_all_i_dut for N cycles
+        @(negedge clk);
+        // Assert load_en 1 cycle before col2 weights
         load_en_all_i_dut <= 1'b1;
 
-        repeat (N) @(negedge clk);
-        // Deassert load enable
-        load_en_all_i_dut <= 1'b0;
+        @ (negedge clk);
+        // Introduce weights
+        // Col 2 first
+        for (i = 0; i < N; i = i + 1) begin
+            weight_shared_exp_left_i_dut[i] <= w2_shared_exp_mem[i];
+            for (j = 0; j < DOT_LEN; j = j + 1) begin
+                weight_left_i_dut[i][j] <= w2_vec_mem[i][j];
+            end 
+        end
 
-        @(negedge clk); // Have to wait an extra cycle before deassert load phase
+        @ (negedge clk);
+        // Col 1 after
+        // Deassert load_en
+        load_en_all_i_dut <= 1'b0;
+        for (i = 0; i < N; i = i + 1) begin
+            weight_shared_exp_left_i_dut[i] <= w1_shared_exp_mem[i];
+            for (j = 0; j < DOT_LEN; j = j + 1) begin
+                weight_left_i_dut[i][j] <= w1_vec_mem[i][j];
+            end 
+        end
+
+        // Wait for propagation through the array
+        repeat (N) @(negedge clk);
+
         @(negedge clk);
         // Switch to "forward pass" mode
         is_load_phase_i_dut <= 1'b0;
@@ -345,26 +406,39 @@ module sys_array_aitb_tb;
                         row_valids_this_cycle[rr] = row_valids_this_cycle[rr] + 1;
                         total_recv_count = total_recv_count + 1;
 
-                        $display("[%0t] OUT row=%0d col=%0d expect_p=%0d dut_col1=0x%08h dut_col2=0x%08h gold=0x%08h",
+                        $display("[%0t] OUT row=%0d col=%0d expect_p=%0d dut_col1=0x%08h gold_col1=0x%08h dut_col2=0x%08h gold_col2=0x%08h",
                              $time, rr, cc, expect_p_per_row[rr],
                              dot_fp32_col1_o_dut[rr][cc],
+                             dot_fp32_col1_o_gold[expect_p_per_row[rr]][rr][cc],
                              dot_fp32_col2_o_dut[rr][cc],
-                             dot_fp32_o_gold[expect_p_per_row[rr]][rr][cc]);
+                             dot_fp32_col2_o_gold[expect_p_per_row[rr]][rr][cc]);
 
+                        // Check col1
                         if (dot_fp32_col1_o_dut[rr][cc] !==
-                            dot_fp32_o_gold[expect_p_per_row[rr]][rr][cc]) begin
+                            dot_fp32_col1_o_gold[expect_p_per_row[rr]][rr][cc]) begin
                             mismatch_seen = 1'b1;
-                            $error("[%0t] MISMATCH row=%0d col=%0d expect_p=%0d dut_col1=0x%08h gold=0x%08h",
+                            $error("[%0t] COL1 MISMATCH row=%0d col=%0d expect_p=%0d dut=0x%08h gold=0x%08h",
                                 $time, rr, cc, expect_p_per_row[rr],
                                 dot_fp32_col1_o_dut[rr][cc],
-                                dot_fp32_o_gold[expect_p_per_row[rr]][rr][cc]);
+                                dot_fp32_col1_o_gold[expect_p_per_row[rr]][rr][cc]);
                             $display("[%0t] TEST FAILED: ending simulation.", $time);
                             $finish;
                         end
-                        else begin
-                            $display("[%0t] MATCH row=%0d col=%0d expect_p=%0d",
-                                    $time, rr, cc, expect_p_per_row[rr]);
+
+                        // Check col2
+                        if (dot_fp32_col2_o_dut[rr][cc] !==
+                            dot_fp32_col2_o_gold[expect_p_per_row[rr]][rr][cc]) begin
+                            mismatch_seen = 1'b1;
+                            $error("[%0t] COL2 MISMATCH row=%0d col=%0d expect_p=%0d dut=0x%08h gold=0x%08h",
+                                $time, rr, cc, expect_p_per_row[rr],
+                                dot_fp32_col2_o_dut[rr][cc],
+                                dot_fp32_col2_o_gold[expect_p_per_row[rr]][rr][cc]);
+                            $display("[%0t] TEST FAILED: ending simulation.", $time);
+                            $finish;
                         end
+
+                        //$display("[%0t] MATCH row=%0d col=%0d expect_p=%0d (both columns)",
+                        //        $time, rr, cc, expect_p_per_row[rr]);
                     end
                 end
             end

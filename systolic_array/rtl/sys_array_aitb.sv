@@ -37,13 +37,27 @@ module sys_array_aitb #(
     output [3:0] fp32_flags_col2_o [0:N-1][0:N-1]
 );
     
-    logic load_en_all_ff;
-    always_ff @( posedge clk ) begin
+    // Load enable pipeline needed too
+    // load_en asserted 1 cycle before "column 2" weights are presented
+    // load_en stays high when "column 2" weights presented
+    // load_en deasserts when "column 1" weights presented
+    // (columns of the underlying AITB)
+    logic load_en_col [0:N-1];
+
+    always_ff @(posedge clk) begin
+        integer c;
         if (rst) begin
-            load_en_all_ff <= 1'b0;
+            for (c = 0; c < N; c++) begin
+                load_en_col[c] <= 1'b0;
+            end
         end
         else begin
-            load_en_all_ff <= load_en_all_i;
+            // Column 0 takes in the input
+            load_en_col[0] <= load_en_all_i;
+
+            for (c = 1; c < N; c++) begin
+                load_en_col[c] <= load_en_col[c-1];
+            end
         end
     end
 
@@ -167,7 +181,7 @@ module sys_array_aitb #(
                 ) pe_inst (
                     .clk(clk),
                     .rst(rst),
-                    .load_en(load_en_all_ff),
+                    .load_en(load_en_col[gc]),
                     .valid_in(pe_valid_in[gr][gc]),
                     .mx_data_in(pe_data_in[gr][gc]),
                     .shared_exponent(pe_shared_exp[gr][gc]),
