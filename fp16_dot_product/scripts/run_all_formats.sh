@@ -1,10 +1,6 @@
 #!/bin/bash
 
 k=32
-input_stages=1
-dot_fp_stages=1
-output_stages=1
-mul_int="$RTL_ROOT/mul_int.sv"
 synthesis=true
 suffix=""
 
@@ -13,11 +9,7 @@ usage() {
     echo "Usage: $0 [options]"
     echo
     echo "Options:"
-    echo "  -k <value>  Dot product length, default: 8"
-    echo "  -i <value>  Input register stages, default: 1"
-    echo "  -d <value>  Dot FP register stages, default: 1"
-    echo "  -o <value>  Output register stages, default: 1"
-    echo "  -m <path>   Path to mul_int.sv, default: $RTL_ROOT/mul_int.sv"
+    echo "  -k <value>  Dot product length, default: 32"
     echo "  -t          Suffix for log file (e.g. soft,dsp), none by default"
     echo "  -s          Skip synthesis, default: not skipped"
     echo "  -h          Display this help message"
@@ -29,23 +21,11 @@ usage() {
 }
 
 # Parse command line arguments
-while getopts "k:i:d:o:m:t:sh" opt; do
+while getopts "k:t:sh" opt; do
     case ${opt} in
         k )
             k=$OPTARG
             ;;
-	i )
-	    input_stages=$OPTARG
-	    ;;
-	d )
-	    dot_fp_stages=$OPTARG
-	    ;;
-	o )
-	    output_stages=$OPTARG
-	    ;;
-	m )
-	    mul_int=$OPTARG
-	    ;;
         t )
             suffix="_$OPTARG"
             ;;

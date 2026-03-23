@@ -25,19 +25,14 @@ assign signed_exp_b = $signed({2'b0, shared_exp_in_b});
 // 254 = exp_bias * 2
 assign exp_result = signed_exp_i + signed_exp_a + signed_exp_b - 10'd254;
 
-// TODO: Need special handling for:
-// 	Zero: ignore shared exponent
-// 	Subnormal Input: need to adjust mantissa
-// 	Subnormal output: idek
+// Flush subnormals, overflow and underflow handling
 always_comb begin
-	if ((exp_result < $signed(10'b0)) || (exp_in == 8'b0)) begin
-		// Underflow and zero input
-		// TODO: Currently will just flush subnormals, need special
-		// handling
-		fp32_out = 32'b0;
-	end else if (exp_result > $signed(10'hFF)) begin
+	if (exp_result > $signed(10'hFF)) begin
 		// Overflow
 		fp32_out = {sign_in, 31'h7F800000}; // +/-Inf
+	end else if ((exp_result < $signed(10'b0)) || (exp_in == 8'b0) || (exp_result[7:0] == 'b0)) begin
+		// Underflow and subnormals
+		fp32_out = {sign_in, 31'b0};
 	end else begin
 		// Normal number
 		fp32_out = {sign_in, exp_result[7:0], man_in};

@@ -1,9 +1,9 @@
 // TB Wrapper for Direct-Vector Dot Product
 
-module fp16_dp #(
+module fp16_mxfp_dp_wrapper #(
 	parameter exp_width = 2,
 	parameter man_width = 1,
-	parameter k         = 2,
+	parameter k         = 3,
    	parameter bit_width = 1 + exp_width + man_width
 ) (
 	input  logic clk,
@@ -17,7 +17,7 @@ module fp16_dp #(
 	output logic [31:0] o_result
 );
 
-localparam latency = 6;
+localparam latency = 4 + 6 + ($clog2(k) - 2) * 3;
 
 logic [latency-1:0] valid_sr;
 
@@ -40,8 +40,8 @@ fp16_mxfp_dp #(
 	.rst(rst),
 	.mxfp_in_a(i_vec_a),
 	.mxfp_in_b(i_vec_b),
-	.shared_exp_in_a(),
-	.shared_exp_in_b(),
+	.shared_exp_in_a(i_shared_exp_a),
+	.shared_exp_in_b(i_shared_exp_b),
 	.fp32_out(o_result)
 );
 

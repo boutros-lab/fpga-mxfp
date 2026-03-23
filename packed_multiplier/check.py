@@ -28,11 +28,16 @@ def check_packed_dot_product():
 
     def mxfp_to_float(mxfp_str):
         sign = int(mxfp_str[0])
-        exponent = int(mxfp_str[1:1+exponent_width], 2) - bias
-        mantissa = int('1' + mxfp_str[1+exponent_width:], 2) / (2 ** mantissa_width)
+        exponent_bits = int(mxfp_str[1:1+exponent_width], 2)
+        if exponent_bits == 0:
+            exponent = 1 - bias
+            mantissa = int('0' + mxfp_str[1+exponent_width:], 2) / (2 ** mantissa_width)
+        else:
+            exponent = exponent_bits - bias
+            mantissa = int('1' + mxfp_str[1+exponent_width:], 2) / (2 ** mantissa_width)
         if sign == 1:
             mantissa = -mantissa
-        value = mantissa * (2 ** (exponent))
+        value = mantissa * (2 ** exponent)
         return value
 
     def fixed_to_float(fixed_str):
@@ -162,11 +167,16 @@ def check_packed_dot_product_fp32():
 
     def mxfp_to_float(mxfp_str):
         sign = int(mxfp_str[0])
-        exponent = int(mxfp_str[1:1+exponent_width], 2) - bias
-        mantissa = int('1' + mxfp_str[1+exponent_width:], 2) / (2 ** mantissa_width)
+        exponent_bits = int(mxfp_str[1:1+exponent_width], 2)
+        if exponent_bits == 0:
+            exponent = 1 - bias
+            mantissa = int('0' + mxfp_str[1+exponent_width:], 2) / (2 ** mantissa_width)
+        else:
+            exponent = exponent_bits - bias
+            mantissa = int('1' + mxfp_str[1+exponent_width:], 2) / (2 ** mantissa_width)
         if sign == 1:
             mantissa = -mantissa
-        value = mantissa * (2 ** (exponent))
+        value = mantissa * (2 ** exponent)
         return value
 
     def fp32_to_float(bits_str):

@@ -1,4 +1,4 @@
-DUT ?= packed_dot_product_fp32
+DUT ?= packed_dot_product
 
 sim: 
 	vcom flopoco_fx2fp_pipelined/*.vhdl

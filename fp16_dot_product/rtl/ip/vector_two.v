@@ -101,11 +101,11 @@ module  vector_two  (
                     tennm_fp_mac_component.fp32_adder_b_clken = "no_reg",
                     tennm_fp_mac_component.fp32_mult_a_clken = "no_reg",
                     tennm_fp_mac_component.fp32_mult_b_clken = "no_reg",
-                    tennm_fp_mac_component.fp32_adder_a_chainin_pl_clken = "0",
-                    tennm_fp_mac_component.fp32_adder_a_chainin_2nd_pl_clken = "0",
+                    tennm_fp_mac_component.fp32_adder_a_chainin_pl_clken = "no_reg", // 0
+                    tennm_fp_mac_component.fp32_adder_a_chainin_2nd_pl_clken = "no_reg", // 0
                     tennm_fp_mac_component.output_clken = "0",
                     tennm_fp_mac_component.accum_pipeline_clken = "no_reg",
-                    tennm_fp_mac_component.mult_pipeline_clken = "0",
+                    tennm_fp_mac_component.mult_pipeline_clken = "no_reg", // 0
                     tennm_fp_mac_component.accum_2nd_pipeline_clken = "no_reg",
                     tennm_fp_mac_component.mult_2nd_pipeline_clken = "0";
 endmodule
@@ -182,11 +182,11 @@ module  vector_two_no_chainin  (
                     tennm_fp_mac_component.fp32_adder_b_clken = "no_reg",
                     tennm_fp_mac_component.fp32_mult_a_clken = "no_reg",
                     tennm_fp_mac_component.fp32_mult_b_clken = "no_reg",
-                    tennm_fp_mac_component.fp32_adder_a_chainin_pl_clken = "0",
-                    tennm_fp_mac_component.fp32_adder_a_chainin_2nd_pl_clken = "0",
+                    tennm_fp_mac_component.fp32_adder_a_chainin_pl_clken = "no_reg", // 0
+                    tennm_fp_mac_component.fp32_adder_a_chainin_2nd_pl_clken = "no_reg", // 0
                     tennm_fp_mac_component.output_clken = "0",
                     tennm_fp_mac_component.accum_pipeline_clken = "no_reg",
-                    tennm_fp_mac_component.mult_pipeline_clken = "0",
+                    tennm_fp_mac_component.mult_pipeline_clken = "no_reg", // 0
                     tennm_fp_mac_component.accum_2nd_pipeline_clken = "no_reg",
                     tennm_fp_mac_component.mult_2nd_pipeline_clken = "0";
 endmodule

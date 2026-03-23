@@ -50,17 +50,17 @@ set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/ip/vect
 set_global_assignment -name SDC_FILE [file normalize $SDC_FILE]
 
 # Set number of processors and top design
-set_global_assignment -name TOP_LEVEL_ENTITY fp16_mxfp_dp_32
+set_global_assignment -name TOP_LEVEL_ENTITY fp16_mxfp_dp
 set_global_assignment -name NUM_PARALLEL_PROCESSORS 24
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY "output_files"
 
 # Set virtual pins
-set_instance_assignment -name VIRTUAL_PIN ON -to rst -entity fp16_mxfp_dp_32
-set_instance_assignment -name VIRTUAL_PIN ON -to mxfp_in_a -entity fp16_mxfp_dp_32
-set_instance_assignment -name VIRTUAL_PIN ON -to mxfp_in_b -entity fp16_mxfp_dp_32
-set_instance_assignment -name VIRTUAL_PIN ON -to shared_exp_in_a -entity fp16_mxfp_dp_32
-set_instance_assignment -name VIRTUAL_PIN ON -to shared_exp_in_b -entity fp16_mxfp_dp_32
-set_instance_assignment -name VIRTUAL_PIN ON -to fp32_out -entity fp16_mxfp_dp_32
+set_instance_assignment -name VIRTUAL_PIN ON -to rst -entity fp16_mxfp_dp
+set_instance_assignment -name VIRTUAL_PIN ON -to mxfp_in_a -entity fp16_mxfp_dp
+set_instance_assignment -name VIRTUAL_PIN ON -to mxfp_in_b -entity fp16_mxfp_dp
+set_instance_assignment -name VIRTUAL_PIN ON -to shared_exp_in_a -entity fp16_mxfp_dp
+set_instance_assignment -name VIRTUAL_PIN ON -to shared_exp_in_b -entity fp16_mxfp_dp
+set_instance_assignment -name VIRTUAL_PIN ON -to fp32_out -entity fp16_mxfp_dp
 
 # Set parameters
 set_parameter -name exp_width     $EXP_WIDTH
