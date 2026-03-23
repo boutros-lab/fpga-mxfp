@@ -31,32 +31,106 @@ fi
 
 ELAB_OPTIONS=""
 
-design_files="sys_array_packed_mult_tb.sv
-../rtl/sys_array_packed_mult.sv
-../../packed_multiplier/packed_dot_product_fp32.sv
-../../packed_multiplier/packed_dot_product.sv
-../../packed_multiplier/packed_multiplier.sv
-../../packed_multiplier/DSP_2x18x18.sv
-../../packed_multiplier/reduction.sv
-../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e2m1_to_fp32.vhdl
-../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e2m3_to_fp32.vhdl
-../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e3m2_to_fp32.vhdl
-../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e4m3_to_fp32.vhdl
-../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e5m2_to_fp32.vhdl
-../../ai_tensor_block/rtl/pipeline.sv
-"
+# -------------------------------------------
+# design files
+design_files=(
+  "sys_array_packed_mult_tb.sv"
+  "../rtl/sys_array_packed_mult.sv"
+  "../../packed_multiplier/packed_dot_product_fp32.sv"
+  "../../packed_multiplier/packed_dot_product.sv"
+  "../../packed_multiplier/packed_multiplier.sv"
+  "../../packed_multiplier/DSP_2x18x18.sv"
+  "../../packed_multiplier/reduction.sv"
+  "../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e2m1_to_fp32.vhdl"
+  "../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e2m3_to_fp32.vhdl"
+  "../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e3m2_to_fp32.vhdl"
+  "../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e4m3_to_fp32.vhdl"
+  "../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e5m2_to_fp32.vhdl"
+  "../../ai_tensor_block/rtl/pipeline.sv"
+)
 
-vcs -lca -full64 -timescale=1ps/1ps -sverilog -ld /usr/bin/g++-4.8 +verilog2001ext+.v $USER_DEFINED_ELAB_OPTIONS \
--v $QUARTUS_INSTALL_DIR/eda/sim_lib/altera_primitives.v \
--v $QUARTUS_INSTALL_DIR/eda/sim_lib/220model.v \
--v $QUARTUS_INSTALL_DIR/eda/sim_lib/sgate.v \
--v $QUARTUS_INSTALL_DIR/eda/sim_lib/altera_mf.v \
-$QUARTUS_INSTALL_DIR/eda/sim_lib/altera_lnsim.sv \
-$QUARTUS_INSTALL_DIR/eda/sim_lib/tennm_atoms.sv \
-$QUARTUS_INSTALL_DIR/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv \
-$design_files \
-$USER_DEFINED_ELAB_OPTIONS_APPEND \
--top $TOP_LEVEL_NAME
+# -------------------------------------------
+# split files by language
+sv_files=()
+v_files=()
+vhdl_files=()
+
+for f in "${design_files[@]}"; do
+  case "$f" in
+    *.sv)
+      sv_files+=("$f")
+      ;;
+    *.v)
+      v_files+=("$f")
+      ;;
+    *.vhd|*.vhdl)
+      vhdl_files+=("$f")
+      ;;
+    *)
+      echo "Warning: Unknown file extension, skipping: $f"
+      ;;
+  esac
+done
+
+# -------------------------------------------
+# clean old compile database if desired
+# rm -rf csrc simv simv.daidir ucli.key work.vhdlan
+# rm -rf .vlogan .vhdlan
+
+# -------------------------------------------
+# compile Verilog/SystemVerilog libraries and sources
+if [ ${#v_files[@]} -gt 0 ] || [ ${#sv_files[@]} -gt 0 ]; then
+  vlogan -full64 -l vlogan.log \
+    -timescale=1ps/1ps \
+    -sverilog \
+    +v2k \
+    +verilog2001ext+.v \
+    -work work \
+    "$QUARTUS_INSTALL_DIR/eda/sim_lib/altera_lnsim.sv" \
+    "$QUARTUS_INSTALL_DIR/eda/sim_lib/tennm_atoms.sv" \
+    "$QUARTUS_INSTALL_DIR/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv" \
+    -v "$QUARTUS_INSTALL_DIR/eda/sim_lib/altera_primitives.v" \
+    -v "$QUARTUS_INSTALL_DIR/eda/sim_lib/220model.v" \
+    -v "$QUARTUS_INSTALL_DIR/eda/sim_lib/sgate.v" \
+    -v "$QUARTUS_INSTALL_DIR/eda/sim_lib/altera_mf.v" \
+    "${v_files[@]}" \
+    "${sv_files[@]}"
+
+  if [ $? -ne 0 ]; then
+    echo "Error: vlogan compilation failed." >&2
+    exit 1
+  fi
+fi
+
+# -------------------------------------------
+# compile VHDL sources
+if [ ${#vhdl_files[@]} -gt 0 ]; then
+  vhdlan -full64 -l vhdlan.log \
+    -work work \
+    "${vhdl_files[@]}"
+
+  if [ $? -ne 0 ]; then
+    echo "Error: vhdlan compilation failed." >&2
+    exit 1
+  fi
+fi
+
+
+# -------------------------------------------
+# elaborate
+vcs -full64 -lca \
+  -l elaborate.log \
+  -debug_access+pp \
+  -LDFLAGS -no-pie \
+  $USER_DEFINED_ELAB_OPTIONS \
+  $USER_DEFINED_ELAB_OPTIONS_APPEND \
+  -top "$TOP_LEVEL_NAME"
+
+if [ $? -ne 0 ]; then
+  echo "Error: vcs elaboration failed." >&2
+  exit 1
+fi
+
 #-top $TOP_LEVEL_NAME -R
 #-top $TOP_LEVEL_NAME -R -gui &
 

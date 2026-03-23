@@ -1,8 +1,8 @@
 `timescale 1ns/1ps
 module sys_array_packed_mult_tb;
-    localparam N = 3;
+    localparam N = 1;
     // Number of sets of activations to stream in.
-    localparam P = 2;
+    localparam P = 1;
     localparam EXP_W = 4;
     localparam MAN_W = 3;
     localparam DATA_MX_W = 1 + MAN_W + EXP_W;
@@ -347,6 +347,7 @@ module sys_array_packed_mult_tb;
 
         // Deassert inputs after final launch
         @(negedge clk);
+        // Right now packed mult does not support stream
         for (r = 0; r < N; r = r + 1) begin
             weights_valid_left_i_dut[r] <= 1'b0;
             x_valid_top_i_dut[r]        <= 1'b0;

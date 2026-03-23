@@ -47,15 +47,25 @@ module sys_array_packed_mult #(
     logic [SHARED_EXP_W-1:0] x_shared_exp_col_delayed [N-1:0][N-1:0][NUM_OPS-1:0];
 
     // Boundary delay
-    integer r, c, i, n;
     always_ff @( posedge clk ) begin
+        integer r, c, i, n;
         if (rst) begin
-            w_row_delayed <= '0;
-            w_row_valid_delayed <= '0;
-            w_shared_exp_row_delayed <= '0;
-            x_col_delayed <= '0;
-            x_col_valid_delayed <= '0;
-            x_shared_exp_col_delayed <= '0;
+            for (r = 0; r < N; r++) begin
+                for (c = 0; c < N; c++) begin
+                    w_row_valid_delayed[r][c] <= '0;
+                    w_shared_exp_row_delayed[r][c] <= '0;
+                    x_col_valid_delayed[r][c] <= '0;
+                    for (i = 0; i < DOT_LEN; i++) begin
+                        w_row_delayed[r][c][i] <= '0;
+                        for (n = 0; n < NUM_OPS; n++) begin
+                            x_col_delayed[r][c][i][n] <= '0;
+                        end
+                    end
+                    for (n = 0; n < NUM_OPS; n++) begin
+                        x_shared_exp_col_delayed[r][c][n] <= '0;
+                    end
+                end
+            end
         end
         else begin
             // Weight delay
@@ -122,10 +132,17 @@ module sys_array_packed_mult #(
     // Weight pipeline implementation
     // - Weights go right every cycle
     always_ff @( posedge clk ) begin
+        integer r, c, i;
         if (rst) begin
-            w_pipe <= '0;
-            w_valid_pipe <= '0;
-            w_shared_exp_pipe <= '0;
+            for (r = 0; r < N; r++) begin
+                for (c = 0; c < N; c++) begin
+                    w_valid_pipe[r][c] <= '0;
+                    w_shared_exp_pipe[r][c] <= '0;
+                    for (i = 0; i < DOT_LEN; i++) begin
+                        w_pipe[r][c][i] <= '0;
+                    end
+                end
+            end
         end
         else begin
             for (r = 0; r < N; r++) begin
@@ -164,10 +181,21 @@ module sys_array_packed_mult #(
     // Activation pipeline implementation
     // - Activations go down every cycle
     always_ff @( posedge clk ) begin
+        integer r, c, i, n;
         if (rst) begin
-            x_pipe <= '0;
-            x_valid_pipe <= '0;
-            x_shared_exp_pipe <= '0;
+            for (r = 0; r < N; r++) begin
+                for (c = 0; c < N; c++) begin
+                    x_valid_pipe[r][c] <= '0;
+                    for (i = 0; i < DOT_LEN; i++) begin
+                        for (n = 0; n < NUM_OPS; n++) begin
+                            x_pipe[r][c][i][n] <= '0;
+                        end
+                    end
+                    for (n = 0; n < NUM_OPS; n++) begin
+                        x_shared_exp_pipe[r][c][n] <= '0;
+                    end
+                end
+            end
         end
         else begin
             for (c = 0; c < N; c++) begin
