@@ -57,21 +57,6 @@ initial begin
     $display("tests=%0d", num_tests);
 
     valid_in <= 0;
-    sharedBlock_exponent <= 0;
-    for (int j = 0; j < num_ops; j++) begin
-        block_exponent[j] <= 0;
-    end
-    for (int i = 0; i < block_size; i++) begin
-        sharedOperands[i] <= 1;
-        for (int j = 0; j < num_ops; j++) begin
-            operands[i][j] <= 0;
-        end
-    end
-
-    @(posedge clk);
-    @(posedge clk);
-    @(posedge clk);
-    @(posedge clk);
 
     for (int t = 0; t < num_tests; t++) begin
         @(posedge clk);

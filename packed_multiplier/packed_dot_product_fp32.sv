@@ -39,7 +39,7 @@ localparam fxp_to_fp32_latency =
     (exponent_width == 2 && mantissa_width == 1) ? 5 :
     (exponent_width == 2 && mantissa_width == 3) ? 6 :
     (exponent_width == 3 && mantissa_width == 2) ? 6 :
-    (exponent_width == 4 && mantissa_width == 3) ? 10 :
+    (exponent_width == 4 && mantissa_width == 3) ? 11 :
     (exponent_width == 5 && mantissa_width == 2) ? 14 : 0;
 // Total latency from input to flopoco output: reduction tree + flopoco converter
 localparam total_latency = $clog2(block_size) + fxp_to_fp32_latency;
