@@ -7,3 +7,11 @@ rtl_sim_log
 DVEfiles
 inter.vpd
 .restartSimSession.tcl.old
+draft/
+64/
+AN.DB/
+work.lib++
+.vlogansetup.args
+elaborate.log
+vhdlan.log
+vlogan.log
