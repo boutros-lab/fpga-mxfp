@@ -30,7 +30,7 @@ module packed_reduction #(
 	input logic signed [FP4_INPUT_WIDTH-1:0] i_fp4_ops [FP4_INPUTS],
 
 	output logic signed [FP8_OUTPUT_WIDTH-1:0] o_sum
-);
+); // TODO Try to use FP6_OUTPUT_WIDTH-1 at input for ALL non-FP8 inputs
 localparam PADDING     = FP8_LEVELS;
 localparam PADDING_FP4 = PADDING + FP6_INPUT_WIDTH - FP4_INPUT_WIDTH;
 localparam EXTEND_FP4  = FP6_INPUT_WIDTH - FP4_INPUT_WIDTH;
@@ -48,7 +48,7 @@ always_comb begin
 			// FP8 modes, 1:1
 			adder_in[i] = i_fp8_ops[i];
 		end else begin
-			if (i < FP8_INPUTS/2) begin
+			if (i < FP6_INPUTS) begin
 				if (i < FIXED_ELEMENTS/2) begin
 					// Pack FP6/FP4/FIXED results
 					adder_in[i] = $signed({1'b0, i_fp8_ops[i][FP6_INPUT_WIDTH-1:0], {PADDING{1'b0}}, i_fp6_ops[i]});
@@ -69,7 +69,7 @@ always_comb begin
 end
 
 // Single shared reduction for all formats
-pow2_reduction #(
+pow2_reduction_norecurse #(
 	.INPUTS(FP8_INPUTS), 
 	.INPUT_WIDTH(FP8_INPUT_WIDTH)
 ) u_reduction (
@@ -79,12 +79,13 @@ pow2_reduction #(
 
 // Output at final stage of reduction is 2 numbers for non-MXFP8 modes
 // Add them together to form final output
-logic [FP6_OUTPUT_WIDTH:0] op0, op1;
+logic signed [FP6_OUTPUT_WIDTH-2:0] op0, op1;
 
-assign op0 = tree_sum[OFFSET+:(FP6_OUTPUT_WIDTH-1)];
-assign op1 = tree_sum[0+:(FP6_OUTPUT_WIDTH-1)];
+// MSB has 4 FP6, LSB has 8 FP6
+assign op0 = tree_sum[0+:(FP6_OUTPUT_WIDTH-1)];
+assign op1 = tree_sum[OFFSET+:(FP6_OUTPUT_WIDTH-1)];
 
-assign fp6_fp4_sum = $signed(tree_sum[OFFSET+:(FP6_OUTPUT_WIDTH-1)]) + $signed(tree_sum[0+:(FP6_OUTPUT_WIDTH-1)]);
+assign fp6_fp4_sum = op0 + op1;
 
 assign o_sum = (i_mxfp_mode == MXFP8_43 || i_mxfp_mode == MXFP8_52) ? tree_sum
 								    : fp6_fp4_sum;
