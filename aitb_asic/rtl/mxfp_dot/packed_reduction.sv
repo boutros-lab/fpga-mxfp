@@ -30,11 +30,14 @@ module packed_reduction #(
 	input logic signed [FP4_INPUT_WIDTH-1:0] i_fp4_ops [FP4_INPUTS],
 
 	output logic signed [FP8_OUTPUT_WIDTH-1:0] o_sum
-); // TODO Try to use FP6_OUTPUT_WIDTH-1 at input for ALL non-FP8 inputs
+);
 localparam PADDING     = FP8_LEVELS;
-localparam PADDING_FP4 = PADDING + FP6_INPUT_WIDTH - FP4_INPUT_WIDTH;
+localparam SIGN_EXTEND = FP8_LEVELS;
 localparam EXTEND_FP4  = FP6_INPUT_WIDTH - FP4_INPUT_WIDTH;
 localparam OFFSET      = FP6_INPUT_WIDTH + PADDING;
+
+localparam ADDER_LSB = FP6_INPUT_WIDTH + SIGN_EXTEND;
+localparam ADDER_MSB = FP6_INPUT_WIDTH + PADDING;
 
 logic signed [FP8_INPUT_WIDTH-1:0]  adder_in [FP8_INPUTS];
 logic signed [FP8_OUTPUT_WIDTH-1:0] tree_sum;
@@ -44,25 +47,36 @@ logic signed [FP6_OUTPUT_WIDTH-1:0] fp6_fp4_sum;
 // If input is not MXFP8, pack 2 inputs into the first level of the adder tree
 always_comb begin
 	for (int i = 0; i < FP8_INPUTS; i++) begin
+		// Constant for all formats, FP8 is already sign extended FP6
+		// in FP6 modes
+		adder_in[i][FP8_INPUT_WIDTH-ADDER_MSB-1:0] = i_fp8_ops[i][FP8_INPUT_WIDTH-ADDER_MSB-1:0];
+
 		if (i_mxfp_mode == MXFP8_52 || i_mxfp_mode == MXFP8_43) begin
 			// FP8 modes, 1:1
-			adder_in[i] = i_fp8_ops[i];
+			adder_in[i][FP8_INPUT_WIDTH-1:FP8_INPUT_WIDTH-ADDER_MSB] = i_fp8_ops[i][FP8_INPUT_WIDTH-1:FP8_INPUT_WIDTH-ADDER_MSB];
 		end else begin
+			// Apply padding for all non-MXFP8 formats
+			adder_in[i][FP8_INPUT_WIDTH-ADDER_MSB+:PADDING] = 'b0;
+
+			// Packing the FP6/4 inputs on the MSB allows us to
+			// avoid sign extension for these inputs
 			if (i < FP6_INPUTS) begin
 				if (i < FIXED_ELEMENTS/2) begin
 					// Pack FP6/FP4/FIXED results
-					adder_in[i] = $signed({1'b0, i_fp8_ops[i][FP6_INPUT_WIDTH-1:0], {PADDING{1'b0}}, i_fp6_ops[i]});
+					adder_in[i][(FP8_INPUT_WIDTH-1)-:FP6_INPUT_WIDTH] = i_fp6_ops[i];
 				end else begin
 					// Fixed point inputs will only use some of fp6_ops
-					adder_in[i] = i_mxfp_mode == FIXED ? $signed({1'b0, i_fp8_ops[i][FP6_INPUT_WIDTH-1:0]})
-									   : $signed({1'b0, i_fp8_ops[i][FP6_INPUT_WIDTH-1:0], {PADDING{1'b0}}, i_fp6_ops[i]});
+					adder_in[i][(FP8_INPUT_WIDTH-1)-:FP6_INPUT_WIDTH] = 'b0;
 				end
 			end else begin
 				// Pack FP4 results
 				// Extend FP4 to FP6 bits
-				adder_in[i] = i_mxfp_mode == MXFP4 ? $signed({1'b0, i_fp8_ops[i][FP6_INPUT_WIDTH-1:0], {PADDING{1'b0}}, 
-								     {EXTEND_FP4{i_fp4_ops[i-(FP8_INPUTS/2)][FP4_INPUT_WIDTH-1]}}, i_fp4_ops[i-(FP8_INPUTS/2)]})
-								   : $signed({1'b0, i_fp8_ops[i][FP6_INPUT_WIDTH-1:0]});
+				if (i_mxfp_mode == MXFP4) begin
+					adder_in[i][(FP8_INPUT_WIDTH-1)-:FP6_INPUT_WIDTH] = {{EXTEND_FP4{i_fp4_ops[i-FP6_INPUTS][FP4_INPUT_WIDTH-1]}}, i_fp4_ops[i-FP6_INPUTS]};
+				end else begin
+					// Zero for other formats
+					adder_in[i][(FP8_INPUT_WIDTH-1)-:FP6_INPUT_WIDTH] = 'b0;
+				end
 			end
 		end
 	end
@@ -83,7 +97,7 @@ logic signed [FP6_OUTPUT_WIDTH-2:0] op0, op1;
 
 // MSB has 4 FP6, LSB has 8 FP6
 assign op0 = tree_sum[0+:(FP6_OUTPUT_WIDTH-1)];
-assign op1 = tree_sum[OFFSET+:(FP6_OUTPUT_WIDTH-1)];
+assign op1 = tree_sum[(FP8_OUTPUT_WIDTH-1)-:(FP6_OUTPUT_WIDTH-1)];
 
 assign fp6_fp4_sum = op0 + op1;
 
