@@ -220,26 +220,35 @@ def check_packed_dot_product_fp32():
             expected_results.append(acc * scale)
 
         # Compare results
-        if exponent_width == 2 and mantissa_width == 1:
-            tolerance = 0.15
-        elif exponent_width == 2 and mantissa_width == 3:
-            tolerance = 0.05
-        else:
-            tolerance = 0.01
+        import math
+        tolerance = 0.01
         for i in range(num_ops):
             expected = expected_results[i]
             got = results[i]
-            if expected == 0.0:
+            # Both infinity with same sign is a pass
+            if math.isinf(got) and math.isinf(expected) and math.copysign(1, got) == math.copysign(1, expected):
+                #print(f"Test {test_num} Result {i} PASSED: got {got}, expected {expected} (both infinity)")
+                pass
+            # Hardware saturates to infinity when expected overflows
+            elif math.isinf(got) and not math.isinf(expected) and abs(expected) > 3.4e38:
+                #print(f"Test {test_num} Result {i} PASSED: got {got}, expected {expected} (hardware saturation to infinity)")
+                pass
+            elif expected == 0.0:
                 rel_diff = abs(got)
+                if rel_diff > tolerance:
+                    print(f"Test {test_num} Result {i} FAILED: got {got}, expected {expected}, rel_diff {rel_diff}")
+                    all_passed = False
+                else:
+                    #print(f"Test {test_num} Result {i} PASSED: got {got}, expected {expected}, rel_diff {rel_diff}")
+                    pass
             else:
                 rel_diff = abs(got - expected) / abs(expected)
-            if rel_diff <= tolerance:
-                #print(f"Test {t} Result {i} PASSED: got {got}, expected {expected}, rel_diff {rel_diff}")
-                pass
-            else:
-                print(f"Test {t} Result {i} FAILED: got {got}, expected {expected}, rel_diff {rel_diff}")
-                
-                all_passed = False
+                if rel_diff >= tolerance:
+                    print(f"Test {test_num} Result {i} FAILED: got {got}, expected {expected}, rel_diff {rel_diff}")
+                    all_passed = False
+                else: 
+                    #print(f"Test {test_num} Result {i} PASSED: got {got}, expected {expected}, rel_diff {rel_diff}")
+                    pass
     return all_passed
 
 
