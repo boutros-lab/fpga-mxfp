@@ -211,7 +211,7 @@ def check_packed_dot_product_fp32():
         # Compute expected results
         expected_results = []
         for op_idx in range(num_ops):
-            scale = 2.0 ** (block_exponents[op_idx] + sharedBlock_exponent)
+            scale = 2.0 ** (block_exponents[op_idx] + sharedBlock_exponent - 127 - 127)
             acc = 0.0
             for block_idx in range(block_size):
                 a = operands[block_idx][op_idx]
@@ -232,6 +232,10 @@ def check_packed_dot_product_fp32():
             # Hardware saturates to infinity when expected overflows
             elif math.isinf(got) and not math.isinf(expected) and abs(expected) > 3.4e38:
                 #print(f"Test {test_num} Result {i} PASSED: got {got}, expected {expected} (hardware saturation to infinity)")
+                pass
+            # Hardware underflows to zero when combined exponent <= 0
+            elif got == 0.0 and abs(expected) < 1.18e-38:
+                #print(f"Test {test_num} Result {i} PASSED: got {got}, expected {expected} (hardware underflow to zero)")
                 pass
             elif expected == 0.0:
                 rel_diff = abs(got)
