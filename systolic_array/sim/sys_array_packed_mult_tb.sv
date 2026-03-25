@@ -270,14 +270,6 @@ module sys_array_packed_mult_tb;
                 end
             end
 
-            // Bubble
-            //@(negedge clk);
-            //for (rr = 0; rr < N; rr = rr + 1) begin
-            //    for (cc = 0; cc < N; cc = cc + 1) begin
-            //        gold_valid_in[rr][cc] <= 1'b0;
-            //    end
-            //end
-
         end
     end
 
