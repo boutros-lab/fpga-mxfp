@@ -28,7 +28,7 @@ localparam point_position = exp_width == 0 ? 0 // Fixed point
 
 // Formula: UNSIGNED_WIDTH + FP32_BIAS - point_position <- correction without shared exponents
 //          -2 * FP32_BIAS <- correction for shared exponents
-localparam signed [7:0] exponent_correction = (FIXED_RESULT_WIDTH - 1) + FP32_BIAS - point_position - 1 - (FP32_BIAS * 2);
+localparam signed [7:0] exponent_correction = FIXED_RESULT_WIDTH + FP32_BIAS - point_position - 1 - (FP32_BIAS * 2);
 
 assign o_valid = i_valid;
 

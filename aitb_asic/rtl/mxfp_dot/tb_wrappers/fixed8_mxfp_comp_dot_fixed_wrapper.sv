@@ -4,12 +4,14 @@
 */
 import pkg_aitb::*;
 
-module naive_mxfp_comp_dot_wrapper #(
+module fixed8_mxfp_comp_dot_fixed_wrapper #(
 	parameter exp_width = 5,
 	parameter man_width = 2,
 	parameter k = 8,
 	
-	parameter bit_width = 1 + exp_width + man_width
+	parameter bit_width = 1 + exp_width + man_width,
+	parameter prd_width = 2 * ((1<<exp_width) + man_width),
+	parameter out_width = prd_width + $clog2(k)
 )(
 	input  logic clk,
 	input  logic rst,
@@ -17,18 +19,13 @@ module naive_mxfp_comp_dot_wrapper #(
 	output logic o_valid,
 	input  logic [bit_width-1:0] i_vec_a [k],
 	input  logic [bit_width-1:0] i_vec_b [k],
-	input  logic [7:0] i_shared_exp_a,
-	input  logic [7:0] i_shared_exp_b,
-	output logic [31:0] o_result
+	output logic [out_width-1:0] o_result
 );
+localparam FIXED_OPS = 8;
+
 assign o_valid = i_valid;
 
-localparam point_position = exp_width == 0 ? 0 // Fixed point
-					   : ((1 << (exp_width - 1)) - 2 + man_width) * 2;
-
-// Formula: UNSIGNED_WIDTH + FP32_BIAS - point_position <- correction without shared exponents
-//          -2 * FP32_BIAS <- correction for shared exponents
-localparam signed [7:0] exponent_correction = FIXED_RESULT_WIDTH + FP32_BIAS - point_position - 1 - (FP32_BIAS * 2);
+logic [FIXED_RESULT_WIDTH-1:0] fixed_result;
 
 mxfp_mode_e mxfp_mode;
 
@@ -81,8 +78,9 @@ logic [MXFP4_MAX_EXP-1:0] mxfp4_exp_b  [MXFP4_ELEMENTS];
 logic [MXFP4_MAX_MAN:0]   mxfp4_sig_a  [MXFP4_ELEMENTS];
 logic [MXFP4_MAX_MAN:0]   mxfp4_sig_b  [MXFP4_ELEMENTS];
 
-input_preparation_mxfp_comp 
-u_input_preparation_mxfp_a (
+input_preparation_mxfp_comp #(
+	.FIXED_ELEMENTS(FIXED_OPS)
+) u_input_preparation_mxfp_a (
 	.i_mxfp_mode(mxfp_mode),
 	.i_flat(flat_a),
 
@@ -99,8 +97,9 @@ u_input_preparation_mxfp_a (
 	.o_fp4_sig(mxfp4_sig_a)
 );
 
-input_preparation_mxfp_comp 
-u_input_preparation_mxfp_b (
+input_preparation_mxfp_comp #(
+	.FIXED_ELEMENTS(FIXED_OPS)
+) u_input_preparation_mxfp_b (
 	.i_mxfp_mode(mxfp_mode),
 	.i_flat(flat_b),
 
@@ -118,11 +117,11 @@ u_input_preparation_mxfp_b (
 );
 
 // Only works with MXFP8 K=8, MXFP6 K=12, MXFP4 K=16, INT8 K=10
-naive_mxfp_comp_dot #(
+naive_mxfp_comp_dot_fixed #(
+	.FIXED_DOT_LENGTH(FIXED_OPS),
 	.PACKED_REDUCTION(0)
-) u_naive_mxfp_comp_dot (
+) u_naive_mxfp_comp_dot_fixed (
 	.i_mxfp_mode(mxfp_mode),
-	.i_exponent_correction(exponent_correction),
 
 	.i_mxfp8_sign_a(mxfp8_sign_a),
 	.i_mxfp8_sign_b(mxfp8_sign_b),
@@ -145,10 +144,15 @@ naive_mxfp_comp_dot #(
 	.i_mxfp4_sig_a(mxfp4_sig_a),
 	.i_mxfp4_sig_b(mxfp4_sig_b),
 
-	.i_shared_exp_a(i_shared_exp_a),
-	.i_shared_exp_b(i_shared_exp_b),
-
-	.o_fp32_result(o_result)
+	.o_fixed_result(fixed_result)
 );
+
+generate
+	if (out_width > FIXED_RESULT_WIDTH) begin
+		assign o_result = {{(out_width - FIXED_RESULT_WIDTH){fixed_result[FIXED_RESULT_WIDTH-1]}}, fixed_result};
+	end else begin
+		assign o_result = fixed_result;
+	end
+endgenerate
 
 endmodule

@@ -5,7 +5,7 @@
 * As a result, does not support subnormals
 *
 * Uses flopoco generated normalizer, current supported input widths:
-*    70b (Naive, Packed), ??b (Alignment, Hybrid)
+*    70b (Naive, Packed), 69b (E5M2 4), ??b (Alignment, Hybrid)
 */
 
 module config_fix2fp32 #(
@@ -21,13 +21,12 @@ module config_fix2fp32 #(
 
 	output logic [31:0] o_fp
 );
-localparam LZC_WIDTH = (INPUT_WIDTH == 70) ? 7 : 0;
+localparam LZC_WIDTH = (INPUT_WIDTH == 70)  || (INPUT_WIDTH == 69) ? 7 : 0;
 
 logic        sign;
 logic [7:0]  exponent;
 logic [23:0] significand;
-
-logic [INPUT_WIDTH-2:0] unsigned_fixed;
+logic [22:0] fraction;
 
 logic [LZC_WIDTH-1:0] leading_zero_count;
 
@@ -40,15 +39,23 @@ assign shared_exponent_sum = $signed({1'b0, i_shared_exp_a}) + $signed({1'b0, i_
 
 // Get sign bit, take two's complement if necessary
 assign sign = i_fixed[INPUT_WIDTH-1];
-assign unsigned_fixed = ({INPUT_WIDTH{sign}} ^ i_fixed) + sign;
 
 // Currently using RTZ
 generate
 	// Use flopoco normalizer based on input width
 	if (INPUT_WIDTH == 70) begin
-		normalizer_69b 
+		normalizer_sgn_70b 
 		u_normalizer (
-			.X(unsigned_fixed), 
+			.X(i_fixed), 
+			.OZb(sign), 
+			.Count(leading_zero_count), 
+			.R(significand)
+		);
+	end else if (INPUT_WIDTH == 69) begin
+		normalizer_sgn_69b 
+		u_normalizer (
+			.X(i_fixed), 
+			.OZb(sign), 
 			.Count(leading_zero_count), 
 			.R(significand)
 		);
@@ -57,8 +64,17 @@ generate
 	end
 endgenerate
 
-assign {underflow, overflow, exponent} = significand == 'b0 ? 'b0 
-				       			    : $signed(shared_exponent_sum) - $unsigned(leading_zero_count);
+logic zero_in, zero_sig;
+
+assign zero_in  = i_fixed == 'b0;
+assign zero_sig = significand == 'b0;
+
+// Negative powers of 2 will result in zero significand, adjust by 1
+assign {underflow, overflow, exponent} = zero_in ? 'b0 
+				       		 : $signed(shared_exponent_sum) - $unsigned(leading_zero_count) + zero_sig;
+
+// Take two's complement
+assign fraction = ({23{sign}} ^ significand[22:0]) + sign;
 
 // Form final FP32
 always_comb begin
@@ -67,7 +83,7 @@ always_comb begin
 	end else if (overflow) begin // Overflow
 		o_fp = {sign, 31'h7f800000}; // Inf
 	end else begin // Normal
-		o_fp = {sign, exponent, significand[22:0]};
+		o_fp = {sign, exponent, fraction};
 	end
 end
 

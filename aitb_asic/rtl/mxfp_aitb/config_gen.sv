@@ -4,7 +4,9 @@
 
 import pkg_aitb::*;
 
-module config_gen (
+module config_gen #(
+	parameter E5M2_4_MODE = 0
+)(
 	input  mxfp_mode_e i_mxfp_mode,
 
 	output logic [2:0] o_sign_shift,
@@ -16,12 +18,12 @@ module config_gen (
 	output logic signed [7:0] o_exponent_correction
 );
 // Exponent Corrections for Naive
-localparam signed [7:0] EXP_CORRECTION_FIXED = (FIXED_RESULT_WIDTH - 1) - POINT_POSITION_FIXED - FP32_BIAS - 1;
-localparam signed [7:0] EXP_CORRECTION_E5M2  = (FIXED_RESULT_WIDTH - 1) - POINT_POSITION_E5M2 - FP32_BIAS - 1;
-localparam signed [7:0] EXP_CORRECTION_E4M3  = (FIXED_RESULT_WIDTH - 1) - POINT_POSITION_E4M3 - FP32_BIAS - 1;
-localparam signed [7:0] EXP_CORRECTION_E3M2  = (FIXED_RESULT_WIDTH - 1) - POINT_POSITION_E3M2 - FP32_BIAS - 1;
-localparam signed [7:0] EXP_CORRECTION_E2M3  = (FIXED_RESULT_WIDTH - 1) - POINT_POSITION_E2M3 - FP32_BIAS - 1;
-localparam signed [7:0] EXP_CORRECTION_E2M1  = (FIXED_RESULT_WIDTH - 1) - POINT_POSITION_E2M1 - FP32_BIAS - 1;
+localparam signed [7:0] EXP_CORRECTION_FIXED = FIXED_RESULT_WIDTH - POINT_POSITION_FIXED - FP32_BIAS - 1 - E5M2_4_MODE;
+localparam signed [7:0] EXP_CORRECTION_E5M2  = FIXED_RESULT_WIDTH - POINT_POSITION_E5M2 - FP32_BIAS - 1 - E5M2_4_MODE;
+localparam signed [7:0] EXP_CORRECTION_E4M3  = FIXED_RESULT_WIDTH - POINT_POSITION_E4M3 - FP32_BIAS - 1 - E5M2_4_MODE;
+localparam signed [7:0] EXP_CORRECTION_E3M2  = FIXED_RESULT_WIDTH - POINT_POSITION_E3M2 - FP32_BIAS - 1 - E5M2_4_MODE;
+localparam signed [7:0] EXP_CORRECTION_E2M3  = FIXED_RESULT_WIDTH - POINT_POSITION_E2M3 - FP32_BIAS - 1 - E5M2_4_MODE;
+localparam signed [7:0] EXP_CORRECTION_E2M1  = FIXED_RESULT_WIDTH - POINT_POSITION_E2M1 - FP32_BIAS - 1 - E5M2_4_MODE;
 
 always_comb begin
 	case (i_mxfp_mode)
