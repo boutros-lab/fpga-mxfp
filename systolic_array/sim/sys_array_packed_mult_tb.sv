@@ -1,8 +1,8 @@
 `timescale 1ns/1ps
 module sys_array_packed_mult_tb;
-    localparam N = 1;
+    localparam N = 3;
     // Number of sets of activations to stream in.
-    localparam P = 1;
+    localparam P = 5;
     localparam EXP_W = 4;
     localparam MAN_W = 3;
     localparam DATA_MX_W = 1 + MAN_W + EXP_W;
@@ -270,12 +270,14 @@ module sys_array_packed_mult_tb;
                 end
             end
 
-            @(negedge clk);
-            for (rr = 0; rr < N; rr = rr + 1) begin
-                for (cc = 0; cc < N; cc = cc + 1) begin
-                    gold_valid_in[rr][cc] <= 1'b0;
-                end
-            end
+            // Bubble
+            //@(negedge clk);
+            //for (rr = 0; rr < N; rr = rr + 1) begin
+            //    for (cc = 0; cc < N; cc = cc + 1) begin
+            //        gold_valid_in[rr][cc] <= 1'b0;
+            //    end
+            //end
+
         end
     end
 

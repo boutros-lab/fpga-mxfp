@@ -81,6 +81,7 @@ done
 # compile Verilog/SystemVerilog libraries and sources
 if [ ${#v_files[@]} -gt 0 ] || [ ${#sv_files[@]} -gt 0 ]; then
   vlogan -full64 -l vlogan.log \
+    -assert svaext \
     -timescale=1ps/1ps \
     -sverilog \
     +v2k \
@@ -119,6 +120,7 @@ fi
 # -------------------------------------------
 # elaborate
 vcs -full64 -lca \
+  -assert svaext \
   -l elaborate.log \
   -debug_access+pp \
   -LDFLAGS -no-pie \
