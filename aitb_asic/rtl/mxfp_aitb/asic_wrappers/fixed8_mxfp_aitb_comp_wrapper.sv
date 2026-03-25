@@ -5,7 +5,7 @@
 
 import pkg_aitb::*;
 
-module packed_mxfp_aitb_wrapper (
+module fixed8_mxfp_aitb_comp_wrapper (
 	input logic clk,
 	input logic rst,
 	input logic acc_en,
@@ -30,9 +30,10 @@ module packed_mxfp_aitb_wrapper (
 
 );
 
-naive_mxfp_aitb_top #(
-	.PACKED_REDUCTION(1)
-) aitb (
+naive_mxfp_aitb_comp_top #(
+	.FIXED_INPUTS(8),
+	.PACKED_REDUCTION(0)
+) u_fixed8_mxfp_aitb_comp_top (
 	.clk(clk),
 	.rst(rst),
 	.acc_en(acc_en),

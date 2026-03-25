@@ -164,9 +164,6 @@ module mxfp_dot_fp32_tb();
 
 	    	    	mismatch_count++;
 		    end else begin 
-	    	    	//$display("TEST: %0x", valid_count);
-	    	        //$display("Relative error below provided tolerance, ignoring mismatch\n Tolerance: %0f", tolerance);
-
 			inexact_count++;
 		    end
 	    	end
@@ -200,9 +197,6 @@ module mxfp_dot_fp32_tb();
 
 	    	    	mismatch_count++;
 		    end else begin 
-	    	    	//$display("TEST: %0x", valid_count);
-	    	        //$display("Relative error below provided tolerance, ignoring mismatch\n Tolerance: %0f", tolerance);
-
 			inexact_count++;
 		    end
 	    	end
@@ -216,13 +210,13 @@ module mxfp_dot_fp32_tb();
 	    $display("TEST FAILED");
 	    $display("Total Mismatches: %0d/%0d", mismatch_count, `TESTS);
 	    $display("Total Inexact:    %0d/%0d", inexact_count, `TESTS);
-	    $display("Max Error:        %0f", max_error);
+	    $display("Max Error:        %0f%%", max_error);
             $display("=====================================");
          end else begin
             $display("=====================================");
 	    $display("TEST PASSED");
 	    $display("Total Inexact:    %0d/%0d", inexact_count, `TESTS);
-	    $display("Max Error:        %0f %%", max_error);
+	    $display("Max Error:        %0f%%", max_error);
             $display("=====================================");
          end
 

@@ -21,7 +21,7 @@ module config_fix2fp32 #(
 
 	output logic [31:0] o_fp
 );
-localparam LZC_WIDTH = INPUT_WIDTH == 70 ? 7 : 0;
+localparam LZC_WIDTH = (INPUT_WIDTH == 70) ? 7 : 0;
 
 logic        sign;
 logic [7:0]  exponent;
@@ -40,7 +40,7 @@ assign shared_exponent_sum = $signed({1'b0, i_shared_exp_a}) + $signed({1'b0, i_
 
 // Get sign bit, take two's complement if necessary
 assign sign = i_fixed[INPUT_WIDTH-1];
-assign unsigned_fixed = sign ? -i_fixed : i_fixed; // TODO: CHANGE
+assign unsigned_fixed = ({INPUT_WIDTH{sign}} ^ i_fixed) + sign;
 
 // Currently using RTZ
 generate
@@ -57,8 +57,8 @@ generate
 	end
 endgenerate
 
-assign {underflow, overflow, exponent} = unsigned_fixed == 'b0 ? 'b0 
-				       			       : $signed(shared_exponent_sum) - $unsigned(leading_zero_count);
+assign {underflow, overflow, exponent} = significand == 'b0 ? 'b0 
+				       			    : $signed(shared_exponent_sum) - $unsigned(leading_zero_count);
 
 // Form final FP32
 always_comb begin

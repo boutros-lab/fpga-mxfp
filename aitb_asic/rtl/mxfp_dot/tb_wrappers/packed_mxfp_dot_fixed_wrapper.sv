@@ -1,5 +1,5 @@
 /*
-* TB Wrapper for Naive MXFP Dot Product circuit
+* TB Wrapper for Packed MXFP Dot Product circuit
 * Only supports: MXFP8 K=8, MXFP6 K=12, MXFP4 K=16
 */
 import pkg_aitb::*;

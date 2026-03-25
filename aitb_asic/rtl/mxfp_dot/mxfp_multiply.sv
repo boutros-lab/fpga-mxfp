@@ -4,7 +4,9 @@
 *
 * Supports Inf/NaN
 * Supports exponents up to 5 bits
-* Supoorts mantissas up to 3 bits
+* Supports mantissas up to 3 bits
+*
+* Suports 8 bit fixed point input
 */
 
 module mxfp_multiply #(

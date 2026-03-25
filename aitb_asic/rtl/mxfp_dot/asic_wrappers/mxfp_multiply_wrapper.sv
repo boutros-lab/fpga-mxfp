@@ -1,19 +1,9 @@
-/*
-* Multiply any input MXFP format and output two's complement fixed point
-* representation
-*
-* Supports Inf/NaN
-* Supports exponents up to 5 bits
-* Supoorts mantissas up to 3 bits
-*/
-
-module mxfp_mult_shift #(
+module mxfp_multiply_wrapper #(
 	parameter MAX_EXP_BITS = 5,
 	parameter MAX_MAN_BITS = 3,
 	parameter MXFP_WIDTH   = 8,
-	parameter OUTPUT_WIDTH = 2 * ((1 << MAX_EXP_BITS) + MAX_MAN_BITS),
 
-	parameter FIXED_MULT   = 0,
+	parameter FIXED_MULT   = 1,
 	parameter MULT_WIDTH   = FIXED_MULT ? 8 : MAX_MAN_BITS + 1,
 
 	parameter SIGN_SHIFT_WIDTH = $clog2(MXFP_WIDTH - 1),
@@ -39,19 +29,10 @@ module mxfp_mult_shift #(
 	input logic [MXFP_WIDTH-1:0] mxfp_a,
 	input logic [MXFP_WIDTH-1:0] mxfp_b,
 
-	// Result of multiply
-	output logic signed [OUTPUT_WIDTH-1:0] mxfp_mult_fixed,
-
-	// Inf/Nan
-	output logic inf,
-	output logic nan
+	output logic        [MAX_EXP_BITS:0]     exp_sum,
+	output logic signed [PROD_WIDTH:0]       man_prd_signed,
+	output logic signed [(MULT_WIDTH*2)-1:0] fixed_prd_signed
 );
-
-// MXFP Multilpy Outputs
-logic        [MAX_EXP_BITS:0]     exp_sum;
-logic signed [PROD_WIDTH:0]       man_prd_signed;
-logic signed [OUTPUT_WIDTH-1:0]   man_prd_shifted;
-logic signed [(MULT_WIDTH*2)-1:0] fixed_prd_signed;
 
 mxfp_multiply #(
 	.MAX_EXP_BITS(MAX_EXP_BITS),
@@ -73,30 +54,8 @@ mxfp_multiply #(
 	.exp_sum(exp_sum),
 	.man_prd_signed(man_prd_signed),
 	.fixed_prd_signed(fixed_prd_signed),
-	.inf(inf),
-	.nan(nan)
+	.inf(),
+	.nan()
 );
-
-generate
-	if (OUTPUT_WIDTH == 67) begin
-		fp8_67_shifter 
-		u_fp8_67_shifter (
-			.X(man_prd_signed),
-			.S(exp_sum),
-			.padBit(man_prd_signed[PROD_WIDTH]),
-			.R(man_prd_shifted)
-		);
-
-		assign mxfp_mult_fixed = fixed ? $signed(fixed_prd_signed) 
-					       : man_prd_shifted;
-	end else begin
-		if (FIXED_MULT == 1) begin
-			assign mxfp_mult_fixed = fixed ? $signed(fixed_prd_signed)
-						       : man_prd_signed << $unsigned(exp_sum);
-		end else begin
-			assign mxfp_mult_fixed = man_prd_signed << $unsigned(exp_sum);
-		end
-	end
-endgenerate
 
 endmodule

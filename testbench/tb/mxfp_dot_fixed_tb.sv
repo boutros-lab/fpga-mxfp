@@ -114,7 +114,7 @@ module mxfp_dot_fixed_tb();
 	    end
 	end
 	
-	i_valid      = 1'b0;
+	i_valid = 1'b0;
 
 	// Check remaining outputs
 	while (valid_count < `TESTS) begin
