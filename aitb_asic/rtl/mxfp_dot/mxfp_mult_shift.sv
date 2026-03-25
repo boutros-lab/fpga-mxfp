@@ -50,6 +50,7 @@ module mxfp_mult_shift #(
 // MXFP Multilpy Outputs
 logic        [MAX_EXP_BITS:0]     exp_sum;
 logic signed [PROD_WIDTH:0]       man_prd_signed;
+logic signed [OUTPUT_WIDTH-1:0]   man_prd_shifted;
 logic signed [(MULT_WIDTH*2)-1:0] fixed_prd_signed;
 
 mxfp_multiply #(
@@ -77,11 +78,24 @@ mxfp_multiply #(
 );
 
 generate
-	if (FIXED_MULT == 1) begin
-		assign mxfp_mult_fixed = fixed ? $signed(fixed_prd_signed)
-					       : man_prd_signed << $unsigned(exp_sum);
+	if (OUTPUT_WIDTH == 67) begin
+		fp8_67_shifter 
+		u_fp8_67_shifter (
+			.X(man_prd_signed),
+			.S(exp_sum),
+			.padBit(man_prd_signed[PROD_WIDTH]),
+			.R(man_prd_shifted)
+		);
+
+		assign mxfp_mult_fixed = fixed ? $signed(fixed_prd_signed) 
+					       : man_prd_shifted;
 	end else begin
-		assign mxfp_mult_fixed = man_prd_signed << $unsigned(exp_sum);
+		if (FIXED_MULT == 1) begin
+			assign mxfp_mult_fixed = fixed ? $signed(fixed_prd_signed)
+						       : man_prd_signed << $unsigned(exp_sum);
+		end else begin
+			assign mxfp_mult_fixed = man_prd_signed << $unsigned(exp_sum);
+		end
 	end
 endgenerate
 

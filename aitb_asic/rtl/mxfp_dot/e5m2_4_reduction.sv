@@ -1,33 +1,57 @@
 /*
 * Sum/reduce input fixed point numbers (converted 
-* from MXFP) for packed dot product structure
-* Single adder tree for MXFP8, additional adder at output for MXFP4/6
+* from MXFP) for 4 input E5M2 dot product circuit
+* Single adder tree for MXFP8 E5M2, rst of inputs are packed into this
+*
+* Minimum width for this reduction tree:
+* For E4M3:
+* 37 * 2 + 2 + 2 = 78
+*
+* For E3M2:
+* 19 * 4 + 3 * (2 + 2) = 76 + 12 = 88
+* OR
+* 19 * 3 + 2 * (2 + 2) = 57 + 8 = 65
+*
+* One additional adder for E4M3, 39 + 39
+* Two additional adders for E3M2, 21 + 21 + 21
+* Four additional adders for E2M1, 11 + 11 + 11 + 11
+*
+* Can expand E4M3 reduction tree to 44 and pack one E3M2 adder inside of it
+* Or expand to 50 and pack 2 E2M1 adders inside
+*
+* Would need to determine if this is better for area, vs. smaller trees
+* outside
 */
 
 import pkg_aitb::*;
+/*
+module e5m2_4_reduction #(
+	parameter FP8_E5M2_INPUTS = 4,
+	parameter FP8_E4M3_INPUTS = 4,
+	parameter FP6_INPUTS      = 4,
+	parameter FP4_INPUTS      = 4,
 
-module packed_reduction #(
-	parameter FP8_INPUTS = 8,
-	parameter FP6_INPUTS = 4,
-	parameter FP4_INPUTS = 4,
+	parameter FP8_E5M2_INPUT_WIDTH = 67,
+	parameter FP8_E4M3_INPUT_WIDTH = 37,
+	parameter FP6_INPUT_WIDTH      = 19,
+	parameter FP4_INPUT_WIDTH      =  9,
 
-	parameter FP8_INPUT_WIDTH = 67,
-	parameter FP6_INPUT_WIDTH = 19,
-	parameter FP4_INPUT_WIDTH =  9,
+	parameter FP8_E5M2_LEVELS = $clog2(FP8_E5M2_INPUTS),
+	parameter FP8_E4M3_LEVELS = $clog2(FP8_E5M2_INPUTS + FP8_E4M3_INPUTS),
+	parameter FP6_LEVELS      = $clog2(FP6_INPUTS + FP8_E5M2_INPUTS + FP8_E4M3_INPUTS),
+	parameter FP4_LEVELS      = $clog2(FP4_INPUTS + FP6_INPUTS + FP8_E5M2_INPUTS + FP8_E4M3_INPUTS),
 
-	parameter FP8_LEVELS = $clog2(FP8_INPUTS),
-	parameter FP6_LEVELS = $clog2(FP6_INPUTS + FP8_INPUTS),
-	parameter FP4_LEVELS = $clog2(FP4_INPUTS + FP6_INPUTS + FP8_INPUTS),
-
-	parameter FP8_OUTPUT_WIDTH = FP8_INPUT_WIDTH + FP8_LEVELS,
-	parameter FP6_OUTPUT_WIDTH = FP6_INPUT_WIDTH + FP6_LEVELS,
-	parameter FP4_OUTPUT_WIDTH = FP4_INPUT_WIDTH + FP4_LEVELS
+	parameter FP8_E5M2_OUTPUT_WIDTH = FP8_E5M2_INPUT_WIDTH + FP8_E5M2_LEVELS,
+	parameter FP8_E4M3_OUTPUT_WIDTH = FP8_E4M3_INPUT_WIDTH + FP8_E4M3_LEVELS,
+	parameter FP6_OUTPUT_WIDTH      = FP6_INPUT_WIDTH + FP6_LEVELS,
+	parameter FP4_OUTPUT_WIDTH      = FP4_INPUT_WIDTH + FP4_LEVELS
 )(
 	input mxfp_mode_e i_mxfp_mode,
 
-	input logic signed [FP8_INPUT_WIDTH-1:0] i_fp8_ops [FP8_INPUTS],
-	input logic signed [FP6_INPUT_WIDTH-1:0] i_fp6_ops [FP6_INPUTS],
-	input logic signed [FP4_INPUT_WIDTH-1:0] i_fp4_ops [FP4_INPUTS],
+	input logic signed [FP8_E5M2_INPUT_WIDTH-1:0] i_fp8_e5m2_ops [FP8_E5M2_INPUTS],
+	input logic signed [FP8_E4M3_INPUT_WIDTH-1:0] i_fp8_e4m3_ops [FP8_E5M2_INPUTS],
+	input logic signed [FP6_INPUT_WIDTH-1:0]      i_fp6_ops      [FP6_INPUTS],
+	input logic signed [FP4_INPUT_WIDTH-1:0]      i_fp4_ops      [FP4_INPUTS],
 
 	output logic signed [FP8_OUTPUT_WIDTH-1:0] o_sum
 );
@@ -104,4 +128,4 @@ assign fp6_fp4_sum = op0 + op1;
 assign o_sum = (i_mxfp_mode == MXFP8_43 || i_mxfp_mode == MXFP8_52) ? tree_sum
 								    : fp6_fp4_sum;
 
-endmodule
+endmodule*/

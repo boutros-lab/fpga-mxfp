@@ -5,6 +5,7 @@
 import pkg_aitb::*;
 
 module naive_mxfp_aitb_comp_top #(
+	parameter FIXED_INPUTS = FIXED_ELEMENTS,
 	parameter PACKED_REDUCTION = 0
 )(
 	input logic clk,
@@ -174,7 +175,7 @@ pipeline #(.W(SH_EXP_WIDTH), .STAGES(1)) PIPE_1_sh_exp (
 input_preparation_mxfp_comp #(
 	.FLAT_WIDTH(FLAT_DATA_WIDTH), 
 	.FIXED_WIDTH(FIXED_DATA_WIDTH),
-	.FIXED_ELEMENTS(FIXED_ELEMENTS),
+	.FIXED_ELEMENTS(FIXED_INPUTS),
 	.FP8_ELEMENTS(MXFP8_ELEMENTS),
 	.FP6_ELEMENTS(MXFP6_ELEMENTS),
 	.FP4_ELEMENTS(MXFP4_ELEMENTS)
@@ -198,7 +199,7 @@ input_preparation_mxfp_comp #(
 input_preparation_mxfp_comp #(
 	.FLAT_WIDTH(FLAT_DATA_WIDTH), 
 	.FIXED_WIDTH(FIXED_DATA_WIDTH),
-	.FIXED_ELEMENTS(FIXED_ELEMENTS),
+	.FIXED_ELEMENTS(FIXED_INPUTS),
 	.FP8_ELEMENTS(MXFP8_ELEMENTS),
 	.FP6_ELEMENTS(MXFP6_ELEMENTS),
 	.FP4_ELEMENTS(MXFP4_ELEMENTS)
@@ -222,7 +223,7 @@ input_preparation_mxfp_comp #(
 input_preparation_mxfp_comp #(
 	.FLAT_WIDTH(FLAT_DATA_WIDTH), 
 	.FIXED_WIDTH(FIXED_DATA_WIDTH),
-	.FIXED_ELEMENTS(FIXED_ELEMENTS),
+	.FIXED_ELEMENTS(FIXED_INPUTS),
 	.FP8_ELEMENTS(MXFP8_ELEMENTS),
 	.FP6_ELEMENTS(MXFP6_ELEMENTS),
 	.FP4_ELEMENTS(MXFP4_ELEMENTS)
@@ -333,6 +334,7 @@ pipeline #(.W(SH_EXP_WIDTH), .STAGES(1)) PIPE_2_w_reg_c2 (
 
 // Dot engine (out: 70b vector)
 naive_mxfp_comp_dot_fixed #(
+	.FIXED_DOT_LENGTH(FIXED_INPUTS),
 	.PACKED_REDUCTION(PACKED_REDUCTION)
 ) u_naive_mxfp_comp_dot_fixed_col1 (
 	.i_mxfp_mode(i_mxfp_mode),
@@ -362,6 +364,7 @@ naive_mxfp_comp_dot_fixed #(
 );
 
 naive_mxfp_comp_dot_fixed #(
+	.FIXED_DOT_LENGTH(FIXED_INPUTS),
 	.PACKED_REDUCTION(PACKED_REDUCTION)
 ) u_naive_mxfp_comp_dot_fixed_col2 (
 	.i_mxfp_mode(i_mxfp_mode),

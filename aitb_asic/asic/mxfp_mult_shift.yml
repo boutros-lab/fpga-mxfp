@@ -30,6 +30,7 @@ synthesis.genus.version: "20.10.000_lnx86"
 synthesis.inputs.input_files: [
    "rtl/pkg_aitb.sv",
    "rtl/mxfp_dot/mxfp_multiply.sv",
+   "rtl/mxfp_dot/flopoco_shifters/fp8_67_shifter.vhdl",
    "rtl/mxfp_dot/mxfp_mult_shift.sv",
    "rtl/mxfp_dot/asic_wrappers/mxfp_mult_shift_wrapper.sv"
 ]

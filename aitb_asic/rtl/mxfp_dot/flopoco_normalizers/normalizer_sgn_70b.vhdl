@@ -1,6 +1,6 @@
 --------------------------------------------------------------------------------
---                             normalizer_sgn_69b
---                     (Normalizer_ZO_69_24_69_comb_uid2)
+--                             normalizer_sgn_70b
+--                     (Normalizer_ZO_70_24_70_comb_uid2)
 -- VHDL generated for DummyFPGA @ 0MHz
 -- This operator is part of the Infinite Virtual Library FloPoCoLib
 -- All rights reserved 
@@ -22,21 +22,21 @@ library std;
 use std.textio.all;
 library work;
 
-entity normalizer_sgn_69b is
-    port (X : in  std_logic_vector(68 downto 0);
+entity normalizer_sgn_70b is
+    port (X : in  std_logic_vector(69 downto 0);
           OZb : in  std_logic;
           Count : out  std_logic_vector(6 downto 0);
           R : out  std_logic_vector(23 downto 0)   );
 end entity;
 
-architecture arch of normalizer_sgn_69b is
-signal level7 :  std_logic_vector(68 downto 0);
+architecture arch of normalizer_sgn_70b is
+signal level7 :  std_logic_vector(69 downto 0);
    -- timing of level7: 0.000000ns
 signal sozb :  std_logic;
    -- timing of sozb: 0.000000ns
 signal count6 :  std_logic;
    -- timing of count6: 1.200000ns
-signal level6 :  std_logic_vector(68 downto 0);
+signal level6 :  std_logic_vector(69 downto 0);
    -- timing of level6: 1.750000ns
 signal count5 :  std_logic;
    -- timing of count5: 2.850000ns
@@ -67,11 +67,11 @@ signal sCount :  std_logic_vector(6 downto 0);
 begin
    level7 <= X ;
    sozb<= OZb;
-   count6<= '1' when level7(68 downto 5) = (68 downto 5=>sozb) else '0';
-   level6<= level7(68 downto 0) when count6='0' else level7(4 downto 0) & (63 downto 0 => '0');
+   count6<= '1' when level7(69 downto 6) = (69 downto 6=>sozb) else '0';
+   level6<= level7(69 downto 0) when count6='0' else level7(5 downto 0) & (63 downto 0 => '0');
 
-   count5<= '1' when level6(68 downto 37) = (68 downto 37=>sozb) else '0';
-   level5<= level6(68 downto 6) when count5='0' else level6(36 downto 0) & (25 downto 0 => '0');
+   count5<= '1' when level6(69 downto 38) = (69 downto 38=>sozb) else '0';
+   level5<= level6(69 downto 7) when count5='0' else level6(37 downto 0) & (24 downto 0 => '0');
 
    count4<= '1' when level5(62 downto 47) = (62 downto 47=>sozb) else '0';
    level4<= level5(62 downto 24) when count4='0' else level5(46 downto 8);

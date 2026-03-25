@@ -9,9 +9,9 @@ module naive_reduction #(
 	parameter FP6_INPUTS = 4,
 	parameter FP4_INPUTS = 4,
 
-	parameter FP8_INPUT_WIDTH = 64,
-	parameter FP6_INPUT_WIDTH = 20,
-	parameter FP4_INPUT_WIDTH = 10,
+	parameter FP8_INPUT_WIDTH = 67,
+	parameter FP6_INPUT_WIDTH = 19,
+	parameter FP4_INPUT_WIDTH =  9,
 
 	parameter FP8_LEVELS = $clog2(FP8_INPUTS),
 	parameter FP6_LEVELS = $clog2(FP6_INPUTS),
@@ -65,11 +65,11 @@ pow2_reduction_norecurse #(
 	.o_sum(fp4_sum)
 );
 
-assign fp6_fp4_sum = i_mxfp_mode == MXFP4 ? $signed(fp4_sum) + $signed(fp6_sum) // FP4
+assign fp6_fp4_sum = i_mxfp_mode == MXFP4 ? $signed(fp4_sum) + $signed(fp6_sum[FP4_OUTPUT_WIDTH-1:0]) // FP4
 					  : $signed(fp6_sum); // FP6/8 and fixed point
 
 assign fp8_fp6_sum = (i_mxfp_mode == MXFP8_43 || i_mxfp_mode == MXFP8_52) ? $signed(fp8_sum) // FP8
-									  : $signed(fp8_sum) + $signed(fp6_fp4_sum); // FP4/6 and fixed point TODO: Inferring 70x70, use only LSB
+									  : $signed(fp8_sum[FP6_OUTPUT_WIDTH-1:0]) + $signed(fp6_fp4_sum); // FP4/6 and fixed point
 
 assign o_sum = fp8_fp6_sum;
 

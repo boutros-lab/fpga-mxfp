@@ -46,7 +46,7 @@ synthesis.inputs.input_files: [
 ]
 synthesis.inputs.top_module: "naive_mxfp_aitb_comp_top"
 synthesis.clock_gating_mode: "empty"
-synthesis.flatten_hierarchy: True
+synthesis.flatten_hierarchy: False
 
 # PaR options
 vlsi.core.par_tool: "hammer.par.innovus"

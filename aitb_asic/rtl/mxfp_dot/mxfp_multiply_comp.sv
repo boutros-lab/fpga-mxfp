@@ -40,10 +40,12 @@ module mxfp_multiply_comp #(
 
 logic [MAN_PROD_WIDTH-1:0] man_prd;
 
-logic a_norm, b_norm;
+logic a_norm, b_norm, prd_sign;
 
 assign a_norm = |exp_a;
 assign b_norm = |exp_b;
+
+assign prd_sign = sign_a ^ sign_b;
 
 generate
 	if (FIXED_MULT == 1) begin : fixed_mult
@@ -78,6 +80,6 @@ endgenerate
 assign exp_sum = exp_a + exp_b - a_norm - b_norm;
 
 // Apply sign to manissa product
-assign man_prd_signed = (sign_a ^ sign_b) ? -man_prd : man_prd;
+assign man_prd_signed = prd_sign ? -man_prd : man_prd;
 
 endmodule
