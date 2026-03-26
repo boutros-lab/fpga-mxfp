@@ -11,6 +11,8 @@ module sys_array_packed_mult_tb;
     localparam int DOT_LEN = 32;
     localparam int DATA_OUT_W = 32;
     localparam int NUM_OPS = MUL_WIDTH / 2 / (1 + MAN_W);
+    localparam int FP_BIAS = (1 << (EXP_W-1)) - 1;
+    localparam int SHARED_EXP_BIAS = 127;
 
     localparam int GOLD_TOTAL_OUTPUTS = P * N * N;
     localparam int DUT_TOTAL_OUTPUTS = P * N * N;
@@ -23,6 +25,14 @@ module sys_array_packed_mult_tb;
 
     // Result according to the activation (set p, row r, col c, op n)
     logic [DATA_OUT_W-1:0] gold_results_mem [0:P-1][0:N-1][0:N-1][0:NUM_OPS-1];
+
+    // SW golden model results and arrays
+    shortreal w_vec_real [0:N-1][0:DOT_LEN-1];
+    shortreal x_vec_real [0:P-1][0:N-1][0:DOT_LEN-1][0:NUM_OPS-1];
+
+    // Software-computed golden results (one per p, row, col, op)
+    shortreal sw_gold_real [0:P-1][0:N-1][0:N-1][0:NUM_OPS-1];
+    logic [DATA_OUT_W-1:0] sw_gold_bits [0:P-1][0:N-1][0:N-1][0:NUM_OPS-1];
 
     logic gen_done;
     logic gold_done;
@@ -56,6 +66,40 @@ module sys_array_packed_mult_tb;
             make_mxfp = tmp;
         end
     endfunction
+    // Convert a DATA_MX_W-bit MXFP value to shortreal (IEEE FP32)
+    function automatic shortreal to_fp32 (int fp_bits);
+        localparam int M = MAN_W;
+        localparam int E = EXP_W;
+        int BIAS = (1 << (E-1)) - 1;
+
+        shortreal sign = fp_bits[M+E] ? -1.0 : 1.0;
+        int M_bits = fp_bits[M-1:0];
+        int E_bits = fp_bits[M+E-1:M];
+
+        if (M_bits == 0 && E_bits == 0) begin // ZERO
+            to_fp32 = sign * 0.0;
+        end
+        else if (E_bits == 0) begin // SUBNORMALS
+            to_fp32 = sign * (2.0 ** (1 - BIAS)) * (M_bits / shortreal'(1 << M));
+        end
+        else begin // NORMALS
+            to_fp32 = sign * (2.0 ** (E_bits - BIAS)) * (1.0 + M_bits / shortreal'(1 << M));
+        end
+    endfunction
+
+    // Software dot product over DOT_LEN elements, applying shared exponents
+    function automatic shortreal sw_dot (
+        shortreal vec_w[],
+        shortreal vec_x[],
+        int       shared_exp_w,
+        int       shared_exp_x
+    );
+        int corrected_exp = shared_exp_w - SHARED_EXP_BIAS + shared_exp_x - SHARED_EXP_BIAS;
+        sw_dot = 0.0;
+        foreach (vec_w[i])
+            sw_dot += vec_w[i] * vec_x[i];
+        sw_dot = shortreal'(sw_dot * (2.0 ** corrected_exp));
+    endfunction
 
     // Generate weights + activations (deterministically)
     initial begin : DATA_GEN
@@ -83,6 +127,46 @@ module sys_array_packed_mult_tb;
             end
         end
 
+        // Convert weight vectors to shortreal
+        for (r = 0; r < N; r = r + 1) begin
+            for (i = 0; i < DOT_LEN; i = i + 1) begin
+                w_vec_real[r][i] = to_fp32(int'(w_vec_mem[r][i]));
+            end
+        end
+
+        // Convert activation vectors to shortreal
+        for (p = 0; p < P; p = p + 1) begin
+            for (c = 0; c < N; c = c + 1) begin
+                for (i = 0; i < DOT_LEN; i = i + 1) begin
+                    for (n = 0; n < NUM_OPS; n = n + 1) begin
+                        x_vec_real[p][c][i][n] = to_fp32(int'(x_vec_mem[p][c][i][n]));
+                    end
+                end
+            end
+        end
+
+        // Compute software golden dot products for each (p, row, col, op)
+        for (p = 0; p < P; p = p + 1) begin
+            for (r = 0; r < N; r = r + 1) begin
+                for (c = 0; c < N; c = c + 1) begin
+                    for (n = 0; n < NUM_OPS; n = n + 1) begin
+                        automatic shortreal tmp_w[0:DOT_LEN-1];
+                        automatic shortreal tmp_x[0:DOT_LEN-1];
+                        for (i = 0; i < DOT_LEN; i = i + 1) begin
+                            tmp_w[i] = w_vec_real[r][i];
+                            tmp_x[i] = x_vec_real[p][c][i][n];
+                        end
+                        sw_gold_real[p][r][c][n] = sw_dot(
+                            tmp_w, tmp_x,
+                            int'(w_shared_exp_mem[r]),
+                            int'(x_shared_exp_mem[p][c][n])
+                        );
+                        sw_gold_bits[p][r][c][n] = $shortrealtobits(sw_gold_real[p][r][c][n]);
+                    end
+                end
+            end
+        end
+
         $display("============================================================");
         $display("Generated weights");
         $display("============================================================");
@@ -105,6 +189,20 @@ module sys_array_packed_mult_tb;
                         $write(" %0h", x_vec_mem[p][c][i][n]);
                     end
                     $write("\n");
+                end
+            end
+        end
+
+        $display("============================================================");
+        $display("Software golden dot products");
+        $display("============================================================");
+        for (p = 0; p < P; p = p + 1) begin
+            for (r = 0; r < N; r = r + 1) begin
+                for (c = 0; c < N; c = c + 1) begin
+                    for (n = 0; n < NUM_OPS; n = n + 1) begin
+                        $display("SW_GOLD[p=%0d][r=%0d][c=%0d][op=%0d] = 0x%08h (%f)",
+                                p, r, c, n, sw_gold_bits[p][r][c][n], sw_gold_real[p][r][c][n]);
+                    end
                 end
             end
         end
@@ -271,6 +369,26 @@ module sys_array_packed_mult_tb;
             end
 
         end
+
+        @(negedge clk);
+
+        // Deassert the gold when we are done sending our inputs
+        for (rr = 0; rr < N; rr = rr + 1) begin
+            for (cc = 0; cc < N; cc = cc + 1) begin
+                gold_valid_in[rr][cc] = 1'b0;
+                gold_sharedBlock_exp[rr][cc] = '0;
+                for (i = 0; i < DOT_LEN; i = i + 1) begin
+                    gold_sharedOperands[rr][cc][i] = '0;
+                    for (n = 0; n < NUM_OPS; n = n + 1) begin
+                        gold_operands[rr][cc][i][n] = '0;
+                    end
+                end
+                for (n = 0; n < NUM_OPS; n = n + 1) begin
+                    gold_block_exp[rr][cc][n] = '0;
+                end
+            end
+        end
+
     end
 
     initial begin : GOLD_RECEIVER
@@ -341,7 +459,6 @@ module sys_array_packed_mult_tb;
 
         // Deassert inputs after final launch
         @(negedge clk);
-        // Right now packed mult does not support stream
         for (r = 0; r < N; r = r + 1) begin
             weights_valid_left_i_dut[r] <= 1'b0;
             x_valid_top_i_dut[r]        <= 1'b0;
@@ -367,10 +484,12 @@ module sys_array_packed_mult_tb;
     // Check the outputs of the SA against the independent PEs
     integer dut_recv_count;
     integer dut_expect_p [0:N-1][0:N-1];
+    integer sw_warn_count;
     logic mismatch_seen;
 
     initial begin : DUT_RECEIVER
         dut_recv_count = 0;
+        sw_warn_count  = 0;
         mismatch_seen  = 1'b0;
 
         for (rr = 0; rr < N; rr = rr + 1) begin
@@ -395,19 +514,33 @@ module sys_array_packed_mult_tb;
                         end
 
                         for (n = 0; n < NUM_OPS; n = n + 1) begin
-                            $display("[%0t] DUT row=%0d col=%0d p=%0d op=%0d dut=0x%08h gold=0x%08h",
+                            $display("[%0t] DUT row=%0d col=%0d p=%0d op=%0d dut=0x%08h hw_gold=0x%08h sw_gold=0x%08h (%f)",
                                      $time, rr, cc, dut_expect_p[rr][cc], n,
                                      dot_fp32_o_dut[rr][cc][n],
-                                     gold_results_mem[dut_expect_p[rr][cc]][rr][cc][n]);
+                                     gold_results_mem[dut_expect_p[rr][cc]][rr][cc][n],
+                                     sw_gold_bits[dut_expect_p[rr][cc]][rr][cc][n],
+                                     sw_gold_real[dut_expect_p[rr][cc]][rr][cc][n]);
 
+                            // Check against HW gold
                             if (dot_fp32_o_dut[rr][cc][n] !==
                                 gold_results_mem[dut_expect_p[rr][cc]][rr][cc][n]) begin
                                 mismatch_seen = 1'b1;
-                                $error("[%0t] MISMATCH row=%0d col=%0d p=%0d op=%0d dut=0x%08h gold=0x%08h",
+                                $error("[%0t] HW_GOLD MISMATCH row=%0d col=%0d p=%0d op=%0d dut=0x%08h hw_gold=0x%08h",
                                        $time, rr, cc, dut_expect_p[rr][cc], n,
                                        dot_fp32_o_dut[rr][cc][n],
                                        gold_results_mem[dut_expect_p[rr][cc]][rr][cc][n]);
                                 $finish;
+                            end
+
+                            // Check against SW gold
+                            if (dot_fp32_o_dut[rr][cc][n] !==
+                                sw_gold_bits[dut_expect_p[rr][cc]][rr][cc][n]) begin
+                                sw_warn_count = sw_warn_count + 1;
+                                $warning("[%0t] SW_GOLD MISMATCH row=%0d col=%0d p=%0d op=%0d dut=0x%08h sw_gold=0x%08h (%f)",
+                                       $time, rr, cc, dut_expect_p[rr][cc], n,
+                                       dot_fp32_o_dut[rr][cc][n],
+                                       sw_gold_bits[dut_expect_p[rr][cc]][rr][cc][n],
+                                       sw_gold_real[dut_expect_p[rr][cc]][rr][cc][n]);
                             end
                         end
 
@@ -418,6 +551,8 @@ module sys_array_packed_mult_tb;
                             $display("============================================================");
                             $display("[%0t] TEST PASSED: received all expected DUT outputs (%0d).",
                                      $time, DUT_TOTAL_OUTPUTS);
+                            $display("[%0t] SW_GOLD warnings: %0d / %0d comparisons",
+                                     $time, sw_warn_count, DUT_TOTAL_OUTPUTS * NUM_OPS);
                             $display("============================================================");
                             $finish;
                         end
