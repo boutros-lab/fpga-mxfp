@@ -42,6 +42,11 @@ design_files=(
 "../../aitb_asic/rtl/mxfp_dot/naive_mxfp_dot_fixed.sv"
 "../../aitb_asic/rtl/mxfp_dot/config_fix2fp32.sv"
 "../../aitb_asic/rtl/ieee_fp32_add.vhdl"
+"../../aitb_asic/rtl/mxfp_dot/mxfp_mult_shift.sv"
+"../../aitb_asic/rtl/mxfp_dot/naive_reduction.sv"
+"../../aitb_asic/rtl/mxfp_dot/flopoco_normalizers/normalizer_69b.vhdl"
+"../../aitb_asic/rtl/mxfp_dot/mxfp_multiply.sv"
+"../../aitb_asic/rtl/mxfp_dot/pow2_reduction_norecurse.sv"
 "mxfp_dot_proposed_tb.sv"
 "../rtl/mxfp_dot_proposed_shannon_01.sv"
 "../rtl/fp_aitb_proposed.sv"
@@ -80,6 +85,7 @@ done
 # compile Verilog/SystemVerilog libraries and sources
 if [ ${#v_files[@]} -gt 0 ] || [ ${#sv_files[@]} -gt 0 ]; then
   vlogan -full64 -l vlogan.log \
+    -assert svaext \
     -timescale=1ps/1ps \
     -sverilog \
     +v2k \
@@ -117,6 +123,7 @@ fi
 # -------------------------------------------
 # elaborate
 vcs -full64 -lca \
+  -assert svaext \
   -l elaborate.log \
   -debug_access+pp \
   -LDFLAGS -no-pie \
