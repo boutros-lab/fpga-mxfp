@@ -1,7 +1,7 @@
 /*
 * Sum/reduce input fixed point numbers (converted 
 * from MXFP) for 4 input E5M2 dot product circuit
-* Single adder tree for MXFP8 E5M2, rst of inputs are packed into this
+* Single adder tree for MXFP8 E5M2, rest of inputs are packed into this
 *
 * Minimum width for this reduction tree:
 * For E4M3:
@@ -24,7 +24,7 @@
 */
 
 import pkg_aitb::*;
-/*
+
 module e5m2_4_reduction #(
 	parameter FP8_E5M2_INPUTS = 4,
 	parameter FP8_E4M3_INPUTS = 4,
@@ -49,83 +49,101 @@ module e5m2_4_reduction #(
 	input mxfp_mode_e i_mxfp_mode,
 
 	input logic signed [FP8_E5M2_INPUT_WIDTH-1:0] i_fp8_e5m2_ops [FP8_E5M2_INPUTS],
-	input logic signed [FP8_E4M3_INPUT_WIDTH-1:0] i_fp8_e4m3_ops [FP8_E5M2_INPUTS],
+	input logic signed [FP8_E4M3_INPUT_WIDTH-1:0] i_fp8_e4m3_ops [FP8_E4M3_INPUTS],
 	input logic signed [FP6_INPUT_WIDTH-1:0]      i_fp6_ops      [FP6_INPUTS],
 	input logic signed [FP4_INPUT_WIDTH-1:0]      i_fp4_ops      [FP4_INPUTS],
 
-	output logic signed [FP8_OUTPUT_WIDTH-1:0] o_sum
+	output logic signed [FP8_E5M2_OUTPUT_WIDTH-1:0] o_sum
 );
-localparam PADDING     = FP8_LEVELS;
-localparam SIGN_EXTEND = FP8_LEVELS;
-localparam EXTEND_FP4  = FP6_INPUT_WIDTH - FP4_INPUT_WIDTH;
-localparam OFFSET      = FP6_INPUT_WIDTH + PADDING;
+localparam ADDER_SIZE  = 78;
+localparam ADDER_OUT   = ADDER_SIZE + FP8_E5M2_LEVELS;
+localparam SIGN_EXTEND = FP8_E5M2_LEVELS;
+localparam PADDING     = FP8_E5M2_LEVELS;
 
-localparam ADDER_LSB = FP6_INPUT_WIDTH + SIGN_EXTEND;
-localparam ADDER_MSB = FP6_INPUT_WIDTH + PADDING;
+localparam E4M3_PARTIAL_WIDTH = FP8_E4M3_INPUT_WIDTH + FP8_E5M2_LEVELS;
+localparam E4M3_OFFSET        = E4M3_PARTIAL_WIDTH + PADDING;
+localparam FP6_PARTIAL_WIDTH  = FP6_INPUT_WIDTH + FP8_E5M2_LEVELS;
+localparam FP6_OFFSET         = FP6_PARTIAL_WIDTH + PADDING;
+localparam FP4_PARTIAL_WIDTH  = FP4_INPUT_WIDTH + FP8_E5M2_LEVELS;
+localparam FP4_OFFSET         = FP4_PARTIAL_WIDTH + PADDING;
 
-logic signed [FP8_INPUT_WIDTH-1:0]  adder_in [FP8_INPUTS];
-logic signed [FP8_OUTPUT_WIDTH-1:0] tree_sum;
-logic signed [FP6_OUTPUT_WIDTH-1:0] fp6_fp4_sum;
+logic signed [ADDER_SIZE-1:0] adder_in [FP8_E5M2_INPUTS];
+logic signed [ADDER_OUT-1:0]  tree_sum;
+
+// Partial sums
+logic signed [E4M3_PARTIAL_WIDTH-1:0] e4m3_partial [2];
+logic signed [FP6_PARTIAL_WIDTH-1:0]  fp6_partial  [3];
+logic signed [FP4_PARTIAL_WIDTH-1:0]  fp4_partial  [4];
+
+// Full sums
+logic signed [FP8_E5M2_OUTPUT_WIDTH-1:0] e5m2_sum;
+logic signed [FP8_E4M3_OUTPUT_WIDTH-1:0] e4m3_sum;
+logic signed [FP6_OUTPUT_WIDTH-1:0]      fp6_sum;
+logic signed [FP4_OUTPUT_WIDTH-1:0]      fp4_sum;
+
+logic e5m2_mode, e4m3_mode, fp6_mode, fp4_mode;
+
+assign e5m2_mode = i_mxfp_mode == MXFP8_52;
+assign e4m3_mode = i_mxfp_mode == MXFP8_43;
+assign fp6_mode  = (i_mxfp_mode == MXFP6_32) || (i_mxfp_mode == MXFP6_23) || (i_mxfp_mode == FIXED);
+assign fp4_mode  = i_mxfp_mode == MXFP4;
 
 // Assign adder inputs
 // If input is not MXFP8, pack 2 inputs into the first level of the adder tree
 always_comb begin
-	for (int i = 0; i < FP8_INPUTS; i++) begin
-		// Constant for all formats, FP8 is already sign extended FP6
-		// in FP6 modes
-		adder_in[i][FP8_INPUT_WIDTH-ADDER_MSB-1:0] = i_fp8_ops[i][FP8_INPUT_WIDTH-ADDER_MSB-1:0];
-
-		if (i_mxfp_mode == MXFP8_52 || i_mxfp_mode == MXFP8_43) begin
-			// FP8 modes, 1:1
-			adder_in[i][FP8_INPUT_WIDTH-1:FP8_INPUT_WIDTH-ADDER_MSB] = i_fp8_ops[i][FP8_INPUT_WIDTH-1:FP8_INPUT_WIDTH-ADDER_MSB];
+	for (int i = 0; i < FP8_E5M2_INPUTS; i++) begin
+		if (e5m2_mode) begin
+			adder_in[i] = {i_fp8_e5m2_ops[i], {(ADDER_SIZE-FP8_E5M2_INPUT_WIDTH){1'b0}}};
+		end else if (e4m3_mode) begin
+			adder_in[i] = {i_fp8_e4m3_ops[i], {PADDING{1'b0}}, i_fp8_e5m2_ops[i][FP8_E4M3_INPUT_WIDTH+SIGN_EXTEND-1:0]};
+		end else if (fp6_mode) begin
+			adder_in[i] = {{SIGN_EXTEND{i_fp6_ops[i][FP6_INPUT_WIDTH-1]}}, i_fp6_ops[i], 
+				       {PADDING{1'b0}}, i_fp8_e4m3_ops[i][FP6_INPUT_WIDTH+SIGN_EXTEND-1:0], 
+				       {PADDING{1'b0}}, i_fp8_e5m2_ops[i][FP6_INPUT_WIDTH+SIGN_EXTEND-1:0]};
 		end else begin
-			// Apply padding for all non-MXFP8 formats
-			adder_in[i][FP8_INPUT_WIDTH-ADDER_MSB+:PADDING] = 'b0;
-
-			// Packing the FP6/4 inputs on the MSB allows us to
-			// avoid sign extension for these inputs
-			if (i < FP6_INPUTS) begin
-				if (i < FIXED_ELEMENTS/2) begin
-					// Pack FP6/FP4/FIXED results
-					adder_in[i][(FP8_INPUT_WIDTH-1)-:FP6_INPUT_WIDTH] = i_fp6_ops[i];
-				end else begin
-					// Fixed point inputs will only use some of fp6_ops
-					adder_in[i][(FP8_INPUT_WIDTH-1)-:FP6_INPUT_WIDTH] = 'b0;
-				end
-			end else begin
-				// Pack FP4 results
-				// Extend FP4 to FP6 bits
-				if (i_mxfp_mode == MXFP4) begin
-					adder_in[i][(FP8_INPUT_WIDTH-1)-:FP6_INPUT_WIDTH] = {{EXTEND_FP4{i_fp4_ops[i-FP6_INPUTS][FP4_INPUT_WIDTH-1]}}, i_fp4_ops[i-FP6_INPUTS]};
-				end else begin
-					// Zero for other formats
-					adder_in[i][(FP8_INPUT_WIDTH-1)-:FP6_INPUT_WIDTH] = 'b0;
-				end
-			end
+			adder_in[i] = {{SIGN_EXTEND{i_fp4_ops[i][FP4_INPUT_WIDTH-1]}}, i_fp4_ops[i], 
+				       {PADDING{1'b0}}, i_fp6_ops[i][FP4_INPUT_WIDTH+SIGN_EXTEND-1:0], 
+				       {PADDING{1'b0}}, i_fp8_e4m3_ops[i][FP4_INPUT_WIDTH+SIGN_EXTEND-1:0], 
+				       {PADDING{1'b0}}, i_fp8_e5m2_ops[i][FP4_INPUT_WIDTH+SIGN_EXTEND-1:0]};
 		end
 	end
 end
 
 // Single shared reduction for all formats
 pow2_reduction_norecurse #(
-	.INPUTS(FP8_INPUTS), 
-	.INPUT_WIDTH(FP8_INPUT_WIDTH)
+	.INPUTS(FP8_E5M2_INPUTS), 
+	.INPUT_WIDTH(ADDER_SIZE)
 ) u_reduction (
 	.i_op(adder_in),
 	.o_sum(tree_sum)
 );
 
-// Output at final stage of reduction is 2 numbers for non-MXFP8 modes
-// Add them together to form final output
-logic signed [FP6_OUTPUT_WIDTH-2:0] op0, op1;
+assign e5m2_sum = tree_sum[(ADDER_OUT-1)-:FP8_E5M2_OUTPUT_WIDTH];
 
-// MSB has 4 FP6, LSB has 8 FP6
-assign op0 = tree_sum[0+:(FP6_OUTPUT_WIDTH-1)];
-assign op1 = tree_sum[(FP8_OUTPUT_WIDTH-1)-:(FP6_OUTPUT_WIDTH-1)];
+// Get Partial Sums
+generate
+	for (genvar i = 0; i < 2; i++) begin
+		assign e4m3_partial[i] = tree_sum[i*E4M3_OFFSET+:E4M3_PARTIAL_WIDTH];
+	end
 
-assign fp6_fp4_sum = op0 + op1;
+	for (genvar i = 0; i < 3; i++) begin
+		assign fp6_partial[i] = tree_sum[i*FP6_OFFSET+:FP6_PARTIAL_WIDTH];
+	end
 
-assign o_sum = (i_mxfp_mode == MXFP8_43 || i_mxfp_mode == MXFP8_52) ? tree_sum
-								    : fp6_fp4_sum;
+	for (genvar i = 0; i < 4; i++) begin
+		assign fp4_partial[i] = tree_sum[i*FP4_OFFSET+:FP4_PARTIAL_WIDTH];
+	end
+endgenerate
 
-endmodule*/
+// Get final sums for each mode, TODO, could do more packing here
+assign e4m3_sum = e4m3_partial[0] + e4m3_partial[1];
+assign fp6_sum  = fp6_partial[0] + fp6_partial[1] + fp6_partial[2];
+assign fp4_sum  = fp4_partial[0] + fp4_partial[1] + fp4_partial[2] + fp4_partial[3];
+
+// Assign final sum
+assign o_sum = e5m2_mode ? e5m2_sum
+			 : e4m3_mode ? e4m3_sum 
+			 : fp6_mode ? fp6_sum 
+			 : fp4_sum;
+
+endmodule

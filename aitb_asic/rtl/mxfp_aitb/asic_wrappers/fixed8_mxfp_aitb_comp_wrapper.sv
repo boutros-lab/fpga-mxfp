@@ -47,8 +47,8 @@ naive_mxfp_aitb_comp_top #(
 	.fp32_cascade_in_col1(fp32_cascade_in_col1),
 	.fp32_cascade_in_col2(fp32_cascade_in_col2),
 	.fp32_dot_out_col1(fp32_dot_out_col1),
-	.fp32_dot_out_col2(fp32_dot_out_col1),
-	.fp32_cascade_out_col1(fp32_cascade_out_col2),
+	.fp32_dot_out_col2(fp32_dot_out_col2),
+	.fp32_cascade_out_col1(fp32_cascade_out_col1),
 	.fp32_cascade_out_col2(fp32_cascade_out_col2),
 	.fp32_flags_col1(fp32_flags_col1),
 	.fp32_flags_col2(fp32_flags_col2)

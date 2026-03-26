@@ -71,10 +71,10 @@ for (genvar n = 0; n < num_ops; n++) begin
     assign shifted_results[n] = $signed(fixed_point_results[n]) >>> 2;
     // flopoco_results is 34-bit: {exc[1:0], sign, exponent[7:0], fraction[22:0]}
     // exc="00" means zero, exc="01" means normal, exc="10" means overflow
-    logic [9:0] combined_exponent;
-    assign combined_exponent = {2'b0, flopoco_results[n][30:23]} + {2'b0, block_exponent_delayed[n][total_latency-1]} + {2'b0, sharedBlock_exponent_delayed[total_latency-1]};
-    assign results[n] = (flopoco_results[n][33:32] == 2'b00) ? 32'b0 : // underflow to zero
-        (flopoco_results[n][33:32] == 2'b10 || combined_exponent >= 10'd255) ? {flopoco_results[n][31], 8'hFF, 23'b0} :  // overflow to infinity
+    logic signed [9:0] combined_exponent;
+    assign combined_exponent = {2'b0, flopoco_results[n][30:23]} + {2'b0, block_exponent_delayed[n][total_latency-1]} + {2'b0, sharedBlock_exponent_delayed[total_latency-1]} - 10'd127 - 10'd127; // Subtract E8M0 biases
+    assign results[n] = (flopoco_results[n][33:32] == 2'b00 || combined_exponent <= 0) ? 32'b0 : // underflow to zero
+        (flopoco_results[n][33:32] == 2'b10 || combined_exponent >= 10'sd255) ? {flopoco_results[n][31], 8'hFF, 23'b0} :  // overflow to infinity
         {flopoco_results[n][31], combined_exponent[7:0], flopoco_results[n][22:0]};
 
     // Pick flopoco unit based on exponent and mantissa width

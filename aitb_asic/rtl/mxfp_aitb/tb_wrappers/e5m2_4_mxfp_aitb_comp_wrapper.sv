@@ -1,6 +1,6 @@
 import pkg_aitb::*;
 
-module fixed8_mxfp_aitb_comp_wrapper (
+module e5m2_4_mxfp_aitb_comp_wrapper (
 	input logic clk,
 	input logic rst,
 	input logic i_load_en,
@@ -27,9 +27,8 @@ end
 
 assign o_valid = valid[LATENCY-1];
 
-naive_mxfp_aitb_comp_top #(
-	.FIXED_INPUTS(8)
-) u_naive_mxfp_aitb_comp_top (
+e5m2_4_mxfp_aitb_comp_top 
+u_e5m2_4_mxfp_aitb_comp_top (
 	.clk(clk),
 	.rst(rst),
 	.acc_en(1'b0),

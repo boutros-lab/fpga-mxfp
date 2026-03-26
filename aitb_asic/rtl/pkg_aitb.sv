@@ -39,6 +39,8 @@ package pkg_aitb;
 	parameter MXFP6_PRODUCT_WIDTH = 2 * ((1 << MXFP6_MAX_EXP) + 2) - 1; // 19, E3M2
 	parameter MXFP4_PRODUCT_WIDTH = 2 * ((1 << MXFP4_MAX_EXP) + MXFP4_MAX_MAN) - 1; // 9, E2M1
 
+	parameter MXFP8_E4M3_PRODUCT_WIDTH = 2 * ((1 << 4) + 3) - 1; // 37
+
 	parameter FIXED_RESULT_WIDTH = MXFP8_PRODUCT_WIDTH + $clog2(MXFP8_ELEMENTS); // 70
 
 	// Fix2Float Exponent Corrections

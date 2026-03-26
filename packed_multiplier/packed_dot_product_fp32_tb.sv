@@ -35,7 +35,7 @@ initial begin
     forever #5 clk = ~clk;
 end
 
-parameter num_tests = 128;
+parameter num_tests = 1024;
 
 // Input queue to pair inputs with their outputs
 typedef struct {
@@ -85,8 +85,6 @@ initial begin
         end
     end
 
-    @(posedge clk);
-    valid_in <= 0;
 end
 
 // Collect outputs when valid_out asserts, print in check.py format
