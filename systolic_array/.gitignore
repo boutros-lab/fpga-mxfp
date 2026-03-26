@@ -15,3 +15,4 @@ work.lib++
 elaborate.log
 vhdlan.log
 vlogan.log
+vc_hdrs.h
