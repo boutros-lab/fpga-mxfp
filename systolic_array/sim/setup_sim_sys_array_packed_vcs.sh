@@ -41,13 +41,13 @@ design_files=(
   "../../packed_multiplier/packed_multiplier.sv"
   "../../packed_multiplier/DSP_2x18x18.sv"
   "../../packed_multiplier/reduction.sv"
-  "../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e2m1_to_fp32.vhdl"
-  "../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e2m3_to_fp32.vhdl"
-  "../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e3m2_to_fp32.vhdl"
   "../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e4m3_to_fp32.vhdl"
-  "../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e5m2_to_fp32.vhdl"
   "../../ai_tensor_block/rtl/pipeline.sv"
 )
+# "../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e5m2_to_fp32.vhdl"
+# "../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e3m2_to_fp32.vhdl"
+# "../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e2m1_to_fp32.vhdl"
+# "../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e2m3_to_fp32.vhdl"
 
 # -------------------------------------------
 # split files by language
