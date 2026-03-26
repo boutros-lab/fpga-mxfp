@@ -31,6 +31,10 @@ fit:
 clean:
 	rm -f *.log *.json asic/obj-dir -r
 	rm -rf work
+	rm -rf data
 	rm -f transcript
 
-.PHONY: sim sim_mxfp data_and_sim_mxfp fit syn clean
+clean_asic:
+	rm -rf asic/*obj-dir
+
+.PHONY: sim sim_mxfp data_and_sim_mxfp fit syn clean clean_asic

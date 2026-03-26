@@ -55,7 +55,7 @@ always_comb begin
 		end
 	end
 
-	for (int i = 0; i < FP6_ELEMENTS; i++) begin
+	for (int i = 0; i < FP4_ELEMENTS; i++) begin
 		o_fp4[i] = i_flat[(i + FP8_ELEMENTS + FP6_ELEMENTS)*FP4_WIDTH+:FP4_WIDTH];
 	end
 end
