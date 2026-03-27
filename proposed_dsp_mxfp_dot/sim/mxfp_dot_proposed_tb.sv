@@ -320,6 +320,7 @@ module mxfp_dot_proposed_tb;
                            $time, out_load, out_reuse,
                            fp32_dot_out_col1, gold_col1_bits[out_load][out_reuse]);
                     $display("[%0t] TEST FAILED: ending simulation.", $time);
+                    repeat(5) @(negedge clk);
                     $finish;
                 end
 

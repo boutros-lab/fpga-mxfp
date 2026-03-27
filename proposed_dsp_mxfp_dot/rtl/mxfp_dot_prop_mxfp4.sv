@@ -95,10 +95,10 @@ module mxfp_dot_prop_mxfp4 #(
     fp_aitb_proposed #(
         .MODE(MODE),
         .IS_SIM(IS_SIM)
-    ) aitb_top (
+    ) aitb_bot (
         .clk(clk),
         .rst(rst),
-        .acc_en_i(1'b1),
+        .acc_en_i(1'b0),
         .zero_en_i(1'b0),
         .load_en_i(load_en_i),
         .data_i(data_to_pe[1]),
