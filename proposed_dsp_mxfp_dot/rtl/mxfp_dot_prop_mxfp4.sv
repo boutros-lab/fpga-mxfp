@@ -26,7 +26,7 @@ module mxfp_dot_prop_mxfp4 #(
 );
 
     localparam int NUM_AITBS = 2;
-    // Total latency = LAT_AITB + (NUM_AITB - 1)
+    // Total latency = LAT_AITB + STAGGER
     // Top DSP takes LAT_AITB cycles. DSPs in cascade is registered and then we need another cycle for the addition.
     localparam int STAGGER = 2;
     localparam int LAT = LAT_AITB + STAGGER;
