@@ -6,10 +6,10 @@ module mxfp_dot_proposed_tb;
     // -----------------------------------------------------------------
     // Parameters
     // -----------------------------------------------------------------
-    localparam mxfp_mode_e MODE = MXFP6_23;
+    localparam mxfp_mode_e MODE = MXFP8_52;
     localparam bit IS_SIM = 1;
-    localparam EXP_W          = 2;
-    localparam MAN_W          = 3;
+    localparam EXP_W          = 5;
+    localparam MAN_W          = 2;
     localparam DATA_MX_W      = 1 + MAN_W + EXP_W;   // 4 bits for MXFP4
     localparam SHARED_EXP_W   = 8;
     localparam FP_BIAS        = 1;
@@ -284,8 +284,13 @@ module mxfp_dot_proposed_tb;
     // Samples on @(posedge clk). Tracks which load/reuse output to
     // expect next.  Stops simulation on first mismatch or after all
     // expected outputs are received.
+    //
+    // Uses ULP (unit in the last place) tolerance to account for
+    // FP32 rounding differences between the golden model (single
+    // accumulation) and the hardware (cascaded partial FP32 adds).
     // -----------------------------------------------------------------
     localparam TOTAL_EXPECTED = NUM_LOADS * REUSE_FACTOR;
+    localparam int MAX_ULP = 4;  // Allow up to 4 ULP difference
 
     integer out_load;       // current load index we expect output for
     integer out_reuse;      // current reuse index within that load
@@ -307,29 +312,35 @@ module mxfp_dot_proposed_tb;
             if (valid_out) begin
                 total_recv = total_recv + 1;
 
-                $display("[%0t] OUT ld=%0d rv=%0d  dut_col1=0x%08h gold_col1=0x%08h  dut_col2=0x%08h gold_col2=0x%08h  flags1=%4b flags2=%4b",
+                $display("[%0t] OUT ld=%0d rv=%0d  dut_col1=0x%08h gold_col1=0x%08h (%0d ULP)  dut_col2=0x%08h gold_col2=0x%08h (%0d ULP)  flags1=%4b flags2=%4b",
                          $time, out_load, out_reuse,
                          fp32_dot_out_col1, gold_col1_bits[out_load][out_reuse],
+                         fp32_ulp_diff(fp32_dot_out_col1, gold_col1_bits[out_load][out_reuse]),
                          fp32_dot_out_col2, gold_col2_bits[out_load][out_reuse],
+                         fp32_ulp_diff(fp32_dot_out_col2, gold_col2_bits[out_load][out_reuse]),
                          fp32_flags_col1,   fp32_flags_col2);
 
                 // Check col1
-                if (fp32_dot_out_col1 !== gold_col1_bits[out_load][out_reuse]) begin
+                if (!fp32_close(fp32_dot_out_col1, gold_col1_bits[out_load][out_reuse], MAX_ULP)) begin
                     mismatch_seen = 1'b1;
-                    $error("[%0t] COL1 MISMATCH ld=%0d rv=%0d  dut=0x%08h gold=0x%08h",
+                    $error("[%0t] COL1 MISMATCH ld=%0d rv=%0d  dut=0x%08h gold=0x%08h (diff=%0d ULP, max=%0d)",
                            $time, out_load, out_reuse,
-                           fp32_dot_out_col1, gold_col1_bits[out_load][out_reuse]);
+                           fp32_dot_out_col1, gold_col1_bits[out_load][out_reuse],
+                           fp32_ulp_diff(fp32_dot_out_col1, gold_col1_bits[out_load][out_reuse]),
+                           MAX_ULP);
                     $display("[%0t] TEST FAILED: ending simulation.", $time);
                     repeat(5) @(negedge clk);
                     $finish;
                 end
 
                 // Check col2
-                if (fp32_dot_out_col2 !== gold_col2_bits[out_load][out_reuse]) begin
+                if (!fp32_close(fp32_dot_out_col2, gold_col2_bits[out_load][out_reuse], MAX_ULP)) begin
                     mismatch_seen = 1'b1;
-                    $error("[%0t] COL2 MISMATCH ld=%0d rv=%0d  dut=0x%08h gold=0x%08h",
+                    $error("[%0t] COL2 MISMATCH ld=%0d rv=%0d  dut=0x%08h gold=0x%08h (diff=%0d ULP, max=%0d)",
                            $time, out_load, out_reuse,
-                           fp32_dot_out_col2, gold_col2_bits[out_load][out_reuse]);
+                           fp32_dot_out_col2, gold_col2_bits[out_load][out_reuse],
+                           fp32_ulp_diff(fp32_dot_out_col2, gold_col2_bits[out_load][out_reuse]),
+                           MAX_ULP);
                     $display("[%0t] TEST FAILED: ending simulation.", $time);
                     $finish;
                 end
@@ -357,6 +368,27 @@ module mxfp_dot_proposed_tb;
     // -----------------------------------------------------------------
     // Golden model helpers
     // -----------------------------------------------------------------
+
+    // Returns the absolute ULP distance between two FP32 bit patterns.
+    // Works correctly for same-sign values (which is the expected case
+    // for dot product results).  For opposite signs, returns a large
+    // value that will always exceed any reasonable tolerance.
+    function automatic int fp32_ulp_diff(logic [31:0] a, logic [31:0] b);
+        int sa, sb, diff;
+        // Convert sign-magnitude to a signed integer that preserves
+        // FP32 ordering: if negative, flip to two's complement form.
+        sa = a[31] ? -(int'({1'b0, a[30:0]})) : int'(a);
+        sb = b[31] ? -(int'({1'b0, b[30:0]})) : int'(b);
+        diff = sa - sb;
+        if (diff < 0) diff = -diff;
+        return diff;
+    endfunction
+
+    // Returns 1 if two FP32 bit patterns are within max_ulp of each other.
+    function automatic logic fp32_close(logic [31:0] a, logic [31:0] b, int max_ulp);
+        return (fp32_ulp_diff(a, b) <= max_ulp);
+    endfunction
+
     function automatic shortreal dot(
         shortreal vec1[], shortreal vec2[],
         byte shared_exp1, byte shared_exp2

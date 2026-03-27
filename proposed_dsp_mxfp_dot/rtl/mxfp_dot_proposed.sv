@@ -73,5 +73,29 @@ module mxfp_dot_proposed #(
 				.fp32_flags_col2_o(fp32_flags_col2_o)
 			);
 		end
+		else if ((MODE == MXFP8_52) || (MODE == MXFP8_43)) begin
+			mxfp_dot_prop_mxfp8 #(
+				.MODE(MODE),
+				.IS_SIM(IS_SIM),
+				.E(E),
+				.M(M),
+				.E_SHARED(E_SHARED),
+				.FP_BIAS(FP_BIAS),
+				.SH_BIAS(SH_BIAS),
+				.DOT_LEN(DOT_LEN)
+			) dot_inst(
+				.clk(clk),
+				.rst(rst),
+				.load_en_i(load_en_i),
+				.valid_en_i(valid_en_i),
+				.mx_data_in_i(mx_data_in_i),
+				.shared_exponent_i(shared_exponent_i),
+				.fp32_dot_out_col1_o(fp32_dot_out_col1_o),
+				.fp32_dot_out_col2_o(fp32_dot_out_col2_o),
+				.valid_out_o(valid_out_o),
+				.fp32_flags_col1_o(fp32_flags_col1_o),
+				.fp32_flags_col2_o(fp32_flags_col2_o)
+			);
+		end
 	endgenerate
 endmodule
