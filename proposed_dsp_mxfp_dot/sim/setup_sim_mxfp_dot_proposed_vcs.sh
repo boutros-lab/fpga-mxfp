@@ -38,6 +38,7 @@ design_files=(
 "mxfp_dot_proposed_tb.sv"
 "../rtl/mxfp_dot_proposed.sv"
 "../rtl/mxfp_dot_prop_mxfp4.sv"
+"../rtl/mxfp_dot_prop_mxfp6.sv"
 "../rtl/fp_aitb_proposed.sv"
 "../../aitb_asic/rtl/mxfp_aitb/naive_mxfp_aitb_top.sv"
 "../../aitb_asic/rtl/mxfp_aitb/config_gen.sv"

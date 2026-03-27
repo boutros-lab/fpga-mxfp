@@ -6,10 +6,10 @@ module mxfp_dot_proposed_tb;
     // -----------------------------------------------------------------
     // Parameters
     // -----------------------------------------------------------------
-    localparam mxfp_mode_e MODE = MXFP4;
+    localparam mxfp_mode_e MODE = MXFP6_23;
     localparam bit IS_SIM = 1;
     localparam EXP_W          = 2;
-    localparam MAN_W          = 1;
+    localparam MAN_W          = 3;
     localparam DATA_MX_W      = 1 + MAN_W + EXP_W;   // 4 bits for MXFP4
     localparam SHARED_EXP_W   = 8;
     localparam FP_BIAS        = 1;
