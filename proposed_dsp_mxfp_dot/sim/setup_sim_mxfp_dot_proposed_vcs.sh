@@ -35,6 +35,11 @@ ELAB_OPTIONS=""
 # design files
 design_files=(
 "../../aitb_asic/rtl/pkg_aitb.sv"
+"mxfp_dot_proposed_tb.sv"
+"../rtl/mxfp_dot_proposed.sv"
+"../rtl/mxfp_dot_prop_mxfp4.sv"
+"../rtl/fp_aitb_proposed.sv"
+"../../aitb_asic/rtl/mxfp_aitb/naive_mxfp_aitb_top.sv"
 "../../aitb_asic/rtl/mxfp_aitb/config_gen.sv"
 "../../aitb_asic/rtl/in_reg_bank.sv"
 "../../aitb_asic/rtl/pipeline.sv"
@@ -44,13 +49,10 @@ design_files=(
 "../../aitb_asic/rtl/ieee_fp32_add.vhdl"
 "../../aitb_asic/rtl/mxfp_dot/mxfp_mult_shift.sv"
 "../../aitb_asic/rtl/mxfp_dot/naive_reduction.sv"
-"../../aitb_asic/rtl/mxfp_dot/flopoco_normalizers/normalizer_69b.vhdl"
+"../../aitb_asic/rtl/mxfp_dot/flopoco_normalizers/normalizer_sgn_70b.vhdl"
 "../../aitb_asic/rtl/mxfp_dot/mxfp_multiply.sv"
+"../../aitb_asic/rtl/mxfp_dot/flopoco_shifters/fp8_67_shifter.vhdl"
 "../../aitb_asic/rtl/mxfp_dot/pow2_reduction_norecurse.sv"
-"mxfp_dot_proposed_tb.sv"
-"../rtl/mxfp_dot_proposed_shannon_01.sv"
-"../rtl/fp_aitb_proposed.sv"
-"../../aitb_asic/rtl/mxfp_aitb/naive_mxfp_aitb_top.sv"
 )
 
 # -------------------------------------------
