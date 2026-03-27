@@ -1,10 +1,10 @@
 /*
-* No FP8 implementation of MXFP AITB
+* E2M1 implementation of MXFP AITB
 */
 
 import pkg_aitb::*;
 
-module nofp8_mxfp_aitb_comp_top #(
+module e2m1_mxfp_aitb_top #(
 	parameter FIXED_INPUTS = FIXED_ELEMENTS,
 	parameter PACKED_REDUCTION = 0
 )(
@@ -31,64 +31,33 @@ module nofp8_mxfp_aitb_comp_top #(
 	output logic [3:0]  fp32_flags_col2
 
 );
-localparam MXFP6_ELEMENTS     = 12;
-localparam FIXED_RESULT_WIDTH = MXFP6_PRODUCT_WIDTH + $clog2(MXFP6_ELEMENTS);
+localparam MXFP4_ELEMENTS     = 16;
+localparam FIXED_RESULT_WIDTH = FIXED_DATA_WIDTH * 2 + $clog2(FIXED_ELEMENTS);
 
 // Input
 logic [FLAT_DATA_WIDTH-1:0] data_in_pipe;
+logic [FLAT_DATA_WIDTH-1:0] data_in_pipe2;
 logic [SH_EXP_WIDTH-1:0]    data_in_sh_exp_pipe;
 logic [SH_EXP_WIDTH-1:0]    data_in_sh_exp_pipe2;
 logic [SH_EXP_WIDTH-1:0]    data_in_sh_exp_pipe3;
 logic [FLAT_DATA_WIDTH-1:0] w_reg_c1;
+logic [FLAT_DATA_WIDTH-1:0] w_reg_c1_pipe2;
 logic [SH_EXP_WIDTH-1:0]    w_reg_c1_sh_exp;
 logic [SH_EXP_WIDTH-1:0]    w_reg_c1_sh_exp_pipe2;
 logic [SH_EXP_WIDTH-1:0]    w_reg_c1_sh_exp_pipe3;
 logic [FLAT_DATA_WIDTH-1:0] w_reg_c2;
+logic [FLAT_DATA_WIDTH-1:0] w_reg_c2_pipe2;
 logic [SH_EXP_WIDTH-1:0]    w_reg_c2_sh_exp;
 logic [SH_EXP_WIDTH-1:0]    w_reg_c2_sh_exp_pipe2;
 logic [SH_EXP_WIDTH-1:0]    w_reg_c2_sh_exp_pipe3;
 
 // Unpacked data
-logic                     mxfp6_sign_c1      [MXFP6_ELEMENTS];
-logic                     mxfp6_sign_c2      [MXFP6_ELEMENTS];
-logic                     mxfp6_sign_data_in [MXFP6_ELEMENTS];
-logic [MXFP6_MAX_EXP-1:0] mxfp6_exp_c1       [MXFP6_ELEMENTS];
-logic [MXFP6_MAX_EXP-1:0] mxfp6_exp_c2       [MXFP6_ELEMENTS];
-logic [MXFP6_MAX_EXP-1:0] mxfp6_exp_data_in  [MXFP6_ELEMENTS];
-logic [MXFP6_MAX_MAN:0]   mxfp6_sig_c1       [MXFP6_ELEMENTS];
-logic [MXFP6_MAX_MAN:0]   mxfp6_sig_c2       [MXFP6_ELEMENTS];
-logic [MXFP6_MAX_MAN:0]   mxfp6_sig_data_in  [MXFP6_ELEMENTS];
-
-logic                     mxfp4_sign_c1      [MXFP4_ELEMENTS];
-logic                     mxfp4_sign_c2      [MXFP4_ELEMENTS];
-logic                     mxfp4_sign_data_in [MXFP4_ELEMENTS];
-logic [MXFP4_MAX_EXP-1:0] mxfp4_exp_c1       [MXFP4_ELEMENTS];
-logic [MXFP4_MAX_EXP-1:0] mxfp4_exp_c2       [MXFP4_ELEMENTS];
-logic [MXFP4_MAX_EXP-1:0] mxfp4_exp_data_in  [MXFP4_ELEMENTS];
-logic [MXFP4_MAX_MAN:0]   mxfp4_sig_c1       [MXFP4_ELEMENTS];
-logic [MXFP4_MAX_MAN:0]   mxfp4_sig_c2       [MXFP4_ELEMENTS];
-logic [MXFP4_MAX_MAN:0]   mxfp4_sig_data_in  [MXFP4_ELEMENTS];
-
-//      After pipe stage 2
-logic                     mxfp6_sign_c1_pipe      [MXFP6_ELEMENTS];
-logic                     mxfp6_sign_c2_pipe      [MXFP6_ELEMENTS];
-logic                     mxfp6_sign_data_in_pipe [MXFP6_ELEMENTS];
-logic [MXFP6_MAX_EXP-1:0] mxfp6_exp_c1_pipe       [MXFP6_ELEMENTS];
-logic [MXFP6_MAX_EXP-1:0] mxfp6_exp_c2_pipe       [MXFP6_ELEMENTS];
-logic [MXFP6_MAX_EXP-1:0] mxfp6_exp_data_in_pipe  [MXFP6_ELEMENTS];
-logic [MXFP6_MAX_MAN:0]   mxfp6_sig_c1_pipe       [MXFP6_ELEMENTS];
-logic [MXFP6_MAX_MAN:0]   mxfp6_sig_c2_pipe       [MXFP6_ELEMENTS];
-logic [MXFP6_MAX_MAN:0]   mxfp6_sig_data_in_pipe  [MXFP6_ELEMENTS];
-
-logic                     mxfp4_sign_c1_pipe      [MXFP4_ELEMENTS];
-logic                     mxfp4_sign_c2_pipe      [MXFP4_ELEMENTS];
-logic                     mxfp4_sign_data_in_pipe [MXFP4_ELEMENTS];
-logic [MXFP4_MAX_EXP-1:0] mxfp4_exp_c1_pipe       [MXFP4_ELEMENTS];
-logic [MXFP4_MAX_EXP-1:0] mxfp4_exp_c2_pipe       [MXFP4_ELEMENTS];
-logic [MXFP4_MAX_EXP-1:0] mxfp4_exp_data_in_pipe  [MXFP4_ELEMENTS];
-logic [MXFP4_MAX_MAN:0]   mxfp4_sig_c1_pipe       [MXFP4_ELEMENTS];
-logic [MXFP4_MAX_MAN:0]   mxfp4_sig_c2_pipe       [MXFP4_ELEMENTS];
-logic [MXFP4_MAX_MAN:0]   mxfp4_sig_data_in_pipe  [MXFP4_ELEMENTS];
+logic signed [FIXED_DATA_WIDTH-1:0] fixed_c1      [FIXED_ELEMENTS];
+logic signed [FIXED_DATA_WIDTH-1:0] fixed_c2      [FIXED_ELEMENTS];
+logic signed [FIXED_DATA_WIDTH-1:0] fixed_data_in [FIXED_ELEMENTS];
+logic        [MXFP4_DATA_WIDTH-1:0] mxfp4_c1      [MXFP4_ELEMENTS];
+logic        [MXFP4_DATA_WIDTH-1:0] mxfp4_c2      [MXFP4_ELEMENTS];
+logic        [MXFP4_DATA_WIDTH-1:0] mxfp4_data_in [MXFP4_ELEMENTS];
 
 // Dot Product
 logic signed [FIXED_RESULT_WIDTH-1:0] dot_out_col1;
@@ -114,7 +83,7 @@ logic [31:0] fp32_alu_out_col2;
 logic signed [7:0] exponent_correction;
 
 config_gen #(
-	.FIXED_WIDTH_LOCAL(FIXED_RESULT_WIDTH+1)
+	.FIXED_WIDTH_LOCAL(24) // Needs to be at least 24 for fix2float
 ) u_config_gen (
 	.i_mxfp_mode(i_mxfp_mode),
 	.o_sign_shift(),
@@ -155,110 +124,75 @@ pipeline #(.W(SH_EXP_WIDTH), .STAGES(1)) PIPE_1_sh_exp (
 	.pipe_out(data_in_sh_exp_pipe)
 );
 
-// Arrange flat input into unpacked arrays
-nofp8_input_preparation_mxfp_comp #(
-	.FLAT_WIDTH(FLAT_DATA_WIDTH), 
-	.FIXED_WIDTH(FIXED_DATA_WIDTH),
-	.FIXED_ELEMENTS(FIXED_INPUTS),
-	.FP6_ELEMENTS(MXFP6_ELEMENTS),
-	.FP4_ELEMENTS(MXFP4_ELEMENTS)
-) u_nofp8_input_preparation_col1 (
-	.i_mxfp_mode(i_mxfp_mode),
-	.i_flat(w_reg_c1),
-
-	.o_fp6_sign(mxfp6_sign_c1),
-	.o_fp6_exp(mxfp6_exp_c1),
-	.o_fp6_sig(mxfp6_sig_c1),
-
-	.o_fp4_sign(mxfp4_sign_c1),
-	.o_fp4_exp(mxfp4_exp_c1),
-	.o_fp4_sig(mxfp4_sig_c1)
-);
-
-nofp8_input_preparation_mxfp_comp #(
-	.FLAT_WIDTH(FLAT_DATA_WIDTH), 
-	.FIXED_WIDTH(FIXED_DATA_WIDTH),
-	.FIXED_ELEMENTS(FIXED_INPUTS),
-	.FP6_ELEMENTS(MXFP6_ELEMENTS),
-	.FP4_ELEMENTS(MXFP4_ELEMENTS)
-) u_nofp8_input_preparation_col2 (
-	.i_mxfp_mode(i_mxfp_mode),
-	.i_flat(w_reg_c2),
-
-	.o_fp6_sign(mxfp6_sign_c2),
-	.o_fp6_exp(mxfp6_exp_c2),
-	.o_fp6_sig(mxfp6_sig_c2),
-
-	.o_fp4_sign(mxfp4_sign_c2),
-	.o_fp4_exp(mxfp4_exp_c2),
-	.o_fp4_sig(mxfp4_sig_c2)
-);
-
-nofp8_input_preparation_mxfp_comp #(
-	.FLAT_WIDTH(FLAT_DATA_WIDTH), 
-	.FIXED_WIDTH(FIXED_DATA_WIDTH),
-	.FIXED_ELEMENTS(FIXED_INPUTS),
-	.FP6_ELEMENTS(MXFP6_ELEMENTS),
-	.FP4_ELEMENTS(MXFP4_ELEMENTS)
-) u_nofp8_input_preparation_data_in (
-	.i_mxfp_mode(i_mxfp_mode),
-	.i_flat(data_in_pipe),
-
-	.o_fp6_sign(mxfp6_sign_data_in),
-	.o_fp6_exp(mxfp6_exp_data_in),
-	.o_fp6_sig(mxfp6_sig_data_in),
-
-	.o_fp4_sign(mxfp4_sign_data_in),
-	.o_fp4_exp(mxfp4_exp_data_in),
-	.o_fp4_sig(mxfp4_sig_data_in)
-);
-
 // Pipe 2
-generate
-	always_ff @(posedge clk or posedge rst) begin
-		if (rst) begin
-			mxfp6_sign_c1_pipe      <= '{default: 'b0};
-			mxfp6_sign_c2_pipe      <= '{default: 'b0};
-			mxfp6_sign_data_in_pipe <= '{default: 'b0};
-			mxfp6_exp_c1_pipe       <= '{default: 'b0};
-			mxfp6_exp_c2_pipe       <= '{default: 'b0};
-			mxfp6_exp_data_in_pipe  <= '{default: 'b0};
-			mxfp6_sig_c1_pipe       <= '{default: 'b0};
-			mxfp6_sig_c2_pipe       <= '{default: 'b0};
-			mxfp6_sig_data_in_pipe  <= '{default: 'b0};
-			
-			mxfp4_sign_c1_pipe      <= '{default: 'b0};
-			mxfp4_sign_c2_pipe      <= '{default: 'b0};
-			mxfp4_sign_data_in_pipe <= '{default: 'b0};
-			mxfp4_exp_c1_pipe       <= '{default: 'b0};
-			mxfp4_exp_c2_pipe       <= '{default: 'b0};
-			mxfp4_exp_data_in_pipe  <= '{default: 'b0};
-			mxfp4_sig_c1_pipe       <= '{default: 'b0};
-			mxfp4_sig_c2_pipe       <= '{default: 'b0};
-			mxfp4_sig_data_in_pipe  <= '{default: 'b0};
-		end else begin
-			mxfp6_sign_c1_pipe      <= mxfp6_sign_c1;
-			mxfp6_sign_c2_pipe      <= mxfp6_sign_c2;
-			mxfp6_sign_data_in_pipe <= mxfp6_sign_data_in;
-			mxfp6_exp_c1_pipe       <= mxfp6_exp_c1;
-			mxfp6_exp_c2_pipe       <= mxfp6_exp_c2;
-			mxfp6_exp_data_in_pipe  <= mxfp6_exp_data_in;
-			mxfp6_sig_c1_pipe       <= mxfp6_sig_c1;
-			mxfp6_sig_c2_pipe       <= mxfp6_sig_c2;
-			mxfp6_sig_data_in_pipe  <= mxfp6_sig_data_in;
-			                           
-			mxfp4_sign_c1_pipe      <= mxfp4_sign_c1;
-			mxfp4_sign_c2_pipe      <= mxfp4_sign_c2;
-			mxfp4_sign_data_in_pipe <= mxfp4_sign_data_in;
-			mxfp4_exp_c1_pipe       <= mxfp4_exp_c1;
-			mxfp4_exp_c2_pipe       <= mxfp4_exp_c2;
-			mxfp4_exp_data_in_pipe  <= mxfp4_exp_data_in;
-			mxfp4_sig_c1_pipe       <= mxfp4_sig_c1;
-			mxfp4_sig_c2_pipe       <= mxfp4_sig_c2;
-			mxfp4_sig_data_in_pipe  <= mxfp4_sig_data_in;
-		end
-	end
-endgenerate
+pipeline #(.W(FLAT_DATA_WIDTH), .STAGES(1)) PIPE_2_data_in (
+	.clk(clk),
+	.rst(rst),
+	.pipe_in(data_in_pipe),
+	.pipe_out(data_in_pipe2)
+);
+
+pipeline #(.W(FLAT_DATA_WIDTH), .STAGES(1)) PIPE_2_w_reg_c1 (
+	.clk(clk),
+	.rst(rst),
+	.pipe_in(w_reg_c1),
+	.pipe_out(w_reg_c1_pipe2)
+);
+
+pipeline #(.W(FLAT_DATA_WIDTH), .STAGES(1)) PIPE_2_w_reg_c2 (
+	.clk(clk),
+	.rst(rst),
+	.pipe_in(w_reg_c2),
+	.pipe_out(w_reg_c2_pipe2)
+);
+
+pipeline #(.W(SH_EXP_WIDTH), .STAGES(1)) PIPE_2_sh_exp_c1 (
+	.clk(clk),
+	.rst(rst),
+	.pipe_in(w_reg_c1_sh_exp),
+	.pipe_out(w_reg_c1_sh_exp_pipe2)
+);
+
+pipeline #(.W(SH_EXP_WIDTH), .STAGES(1)) PIPE_2_sh_exp_c2 (
+	.clk(clk),
+	.rst(rst),
+	.pipe_in(w_reg_c2_sh_exp),
+	.pipe_out(w_reg_c2_sh_exp_pipe2)
+);
+
+// Arrange flat input into unpacked arrays
+e2m1_input_preparation_mxfp #(
+	.FLAT_WIDTH(FLAT_DATA_WIDTH), 
+	.FIXED_WIDTH(FIXED_DATA_WIDTH),
+	.FIXED_ELEMENTS(FIXED_INPUTS),
+	.FP4_ELEMENTS(MXFP4_ELEMENTS)
+) u_e2m1_input_preparation_col1 (
+	.i_flat(w_reg_c1_pipe2),
+	.o_fixed(fixed_c1),
+	.o_fp4(mxfp4_c1)
+);
+
+e2m1_input_preparation_mxfp #(
+	.FLAT_WIDTH(FLAT_DATA_WIDTH), 
+	.FIXED_WIDTH(FIXED_DATA_WIDTH),
+	.FIXED_ELEMENTS(FIXED_INPUTS),
+	.FP4_ELEMENTS(MXFP4_ELEMENTS)
+) u_e2m1_input_preparation_col2 (
+	.i_flat(w_reg_c2_pipe2),
+	.o_fixed(fixed_c2),
+	.o_fp4(mxfp4_c2)
+);
+
+e2m1_input_preparation_mxfp #(
+	.FLAT_WIDTH(FLAT_DATA_WIDTH), 
+	.FIXED_WIDTH(FIXED_DATA_WIDTH),
+	.FIXED_ELEMENTS(FIXED_INPUTS),
+	.FP4_ELEMENTS(MXFP4_ELEMENTS)
+) u_e2m1_input_preparation_data_in (
+	.i_flat(data_in_pipe2),
+	.o_fixed(fixed_data_in),
+	.o_fp4(mxfp4_data_in)
+);
 
 pipeline #(.W(SH_EXP_WIDTH), .STAGES(1)) PIPE_2_sh_exp (
 	.clk(clk),
@@ -267,63 +201,33 @@ pipeline #(.W(SH_EXP_WIDTH), .STAGES(1)) PIPE_2_sh_exp (
 	.pipe_out(data_in_sh_exp_pipe2)
 );
 
-pipeline #(.W(SH_EXP_WIDTH), .STAGES(1)) PIPE_2_w_reg_c1 (
-	.clk(clk),
-	.rst(rst),
-	.pipe_in(w_reg_c1_sh_exp),
-	.pipe_out(w_reg_c1_sh_exp_pipe2)
-);
-
-pipeline #(.W(SH_EXP_WIDTH), .STAGES(1)) PIPE_2_w_reg_c2 (
-	.clk(clk),
-	.rst(rst),
-	.pipe_in(w_reg_c2_sh_exp),
-	.pipe_out(w_reg_c2_sh_exp_pipe2)
-);
-
 // Dot engine (out: 70b vector)
-nofp8_mxfp_comp_dot_fixed #(
+e2m1_mxfp_dot_fixed #(
 	.FIXED_DOT_LENGTH(FIXED_INPUTS),
 	.PACKED_REDUCTION(PACKED_REDUCTION)
-) u_nofp8_mxfp_comp_dot_fixed_col1 (
+) u_e2m1_mxfp_dot_fixed_col1 (
 	.i_mxfp_mode(i_mxfp_mode),
 
-	.i_mxfp6_sign_a(mxfp6_sign_data_in_pipe),
-	.i_mxfp6_sign_b(mxfp6_sign_c1_pipe),
-	.i_mxfp6_exp_a(mxfp6_exp_data_in_pipe),
-	.i_mxfp6_exp_b(mxfp6_exp_c1_pipe),
-	.i_mxfp6_sig_a(mxfp6_sig_data_in_pipe),
-	.i_mxfp6_sig_b(mxfp6_sig_c1_pipe),
+	.i_fixed_a(fixed_data_in),
+	.i_fixed_b(fixed_c1),
 
-	.i_mxfp4_sign_a(mxfp4_sign_data_in_pipe),
-	.i_mxfp4_sign_b(mxfp4_sign_c1_pipe),
-	.i_mxfp4_exp_a(mxfp4_exp_data_in_pipe),
-	.i_mxfp4_exp_b(mxfp4_exp_c1_pipe),
-	.i_mxfp4_sig_a(mxfp4_sig_data_in_pipe),
-	.i_mxfp4_sig_b(mxfp4_sig_c1_pipe),
+	.i_mxfp4_a(mxfp4_data_in),
+	.i_mxfp4_b(mxfp4_c1),
 
 	.o_fixed_result(dot_out_col1)
 );
 
-nofp8_mxfp_comp_dot_fixed #(
+e2m1_mxfp_dot_fixed #(
 	.FIXED_DOT_LENGTH(FIXED_INPUTS),
 	.PACKED_REDUCTION(PACKED_REDUCTION)
-) u_nofp8_mxfp_comp_dot_fixed_col2 (
+) u_e2m1_mxfp_dot_fixed_col2 (
 	.i_mxfp_mode(i_mxfp_mode),
 
-	.i_mxfp6_sign_a(mxfp6_sign_data_in_pipe),
-	.i_mxfp6_sign_b(mxfp6_sign_c2_pipe),
-	.i_mxfp6_exp_a(mxfp6_exp_data_in_pipe),
-	.i_mxfp6_exp_b(mxfp6_exp_c2_pipe),
-	.i_mxfp6_sig_a(mxfp6_sig_data_in_pipe),
-	.i_mxfp6_sig_b(mxfp6_sig_c2_pipe),
+	.i_fixed_a(fixed_data_in),
+	.i_fixed_b(fixed_c2),
 
-	.i_mxfp4_sign_a(mxfp4_sign_data_in_pipe),
-	.i_mxfp4_sign_b(mxfp4_sign_c2_pipe),
-	.i_mxfp4_exp_a(mxfp4_exp_data_in_pipe),
-	.i_mxfp4_exp_b(mxfp4_exp_c2_pipe),
-	.i_mxfp4_sig_a(mxfp4_sig_data_in_pipe),
-	.i_mxfp4_sig_b(mxfp4_sig_c2_pipe),
+	.i_mxfp4_a(mxfp4_data_in),
+	.i_mxfp4_b(mxfp4_c2),
 
 	.o_fixed_result(dot_out_col2)
 );

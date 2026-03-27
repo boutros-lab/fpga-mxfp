@@ -22,7 +22,7 @@ module config_fix2fp32 #(
 	output logic [31:0] o_fp
 );
 localparam LZC_WIDTH = (INPUT_WIDTH == 70)  || (INPUT_WIDTH == 69) ? 7 
-								   : INPUT_WIDTH == 23 ? 5 
+								   : INPUT_WIDTH <= 23 ? 5 
 								   : 0;
 
 logic        sign;
@@ -61,10 +61,10 @@ generate
 			.Count(leading_zero_count), 
 			.R(significand)
 		);
-	end else if (INPUT_WIDTH == 23) begin
+	end else if (INPUT_WIDTH <= 23) begin
 		normalizer_sgn_24b 
 		u_normalizer (
-			.X({sign, i_fixed}), 
+			.X({{(24-INPUT_WIDTH){sign}}, i_fixed}), 
 			.OZb(sign), 
 			.Count(leading_zero_count), 
 			.R(significand)
