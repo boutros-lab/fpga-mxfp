@@ -17,8 +17,8 @@ module mxfp_dot_proposed_tb;
     localparam DOT_LEN        = 32;
     localparam DATA_OUT_W     = 32;
 
-    localparam NUM_LOADS      = 1;      // Weight-load phases
-    localparam REUSE_FACTOR   = 1;     // Activation vectors per load
+    localparam NUM_LOADS      = 2;      // Weight-load phases
+    localparam REUSE_FACTOR   = 5;     // Activation vectors per load
 
     // -----------------------------------------------------------------
     // Stimulus / golden storage

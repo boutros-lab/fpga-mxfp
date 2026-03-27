@@ -26,8 +26,10 @@ module mxfp_dot_prop_mxfp4 #(
 );
 
     localparam int NUM_AITBS = 2;
-    // Total latency
-    localparam int LAT = NUM_AITBS*LAT_AITB;
+    // Total latency = LAT_AITB + (NUM_AITB - 1)
+    // Top DSP takes LAT_AITB cycles. DSPs in cascade is registered and then we need another cycle for the addition.
+    localparam int STAGGER = 2;
+    localparam int LAT = LAT_AITB + STAGGER;
 
     // Valid pipe
     logic [LAT-1:0] valid_pipe;
@@ -41,19 +43,43 @@ module mxfp_dot_prop_mxfp4 #(
     end
     assign valid_out_o = valid_pipe[LAT-1];
 
-    logic [79:0] data_to_pe [0:NUM_AITBS-1];
+    logic [79:0] data_unpacked [0:NUM_AITBS-1];
     // Unpack inputs
     genvar i;
     generate
     for (i = 0; i < DOT_LEN; i++) begin : unpack
         localparam int aitb_idx = i / 16;
         localparam int word_idx = i % 16;
-        assign data_to_pe[aitb_idx][word_idx*(M+E+1) +: (M+E+1)] = mx_data_in_i[i];
+        assign data_unpacked[aitb_idx][word_idx*(M+E+1) +: (M+E+1)] = mx_data_in_i[i];
     end
     endgenerate
     // Zero out unused bits (16 words × 4 bits)
-    assign data_to_pe[0][79:64] = 16'b0;
-    assign data_to_pe[1][79:64] = 16'b0;
+    assign data_unpacked[0][79:64] = 16'b0;
+    assign data_unpacked[1][79:64] = 16'b0;
+
+    // Delay inputs to bottom DSP
+    logic [79:0]          data_bot_dly   [0:STAGGER-1];
+    logic [E_SHARED-1:0]  sh_exp_bot_dly [0:STAGGER-1];
+    logic                 load_en_dly    [0:STAGGER-1];
+
+    always_ff @(posedge clk) begin
+        if (rst) begin
+            for (int s = 0; s < STAGGER; s++) begin
+                data_bot_dly[s]   <= '0;
+                sh_exp_bot_dly[s] <= '0;
+                load_en_dly[s]    <= 1'b0;
+            end
+        end else begin
+            data_bot_dly[0]   <= data_unpacked[1];
+            sh_exp_bot_dly[0] <= shared_exponent_i;
+            load_en_dly[0]    <= load_en_i;
+            for (int s = 1; s < STAGGER; s++) begin
+                data_bot_dly[s]   <= data_bot_dly[s-1];
+                sh_exp_bot_dly[s] <= sh_exp_bot_dly[s-1];
+                load_en_dly[s]    <= load_en_dly[s-1];
+            end
+        end
+    end
 
     logic [31:0] fp32_dot_out_col1_top;
     logic [31:0] fp32_dot_out_col2_top;
@@ -72,7 +98,7 @@ module mxfp_dot_prop_mxfp4 #(
         .acc_en_i(1'b0),
         .zero_en_i(1'b0),
         .load_en_i(load_en_i),
-        .data_i(data_to_pe[0]),
+        .data_i(data_unpacked[0]),
         .shared_exponent_i(shared_exponent_i),
         .fp32_cascade_in_col1_i('0),
         .fp32_cascade_in_col2_i('0),
@@ -100,9 +126,9 @@ module mxfp_dot_prop_mxfp4 #(
         .rst(rst),
         .acc_en_i(1'b0),
         .zero_en_i(1'b0),
-        .load_en_i(load_en_i),
-        .data_i(data_to_pe[1]),
-        .shared_exponent_i(shared_exponent_i),
+        .load_en_i(load_en_dly[STAGGER-1]),
+        .data_i(data_bot_dly[STAGGER-1]),
+        .shared_exponent_i(sh_exp_bot_dly[STAGGER-1]),
         .fp32_cascade_in_col1_i(fp32_cascade_out_col1_top),
         .fp32_cascade_in_col2_i(fp32_cascade_out_col2_top),
         .fp32_dot_out_col1_o(fp32_dot_out_col1_bot),
