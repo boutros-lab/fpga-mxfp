@@ -2,10 +2,12 @@ Implementing a single head of attention:
 
 - Input tokens x
 - Project to Q, K, V
+!! CONVERT TO MX-FP
 - Dot product yay!
-- Apply causal mask
-- Softmax
-- Apply attention using the value vectors to the input tokens, producing y
+- Apply causal mask (fp32)
+- Softmax (fp32)
+!! CONVERT TO MX-FP
+- Apply attention using the value vectors to the input tokens producing y
 
 Notes:
 

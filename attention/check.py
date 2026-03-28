@@ -11,13 +11,13 @@ def get(prefix):
         i += 1
 
 def check_transpose():
-    M = int(get('M='))
-    N = int(get('N='))
+    INPUT_ROWS = int(get('INPUT_ROWS='))
+    INPUT_COLS = int(get('INPUT_COLS='))
     DATA_WIDTH = int(get('DATA_WIDTH='))
     tests = int(get('tests='))
 
-    print(f"M: {M}")
-    print(f"N: {N}")
+    print(f"INPUT_ROWS: {INPUT_ROWS}")
+    print(f"INPUT_COLS: {INPUT_COLS}")
     print(f"DATA_WIDTH: {DATA_WIDTH}")
     print(f"tests: {tests}")
 
@@ -26,24 +26,24 @@ def check_transpose():
         test_num = int(get('test='))
 
         in_data = []
-        for row in range(M):
+        for row in range(INPUT_ROWS):
             row_data = []
-            for col in range(N):
+            for col in range(INPUT_COLS):
                 val = get(f'in_data[{row}][{col}]=')
                 row_data.append(val)
             in_data.append(row_data)
 
         out_data = []
-        for row in range(N):
+        for row in range(INPUT_COLS):
             row_data = []
-            for col in range(M):
+            for col in range(INPUT_ROWS):
                 val = get(f'out_data[{row}][{col}]=')
                 row_data.append(val)
             out_data.append(row_data)
 
         # Verify transpose: out_data[j][i] should equal in_data[i][j]
-        for row in range(M):
-            for col in range(N):
+        for row in range(INPUT_ROWS):
+            for col in range(INPUT_COLS):
                 expected = in_data[row][col]
                 got = out_data[col][row]
                 if got != expected:
