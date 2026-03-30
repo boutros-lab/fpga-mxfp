@@ -8,7 +8,8 @@ module attention #(
     parameter mul_width = 18,
     parameter block_size = 32, // must be divisible by 2 since the DSP can handle 2 multiplications at once
 ) (
-    input logic [1 + exponent_width + mantissa_width - 1:0] x [N][D], W_Q [D][A], W_K [D][A], W_V [D][A],
+    input logic [1 + exponent_width + mantissa_width - 1:0] x [N][D], W_Q [D][A], W_K [D][A], W_V [D][A], W_O [A][D],
+    input logic [1 + exponent_width + mantissa_width - 1:0] W_Q_blk_exp [A][D],
     output logic [1 + exponent_width + mantissa_width - 1:0] out [D][N],
     input logic clk,
     input logic valid_in,
@@ -86,6 +87,19 @@ transpose #(
 );
 
 // Convert all to MXFP
-
+logic [1 + exponent_width + mantissa_width - 1:0] Q_mxfp [N][A], K_mxfp [A][N], V_mxfp [N][A];
+logic Q_mxfp_valid, K_mxfp_valid, V_mxfp_valid;
+fp32_to_mxfp #(
+    .exponent_width(exponent_width),
+    .mantissa_width(mantissa_width),
+    .block_size(block_size),
+    .freq_mhz(400) // max
+) convert_Q (
+    .clk(clk),
+    .valid_in(Q_valid),
+    .in(Q),
+    .out(Q_mxfp_valid),
+    .out_blk_exp() // not used
+);
 
 endmodule
