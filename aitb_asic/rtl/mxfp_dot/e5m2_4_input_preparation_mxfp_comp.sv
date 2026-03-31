@@ -100,7 +100,7 @@ always_comb begin
 		end
 	end
 
-	for (int i = 0; i < FP6_ELEMENTS; i++) begin
+	for (int i = 0; i < FP4_ELEMENTS; i++) begin
 		o_fp4_sign[i] = i_flat[(i + FP8_ELEMENTS + FP6_ELEMENTS + 1) * FP4_WIDTH - 1];
 	end
 
@@ -159,7 +159,7 @@ always_comb begin
 		end
 	end
 
-	for (int i = 0; i < FP6_ELEMENTS; i++) begin
+	for (int i = 0; i < FP4_ELEMENTS; i++) begin
 		o_fp4_exp[i] = i_flat[(i + FP8_ELEMENTS + FP6_ELEMENTS) * FP4_WIDTH + MXFP4_MAX_MAN +: MXFP4_MAX_EXP];
 	end
 
@@ -224,7 +224,7 @@ always_comb begin
 		end
 	end
 
-	for (int i = 0; i < FP6_ELEMENTS; i++) begin
+	for (int i = 0; i < FP4_ELEMENTS; i++) begin
 		o_fp4_sig[i] = {|o_fp4_exp[i], i_flat[(i + FP8_ELEMENTS + FP6_ELEMENTS) * FP4_WIDTH +: MXFP4_MAX_MAN]};
 	end
 end

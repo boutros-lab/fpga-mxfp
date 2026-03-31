@@ -7,6 +7,7 @@ DUT        = normalizer
 DUT_MXFP  ?= naive_mxfp_aitb_wrapper
 DATA_OPTS ?=
 ASIC_YML  ?= base
+TIMESTAMP := $(shell date +%m_%d_%H_%M)
 
 sim:
 	vsim -c -do "do sim/${DUT}_run.tcl"
@@ -19,18 +20,18 @@ data_and_sim_mxfp:
 	vsim -c -do "set dut ${DUT_MXFP}; set exp_width $E; set man_width $M; set k $K; set test_length ${TESTS}; do sim/mxfp_aitb_run.tcl"
 
 syn:
-	hammer-vlsi -p asic/${ASIC_YML}.yml -e asic/${ASIC_YML}.yml --obj_dir asic/${ASIC_YML}_obj-dir syn
-#	quartus_sh -t syn/setup.tcl mxfp_dot_cli E$E_M$M $E $M ${PIPE}
-#	quartus_sh -t syn/syn.tcl mxfp_dot_cli syn E$E_M$M
+	hammer-vlsi -p asic/${ASIC_YML}.yml -e asic/${ASIC_YML}.yml --obj_dir asic/${ASIC_YML}_${TIMESTAMP}_obj-dir syn
 
 fit:
-	hammer-vlsi -p asic/${ASIC_YML}.yml -e asic/${ASIC_YML}.yml --obj_dir asic/${ASIC_YML}_obj-dir syn-par
-#	quartus_sh -t syn/setup.tcl mxfp_dot_cli E$E_M$M $E $M ${PIPE}
-#	quartus_sh -t syn/fit.tcl mxfp_dot_cli syn E$E_M$M
+	hammer-vlsi -p asic/${ASIC_YML}.yml -e asic/${ASIC_YML}.yml --obj_dir asic/${ASIC_YML}_${TIMESTAMP}_obj-dir syn-par
 
 clean:
 	rm -f *.log *.json asic/obj-dir -r
 	rm -rf work
+	rm -rf data
 	rm -f transcript
 
-.PHONY: sim sim_mxfp data_and_sim_mxfp fit syn clean
+clean_asic:
+	rm -rf asic/*obj-dir
+
+.PHONY: sim sim_mxfp data_and_sim_mxfp fit syn clean clean_asic
