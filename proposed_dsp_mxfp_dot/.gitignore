@@ -1,0 +1,15 @@
+rtl_sim_log
+vlogan.log
+.vlogansetup.args
+AN.DB
+vhdlan.log
+simv
+vc_hdrs.h
+elaborate.log
+csrc
+64
+DVEfiles
+simv.daidir
+inter.vpd
+ucli.key
+.restartSimSession.tcl.old
