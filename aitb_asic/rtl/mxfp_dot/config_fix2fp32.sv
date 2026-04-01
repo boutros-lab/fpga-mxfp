@@ -62,10 +62,14 @@ generate
 			.R(significand)
 		);
 	end else if (INPUT_WIDTH <= 23) begin
-		normalizer_sgn_24b 
+		// Unsigned normalizer more efficient at lower input widths
+		logic [INPUT_WIDTH-2:0] unsigned_fixed;
+
+		assign unsigned_fixed = sign ? -i_fixed : i_fixed;
+
+		normalizer_24b 
 		u_normalizer (
-			.X({{(24-INPUT_WIDTH){sign}}, i_fixed}), 
-			.OZb(sign), 
+			.X({{(24-(INPUT_WIDTH-1)){1'b0}}, unsigned_fixed}), 
 			.Count(leading_zero_count), 
 			.R(significand)
 		);
@@ -79,12 +83,21 @@ logic zero_in, zero_sig;
 assign zero_in  = i_fixed == 'b0;
 assign zero_sig = significand == 'b0;
 
-// Negative powers of 2 will result in zero significand, adjust by 1
-assign {underflow, overflow, exponent} = zero_in ? 'b0 
-				       		 : $signed(shared_exponent_sum) - $unsigned(leading_zero_count) + zero_sig;
-
-// Take two's complement
-assign fraction = ({23{sign}} ^ significand[22:0]) + sign;
+generate
+	if (INPUT_WIDTH > 23) begin
+		// Negative powers of 2 will result in zero significand, adjust by 1
+		assign {underflow, overflow, exponent} = zero_in ? 'b0 
+						       		 : $signed(shared_exponent_sum) - $unsigned(leading_zero_count) + zero_sig;
+		
+		// Take two's complement
+		assign fraction = ({23{sign}} ^ significand[22:0]) + sign;
+	end else begin
+		assign {underflow, overflow, exponent} = zero_in ? 'b0 
+						       		 : $signed(shared_exponent_sum) - $unsigned(leading_zero_count);
+		
+		assign fraction = significand[22:0];
+	end
+endgenerate
 
 // Form final FP32
 always_comb begin
