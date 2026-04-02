@@ -4,7 +4,7 @@
 
 import pkg_aitb::*;
 
-module fixed_input_mxfp_aitb_top (
+module fixed_input_e4m3_mxfp_aitb_top (
 	input logic clk,
 	input logic rst,
 	input logic acc_en,
@@ -32,13 +32,17 @@ localparam E3M2_ELEMENTS  = 8;
 localparam FIXED_ELEMENTS = 2;
 localparam E2M3_ELEMENTS  = 1;
 localparam E2M1_ELEMENTS  = 5;
+localparam E4M3_ELEMENTS  = 6;
 
 localparam E3M2_WIDTH  = 10; // 1 + (M + 1) + (2^E - 2)
 localparam FIXED_WIDTH =  8;
 localparam E2M3_WIDTH  =  7;
 localparam E2M1_WIDTH  =  5;
 
-localparam FIXED_RESULT_WIDTH = (E3M2_WIDTH * 2) + $clog2(E3M2_ELEMENTS);
+localparam E4M3_PROD_WIDTH   = 37;
+localparam E4M3_RESULT_WIDTH = E4M3_PROD_WIDTH + $clog2(E4M3_ELEMENTS);
+
+localparam FIXED_RESULT_WIDTH = E4M3_RESULT_WIDTH;
 
 // Input
 logic [FLAT_DATA_WIDTH-1:0] data_in_pipe;
@@ -111,7 +115,7 @@ logic [31:0] fp32_alu_out_col2;
 logic signed [7:0] exponent_correction;
 
 config_gen #(
-	.FIXED_WIDTH_LOCAL(24) // Needs to be at least 24 for fix2float
+	.FIXED_WIDTH_LOCAL(FIXED_RESULT_WIDTH-1)
 ) u_config_gen (
 	.i_mxfp_mode(i_mxfp_mode),
 	.o_sign_shift(),
@@ -153,8 +157,8 @@ pipeline #(.W(SH_EXP_WIDTH), .STAGES(1)) PIPE_1_sh_exp (
 );
 
 // Arrange flat input into unpacked arrays
-fixed_mxfp_input_preparation
-u_fixed_mxfp_input_preparation_col1 (
+fixed_mxfp_e4m3_input_preparation
+u_fixed_mxfp_e4m3_input_preparation_col1 (
 	.i_mxfp_mode(i_mxfp_mode),
 	.i_flat(w_reg_c1),
 
@@ -164,8 +168,8 @@ u_fixed_mxfp_input_preparation_col1 (
 	.o_e2m1(e2m1_c1)
 );
 
-fixed_mxfp_input_preparation 
-u_fixed_mxfp_input_preparation_col2 (
+fixed_mxfp_e4m3_input_preparation 
+u_fixed_mxfp_e4m3_input_preparation_col2 (
 	.i_mxfp_mode(i_mxfp_mode),
 	.i_flat(w_reg_c2),
 
@@ -175,8 +179,8 @@ u_fixed_mxfp_input_preparation_col2 (
 	.o_e2m1(e2m1_c2)
 );
 
-fixed_mxfp_input_preparation 
-u_fixed_mxfp_input_preparation_data_in (
+fixed_mxfp_e4m3_input_preparation 
+u_fixed_mxfp_e4m3_input_preparation_data_in (
 	.i_mxfp_mode(i_mxfp_mode),
 	.i_flat(data_in_pipe),
 
@@ -246,8 +250,8 @@ pipeline #(.W(SH_EXP_WIDTH), .STAGES(1)) PIPE_2_sh_exp (
 );
 
 // Dot engine (out: 70b vector)
-fixed_input_mxfp_dot
-u_fixed_input_mxfp_dot_col1 (
+fixed_input_e4m3_mxfp_dot
+u_fixed_input_e4m3_mxfp_dot_col1 (
 	.i_mxfp_mode(i_mxfp_mode),
 
 	.i_e3m2_a(e3m2_data_in_pipe),
@@ -265,8 +269,8 @@ u_fixed_input_mxfp_dot_col1 (
 	.o_fixed_result(dot_out_col1)
 );
 
-fixed_input_mxfp_dot
-u_fixed_input_mxfp_dot_col2 (
+fixed_input_e4m3_mxfp_dot
+u_fixed_input_e4m3_mxfp_dot_col2 (
 	.i_mxfp_mode(i_mxfp_mode),
 
 	.i_e3m2_a(e3m2_data_in_pipe),

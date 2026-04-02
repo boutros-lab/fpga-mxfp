@@ -22,6 +22,7 @@ module config_fix2fp32 #(
 	output logic [31:0] o_fp
 );
 localparam LZC_WIDTH = (INPUT_WIDTH == 70)  || (INPUT_WIDTH == 69) ? 7 
+								   : INPUT_WIDTH == 40 ? 6
 								   : INPUT_WIDTH <= 23 ? 5 
 								   : 0;
 
@@ -61,6 +62,18 @@ generate
 			.Count(leading_zero_count), 
 			.R(significand)
 		);
+	end else if (INPUT_WIDTH == 40) begin
+		// Unsigned normalizer more efficient at lower input widths
+		logic [INPUT_WIDTH-2:0] unsigned_fixed;
+
+		assign unsigned_fixed = sign ? -i_fixed : i_fixed;
+
+		normalizer_39b 
+		u_normalizer (
+			.X(unsigned_fixed), 
+			.Count(leading_zero_count), 
+			.R(significand)
+		);
 	end else if (INPUT_WIDTH <= 23) begin
 		// Unsigned normalizer more efficient at lower input widths
 		logic [INPUT_WIDTH-2:0] unsigned_fixed;
@@ -84,7 +97,7 @@ assign zero_in  = i_fixed == 'b0;
 assign zero_sig = significand == 'b0;
 
 generate
-	if (INPUT_WIDTH > 23) begin
+	if (INPUT_WIDTH > 40) begin
 		// Negative powers of 2 will result in zero significand, adjust by 1
 		assign {underflow, overflow, exponent} = zero_in ? 'b0 
 						       		 : $signed(shared_exponent_sum) - $unsigned(leading_zero_count) + zero_sig;

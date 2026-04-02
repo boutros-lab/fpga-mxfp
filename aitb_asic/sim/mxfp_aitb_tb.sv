@@ -11,7 +11,7 @@ module mxfp_aitb_tb();
 
 localparam CLK_PERIOD  = 2;   // Clock period in ns
 localparam TEST_LENGTH = `TESTS;
-localparam FIXED_INPUTS = `FIXED_INPUTS;
+localparam FIXED_INPUTS = `FIXED_INPUTS && !((`EXP_WIDTH == 4) && (`MAN_WIDTH == 3));
 
 // DUT signals
 logic clk;
