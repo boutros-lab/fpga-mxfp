@@ -1,8 +1,8 @@
 import pkg_aitb::*;
 
 module dot #(
-	INPUT_WIDTH  = DATA_WIDTH,
-	DOT_LENGTH   = DOT_LENGTH,
+	INPUT_WIDTH  = FIXED_DATA_WIDTH,
+	DOT_LENGTH   = FIXED_ELEMENTS,
 	OUTPUT_WIDTH = (2 * INPUT_WIDTH) + $clog2(DOT_LENGTH)
 )(
 	input  logic signed [INPUT_WIDTH-1:0]    data_in [0:DOT_LENGTH-1],
