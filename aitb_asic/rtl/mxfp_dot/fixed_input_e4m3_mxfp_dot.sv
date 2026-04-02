@@ -103,20 +103,30 @@ dot #(
 
 // For E2M1, E2M3, Share multipliers with FP MULT E4M3
 // Expect E4M3 to be encoded on i_e3m2_* inputs
-
-mxfp_multiply_dual #(
-	.FIXED_WIDTH(E2M3_INPUT_WIDTH)
-) u_mxfp_multiply_dual_e2m3 (
-	.i_mxfp_mode(e4m3_mode),
-	.i_mxfp_a(i_e3m2_a[E2M1_OPS][7:0]),
-	.i_mxfp_b(i_e3m2_b[E2M1_OPS][7:0]),
-	.i_fixed_a(i_e2m3_a[0]),
-	.i_fixed_b(i_e2m3_b[0]),
-	.o_prod(e2m3_dot_result),
-	.o_prod_shifted(e4m3_prod[E2M1_OPS])
-);
-
 generate
+	if (E4M3_OPS > E2M1_OPS) begin
+		mxfp_multiply_dual #(
+			.FIXED_WIDTH(E2M3_INPUT_WIDTH)
+		) u_mxfp_multiply_dual_e2m3 (
+			.i_mxfp_mode(e4m3_mode),
+			.i_mxfp_a(i_e3m2_a[E2M1_OPS][7:0]),
+			.i_mxfp_b(i_e3m2_b[E2M1_OPS][7:0]),
+			.i_fixed_a(i_e2m3_a[0]),
+			.i_fixed_b(i_e2m3_b[0]),
+			.o_prod(e2m3_dot_result),
+			.o_prod_shifted(e4m3_prod[E2M1_OPS])
+		);
+	end else begin
+		dot #(
+			.INPUT_WIDTH(E2M3_INPUT_WIDTH),
+			.DOT_LENGTH(E2M3_OPS)
+		) u_e2m3_dot (
+			.data_in(i_e2m3_a),
+			.w_reg(i_e2m3_b),
+			.dot_out(e2m3_dot_result)
+		);
+	end
+
 	for (genvar i = 0; i < E2M1_OPS; i++) begin : e2m1_mults
 		mxfp_multiply_dual #(
 			.FIXED_WIDTH(E2M1_INPUT_WIDTH)
