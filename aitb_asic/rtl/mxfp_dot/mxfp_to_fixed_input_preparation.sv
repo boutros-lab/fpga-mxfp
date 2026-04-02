@@ -3,6 +3,8 @@
 * individual elements based on MXFP_MODE
 * Sepearates into: Sign Exponent and Significand
 *
+* Inputs expected in MXFP format
+*
 * Outputs the fixed point representations of input MXFP numbers
 * Supports E3M2 K 8, E2M3 K 11, E2M1 K 16, E0M7 K10
 */
@@ -49,9 +51,9 @@ logic e2m1_norm [E2M1_OPS];
 
 logic       e3m2_sign [E3M2_OPS];
 logic [2:0] e3m2_exp  [E3M2_OPS];
-logic [2:0] e3m2_sig  [E3M2_OPS];
+logic [3:0] e3m2_sig  [E3M2_OPS]; // Needs to hold E2M3 as well
 
-logic [FIXED_WIDTH-1:0] fixed [FIXED_DOT_LENGTH];
+logic signed [FIXED_WIDTH-1:0] fixed [FIXED_DOT_LENGTH];
 
 logic       e2m3_sign [E2M3_OPS_C];
 logic [1:0] e2m3_exp  [E2M3_OPS_C];
@@ -93,13 +95,13 @@ always_comb begin
 
 	for (int i = 0; i < E2M3_OPS_C; i++) begin
 		if (mxfp6_mode) begin
-			e3m2_sign[i] = i_flat[(i + E3M2_OPS + 1) * FP6_WIDTH - 1];
+			e2m3_sign[i] = i_flat[(i + E3M2_OPS + 1) * FP6_WIDTH - 1];
 		end else begin
-			e3m2_sign[i] = i_flat[(i + E3M2_OPS + 1) * FP4_WIDTH - 1];
+			e2m3_sign[i] = i_flat[(i + E3M2_OPS + 1) * FP4_WIDTH - 1];
 		end
 	end
 
-	for (int i = 0; i < E2M3_OPS_C; i++) begin
+	for (int i = 0; i < E2M1_OPS; i++) begin
 		e2m1_sign[i] = i_flat[(i + E3M2_OPS + E2M3_OPS_C + 1) * FP4_WIDTH - 1];
 	end
 
@@ -126,7 +128,7 @@ always_comb begin
 	end
 
 	for (int i = 0; i < E2M1_OPS; i++) begin
-		o_fp4_exp[i] = i_flat[(i + E3M2_OPS + E2M3_OPS_C) * FP4_WIDTH + MXFP4_MAX_MAN +: MXFP4_MAX_EXP];
+		e2m1_exp[i] = i_flat[(i + E3M2_OPS + E2M3_OPS_C) * FP4_WIDTH + MXFP4_MAX_MAN +: MXFP4_MAX_EXP];
 	end
 
 	// SIGNIFICANDS
@@ -164,8 +166,8 @@ end
 generate
 	for (genvar i = 0; i < E3M2_OPS; i++) begin
 		fix2float #(
-			.EXP_WIDTH(3).
-			.SIG_WIDTH(3)
+			.EXP_WIDTH(3),
+			.SIG_WIDTH(4) // Needs to hold E2M3 as well
 		) u_fix2float_e3m2 (
 			.i_sign(e3m2_sign[i]),
 			.i_exp(e3m2_exp[i]),
@@ -178,7 +180,7 @@ generate
 
 	for (genvar i = 0; i < E2M3_OPS_C; i++) begin
 		fix2float #(
-			.EXP_WIDTH(2).
+			.EXP_WIDTH(2),
 			.SIG_WIDTH(4)
 		) u_fix2float_e2m3 (
 			.i_sign(e2m3_sign[i]),
@@ -192,7 +194,7 @@ generate
 
 	for (genvar i = 0; i < E2M1_OPS; i++) begin
 		fix2float #(
-			.EXP_WIDTH(2).
+			.EXP_WIDTH(2),
 			.SIG_WIDTH(2)
 		) u_fix2float_e2m1 (
 			.i_sign(e2m1_sign[i]),
@@ -209,36 +211,36 @@ endgenerate
 always_comb begin
 	for (int i = 0; i < E3M2_OPS; i++) begin
 		if (fixed_mode) begin
-			o_e3m2 = fixed[i];
+			o_e3m2[i] = fixed[i];
 		end else begin
-			o_e3m2 = e3m2_fixed[i];
+			o_e3m2[i] = e3m2_fixed[i];
 		end
 	end
 
 	for (int i = 0; i < FIXED_OPS; i++) begin
 		if (fixed_mode) begin
-			o_fixed = fixed[i+E3M2_OPS];
+			o_fixed[i] = fixed[i+E3M2_OPS];
 		end else if (mxfp6_32_mode) begin
-			o_fixed = 'b0; // Zero out for E3M2 (8 OPS)
+			o_fixed[i] = 'b0; // Zero out for E3M2 (8 OPS)
 		end else begin
-			o_fixed = e2m3_fixed[i];
+			o_fixed[i] = e2m3_fixed[i];
 		end
 	end
 
 	for (int i = 0; i < E2M3_OPS; i++) begin
 		if (mxfp6_23_mode || mxfp4_mode) begin
-			o_e2m3 = e2m3_fixed[i+FIXED_OPS];
+			o_e2m3[i] = e2m3_fixed[i+FIXED_OPS];
 		end else begin
-			o_e2m3 = 'b0; // Zero out for E3M2 (8 OPS), and FIXED (10 OPS)
+			o_e2m3[i] = 'b0; // Zero out for E3M2 (8 OPS), and FIXED (10 OPS)
 		end
 	end
 
 
 	for (int i = 0; i < E2M1_OPS; i++) begin
 		if (mxfp4_mode) begin
-			o_e2m1 = e2m1_fixed[i];
+			o_e2m1[i] = e2m1_fixed[i];
 		end else begin
-			o_e2m1 = 'b0; // Zero out for E3M2 (8 OPS), FIXED (10 OPS), and E2M3 (11 OPS)
+			o_e2m1[i] = 'b0; // Zero out for E3M2 (8 OPS), FIXED (10 OPS), and E2M3 (11 OPS)
 		end
 	end
 end
