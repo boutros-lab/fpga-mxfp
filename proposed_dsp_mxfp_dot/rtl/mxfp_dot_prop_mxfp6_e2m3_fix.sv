@@ -1,6 +1,6 @@
 import pkg_aitb::*;
 
-module mxfp_dot_prop_mxfp6 #(
+module mxfp_dot_prop_mxfp6_e2m3_fix #(
     parameter mxfp_mode_e MODE = MXFP6_23,
     parameter bit IS_SIM = 1,
     // Latency of 1 AITB
