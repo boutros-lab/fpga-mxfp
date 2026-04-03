@@ -303,6 +303,110 @@ def check_transpose():
     return all_passed
 
 
+def fp32_bits_to_float(bits):
+    """Convert 32-bit integer (FP32 encoding) to Python float."""
+    return struct.unpack('>f', struct.pack('>I', bits & 0xFFFFFFFF))[0]
+
+
+def check_causal_mask():
+    N = int(get('N='))
+    tests = int(get('tests='))
+    NEG_INF = 0xFF800000
+
+    print(f"N: {N}")
+    print(f"tests: {tests}")
+
+    all_passed = True
+    for t in range(tests):
+        test_num = int(get('test='))
+
+        in_data = []
+        for row in range(N):
+            row_data = []
+            for col in range(N):
+                val_str = get(f'in[{row}][{col}]=')
+                row_data.append(int(val_str, 2))
+            in_data.append(row_data)
+
+        out_data = []
+        for row in range(N):
+            row_data = []
+            for col in range(N):
+                val_str = get(f'out[{row}][{col}]=')
+                row_data.append(int(val_str, 2))
+            out_data.append(row_data)
+
+        for row in range(N):
+            for col in range(N):
+                if col > row:
+                    expected = NEG_INF
+                else:
+                    expected = in_data[row][col]
+                if out_data[row][col] != expected:
+                    print(f"Test {test_num} FAILED: out[{row}][{col}]={out_data[row][col]:#010x} "
+                          f"expected={expected:#010x}")
+                    all_passed = False
+
+    return all_passed
+
+
+def check_softmax():
+    import math
+    import numpy as np
+    N = int(get('N='))
+    tests = int(get('tests='))
+
+    print(f"N: {N}")
+    print(f"tests: {tests}")
+
+    all_passed = True
+    for t in range(tests):
+        test_num = int(get('test='))
+
+        in_data = []
+        for row in range(N):
+            row_data = []
+            for col in range(N):
+                val_str = get(f'in[{row}][{col}]=')
+                row_data.append(int(val_str, 2))
+            in_data.append(row_data)
+
+        out_data = []
+        for row in range(N):
+            row_data = []
+            for col in range(N):
+                val_str = get(f'out[{row}][{col}]=')
+                row_data.append(int(val_str, 2))
+            out_data.append(row_data)
+
+        # Software reference: row-wise softmax in FP32 precision to match RTL
+        for row in range(N):
+            floats_in = np.array([fp32_bits_to_float(in_data[row][col]) for col in range(N)], dtype=np.float32)
+            mx = np.max(floats_in)
+            exps = np.exp((floats_in - mx).astype(np.float32)).astype(np.float32)
+            s = np.sum(exps).astype(np.float32)
+            if s == 0.0:
+                sw_softmax = np.zeros(N, dtype=np.float32)
+            else:
+                sw_softmax = (exps / s).astype(np.float32)
+
+            for col in range(N):
+                hw_val = fp32_bits_to_float(out_data[row][col])
+                sw_val = float(sw_softmax[col])
+                if sw_val == 0.0:
+                    if hw_val != 0.0:
+                        print(f"Test {test_num} FAILED: out[{row}][{col}] hw={hw_val} sw={sw_val}")
+                        all_passed = False
+                else:
+                    rel_err = abs(hw_val - sw_val) / abs(sw_val)
+                    if rel_err > 1e-3:
+                        print(f"Test {test_num} FAILED: out[{row}][{col}] hw={hw_val:.8e} sw={sw_val:.8e} "
+                              f"rel_err={rel_err:.2e}")
+                        all_passed = False
+
+    return all_passed
+
+
 if __name__ == "__main__":
 
     print("\nREADING RESULTS FROM TRANSCRIPT")
@@ -317,6 +421,10 @@ if __name__ == "__main__":
         all_passed = check_transpose()
     elif tag == 'fp32_to_mxfp':
         all_passed = check_fp32_to_mxfp()
+    elif tag == 'causal_mask':
+        all_passed = check_causal_mask()
+    elif tag == 'softmax':
+        all_passed = check_softmax()
     else:
         print(f"Unknown tag: {tag}")
         all_passed = False
