@@ -1,6 +1,6 @@
 module mxfp2fix #(
-	parameter M = 2,
-	parameter E = 1,
+	parameter E = 2,
+	parameter M = 1,
 	parameter FIX_OUT_WIDTH = (1 << E) + M
 ) (
 
