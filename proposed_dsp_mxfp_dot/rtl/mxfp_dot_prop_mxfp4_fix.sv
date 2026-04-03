@@ -31,6 +31,9 @@ module mxfp_dot_prop_mxfp4 #(
     localparam int STAGGER = 2;
     localparam int LAT = LAT_AITB + STAGGER;
 
+    // For mxfp2fix
+    localparam FIX_OUT_WIDTH = (1 << E) + M ;
+
     // Valid pipe
     logic [LAT-1:0] valid_pipe;
 
@@ -43,19 +46,32 @@ module mxfp_dot_prop_mxfp4 #(
     end
     assign valid_out_o = valid_pipe[LAT-1];
 
+    // Instantiate mxfp2fix
+    logic signed [FIX_OUT_WIDTH-1:0] fix_data [0:DOT_LEN-1];
+    logic [E_SHARED-1:0] adjusted_sh_exp;
+
+    mxfp2fix #(
+        .E(E),
+        .M(M),
+        .FIX_OUT_WIDTH(FIX_OUT_WIDTH)
+    ) u_mxfp2fix (
+        .i_mxfp(mx_data_in_i),
+        .i_sh_exp(shared_exponent_i),
+        .o_fix(fix_data),
+        .o_sh_exp(adjusted_sh_exp)
+    );
+
+    // Pack the fixed point (16 elements per AITB)
     logic [79:0] data_unpacked [0:NUM_AITBS-1];
-    // Unpack inputs
+
     genvar i;
     generate
-    for (i = 0; i < DOT_LEN; i++) begin : unpack
+    for (i = 0; i < DOT_LEN; i++) begin : pack_fix
         localparam int aitb_idx = i / 16;
         localparam int word_idx = i % 16;
-        assign data_unpacked[aitb_idx][word_idx*(M+E+1) +: (M+E+1)] = mx_data_in_i[i];
+        assign data_unpacked[aitb_idx][word_idx*FIX_OUT_WIDTH +: FIX_OUT_WIDTH] = fix_data[i];
     end
     endgenerate
-    // Zero out unused bits (16 words × 4 bits)
-    assign data_unpacked[0][79:64] = 16'b0;
-    assign data_unpacked[1][79:64] = 16'b0;
 
     // Delay inputs to bottom DSP
     logic [79:0]          data_bot_dly   [0:STAGGER-1];
@@ -71,7 +87,7 @@ module mxfp_dot_prop_mxfp4 #(
             end
         end else begin
             data_bot_dly[0]   <= data_unpacked[1];
-            sh_exp_bot_dly[0] <= shared_exponent_i;
+            sh_exp_bot_dly[0] <= adjusted_sh_exp;
             load_en_dly[0]    <= load_en_i;
             for (int s = 1; s < STAGGER; s++) begin
                 data_bot_dly[s]   <= data_bot_dly[s-1];
@@ -99,7 +115,7 @@ module mxfp_dot_prop_mxfp4 #(
         .zero_en_i(1'b0),
         .load_en_i(load_en_i),
         .data_i(data_unpacked[0]),
-        .shared_exponent_i(shared_exponent_i),
+        .shared_exponent_i(adjusted_sh_exp),
         .fp32_cascade_in_col1_i('0),
         .fp32_cascade_in_col2_i('0),
         .fp32_dot_out_col1_o(fp32_dot_out_col1_top),
