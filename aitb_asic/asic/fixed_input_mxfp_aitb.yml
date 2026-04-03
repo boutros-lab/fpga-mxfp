@@ -59,8 +59,8 @@ vlsi.inputs.placement_constraints:
     x: 0
     y: 0
     core_utilization: 0.9
-    width: 1000
-    height: 1000
+    width: 207
+    height: 207
     margins:
       left: 0
       right: 0

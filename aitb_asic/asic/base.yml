@@ -19,7 +19,7 @@ vlsi.inputs.power_spec_type: "cpf"
 
 # Specify clock signals
 vlsi.inputs.clocks: [
-  {name: "clk", period: "1ns", uncertainty: "0.1ns"}
+  {name: "clk", period: "2ns", uncertainty: "0.1ns"}
 ]
 
 # Synthesis options
@@ -28,25 +28,20 @@ synthesis.genus.genus_bin: "genus"
 synthesis.genus.genus_bin_meta: "lazysubst"
 synthesis.genus.version: "20.10.000_lnx86"
 synthesis.inputs.input_files: [
-#  "/home/aelsousy/hammer-starter/adder.vhd",
-#  "/home/aelsousy/hammer-starter/accumulator.v"
    "rtl/pkg_aitb.sv",
    "rtl/aitb_top.sv",
    "rtl/aitb_wrapper.sv",
-#   "rtl/altera_fp_aitb.sv",
    "rtl/dot.sv",
    "rtl/fix2fp32.sv",
    "rtl/in_reg_bank.sv",
    "rtl/input_preparation.sv",
-   "rtl/mxfp_dot.sv",
    "rtl/normalizer.sv",
    "rtl/pipeline.sv",
    "rtl/ieee_fp32_add.vhdl"
-
 ]
 synthesis.inputs.top_module: "aitb_top"
 synthesis.clock_gating_mode: "empty"
-synthesis.flatten_hierarchy: False
+synthesis.flatten_hierarchy: True
   
 # PaR options
 vlsi.core.par_tool: "hammer.par.innovus"
@@ -63,8 +58,8 @@ vlsi.inputs.placement_constraints:
     x: 0
     y: 0
     core_utilization: 0.9
-    width: 1000
-    height: 1000
+    width: 174
+    height: 174
     margins:
       left: 0
       right: 0

@@ -19,7 +19,7 @@ vlsi.inputs.power_spec_type: "cpf"
 
 # Specify clock signals
 vlsi.inputs.clocks: [
-  {name: "clk", period: "1ns", uncertainty: "0.1ns"}
+  {name: "clk", period: "2ns", uncertainty: "0.1ns"}
 ]
 
 # Synthesis options
@@ -65,8 +65,8 @@ vlsi.inputs.placement_constraints:
     x: 0
     y: 0
     core_utilization: 0.9
-    width: 1000
-    height: 1000
+    width: 242
+    height: 242
     margins:
       left: 0
       right: 0
