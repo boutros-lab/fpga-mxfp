@@ -7,7 +7,7 @@
 * 5 * 5
 *
 * Supports: E2M1 K16, E2M3 K11, K3M2 K8, E0M7 K10
-* Supports E4M3 K5 as FP format input
+* Supports E4M3 K5-8 as FP format input
 *
 * Expects fixed point two's complement input
 */
@@ -63,7 +63,8 @@ localparam FIXED_RESULT_WIDTH = (2 * FIXED_INPUT_WIDTH) + $clog2(FIXED_OPS);
 localparam E2M3_RESULT_WIDTH  = (2 * E2M3_INPUT_WIDTH) + $clog2(E2M3_OPS);
 localparam E2M1_RESULT_WIDTH  = (2 * E2M1_INPUT_WIDTH) + $clog2(E2M1_OPS);
 
-localparam E2M1_PROD_WIDTH = 2 * E2M1_INPUT_WIDTH;
+localparam E2M1_PROD_WIDTH  = 2 * E2M1_INPUT_WIDTH;
+localparam FIXED_PROD_WIDTH = 2 * FIXED_INPUT_WIDTH;
 
 logic e4m3_mode;
 
@@ -79,8 +80,9 @@ logic signed [E4M3_RESULT_WIDTH-1:0]  e4m3_dot_result;
 logic signed [E3M2_RESULT_WIDTH-1:0] fixed_input_sum;
 
 // E4M3 and E2M1 Products
-logic signed [E2M1_PROD_WIDTH-1:0] e2m1_prod [E2M1_OPS];
-logic signed [E4M3_PROD_WIDTH-1:0] e4m3_prod [E4M3_OPS];
+logic signed [FIXED_PROD_WIDTH-1:0] fixed_prod [FIXED_OPS];
+logic signed [E2M1_PROD_WIDTH-1:0]  e2m1_prod  [E2M1_OPS];
+logic signed [E4M3_PROD_WIDTH-1:0]  e4m3_prod  [E4M3_OPS];
 
 // Instantiate dot modules for the individual input formats
 dot #(
@@ -92,18 +94,42 @@ dot #(
 	.dot_out(e3m2_dot_result)
 );
 
-dot #(
-	.INPUT_WIDTH(FIXED_INPUT_WIDTH),
-	.DOT_LENGTH(FIXED_OPS)
-) u_fixed_dot (
-	.data_in(i_fixed_a),
-	.w_reg(i_fixed_b),
-	.dot_out(fixed_dot_result)
-);
-
-// For E2M1, E2M3, Share multipliers with FP MULT E4M3
+// For E2M1, E2M3, FIXED, Share multipliers with FP MULT E4M3
 // Expect E4M3 to be encoded on i_e3m2_* inputs
 generate
+	if (E4M3_OPS > (E2M1_OPS + E2M3_OPS)) begin
+		for (genvar i = 0; i < FIXED_OPS; i++) begin : fixed_mults
+			mxfp_multiply_dual #(
+				.FIXED_WIDTH(FIXED_INPUT_WIDTH)
+			) u_mxfp_multiply_dual_fixed (
+				.i_mxfp_mode(e4m3_mode),
+				.i_mxfp_a(i_e3m2_a[i+E2M1_OPS+E2M3_OPS][7:0]),
+				.i_mxfp_b(i_e3m2_b[i+E2M1_OPS+E2M3_OPS][7:0]),
+				.i_fixed_a(i_fixed_a[i]),
+				.i_fixed_b(i_fixed_b[i]),
+				.o_prod(fixed_prod[i]),
+				.o_prod_shifted(e4m3_prod[i+E2M1_OPS+E2M3_OPS])
+			);
+		end
+
+		always_comb begin
+			fixed_dot_result = 'b0;
+
+			for(int i = 0; i < FIXED_OPS; i++) begin
+				fixed_dot_result += fixed_prod[i];
+			end
+		end
+	end else begin
+		dot #(
+			.INPUT_WIDTH(FIXED_INPUT_WIDTH),
+			.DOT_LENGTH(FIXED_OPS)
+		) u_fixed_dot (
+			.data_in(i_fixed_a),
+			.w_reg(i_fixed_b),
+			.dot_out(fixed_dot_result)
+		);
+	end
+
 	if (E4M3_OPS > E2M1_OPS) begin
 		mxfp_multiply_dual #(
 			.FIXED_WIDTH(E2M3_INPUT_WIDTH)
