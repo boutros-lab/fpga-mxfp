@@ -6,6 +6,7 @@ module mxfp_dot_proposed #(
     parameter mxfp_mode_e MODE = MXFP4,
     parameter bit IS_SIM = 1,
 	parameter bit IS_DOT6 = 1,
+	parameter bit IS_DOT4 = 1,
 	parameter E = 2,
     parameter M = 1,
 	parameter E_SHARED = 8,
@@ -50,8 +51,8 @@ module mxfp_dot_proposed #(
 				.fp32_flags_col2_o(fp32_flags_col2_o)
 			);
 		end
-		else if (MODE == MXFP6_23) begin
-			mxfp_dot_prop_mxfp6_e2m3_fix #(
+		else if ((MODE == MXFP6_23) || (MODE == MXFP6_32)) begin
+			mxfp_dot_prop_mxfp6 #(
 				.MODE(MODE),
 				.IS_SIM(IS_SIM),
 				.E(E),
@@ -74,7 +75,7 @@ module mxfp_dot_proposed #(
 				.fp32_flags_col2_o(fp32_flags_col2_o)
 			);
 		end
-		else if (MODE == MXFP6_32) begin
+		/*else if (MODE == MXFP6_32) begin
 			mxfp_dot_prop_mxfp6_e3m2_fix #(
 				.MODE(MODE),
 				.IS_SIM(IS_SIM),
@@ -97,11 +98,12 @@ module mxfp_dot_proposed #(
 				.fp32_flags_col1_o(fp32_flags_col1_o),
 				.fp32_flags_col2_o(fp32_flags_col2_o)
 			);
-		end
+		end*/
 		// E5M2 no longer supported
-		else if (MODE == MXFP8_43) begin
-			if (IS_DOT6) begin
-				mxfp_dot_prop_mxfp8_dot6aitb #(
+		else if ((MODE == MXFP8_43) || (MODE == MXFP8_52)) begin
+			if (!IS_DOT4) begin
+				// DOT8
+				mxfp_dot_prop_mxfp8 #(
 					.MODE(MODE),
 					.IS_SIM(IS_SIM),
 					.E(E),
@@ -124,8 +126,9 @@ module mxfp_dot_proposed #(
 					.fp32_flags_col2_o(fp32_flags_col2_o)
 				);
 			end
+			// IS_DOT4
 			else begin
-				mxfp_dot_prop_mxfp8_dot5aitb #(
+				mxfp_dot_prop_mxfp8_dot4aitb #(
 					.MODE(MODE),
 					.IS_SIM(IS_SIM),
 					.E(E),
