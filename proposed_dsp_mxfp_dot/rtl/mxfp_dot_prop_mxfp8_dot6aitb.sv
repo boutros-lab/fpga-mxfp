@@ -25,9 +25,9 @@ module mxfp_dot_prop_mxfp8_dot6aitb #(
 	output logic [3:0] fp32_flags_col2_o
 );
 
-    // 4 AITBs, each support 8 inputs.
-    localparam int NUM_AITBS = 4;
-    localparam int ELEMS_PER_AITB = 8;
+    // 6 AITBs, each support 6 inputs.
+    localparam int NUM_AITBS = 6;
+    localparam int ELEMS_PER_AITB = 6;
     localparam int DATA_W = M + E + 1;
 
     // Each DSP needs its inputs delayed by 2 cycles compared to the one above
@@ -51,7 +51,7 @@ module mxfp_dot_prop_mxfp8_dot6aitb #(
 
     logic [79:0] data_unpacked [0:NUM_AITBS-1];
     // Unpack inputs
-    // All AITBs will operate on 8 elements
+    // All AITBs will operate on 6 elements, except the last one (2)
     genvar i;
     generate
     for (i = 0; i < DOT_LEN; i++) begin : unpack
@@ -67,10 +67,12 @@ module mxfp_dot_prop_mxfp8_dot6aitb #(
     end
     endgenerate
 
-    // Delay inputs to middle and bottom DSPs
+    // Delay inputs to staggered DSPs
     localparam int MID1_DELAY = STAGGER;
     localparam int MID2_DELAY = 2 * STAGGER;
-    localparam int BOT_DELAY  = 3 * STAGGER;
+    localparam int MID3_DELAY = 3 * STAGGER;
+    localparam int MID4_DELAY = 4 * STAGGER;
+    localparam int BOT_DELAY  = 5 * STAGGER;
     
     // Mid1 delay line (2 cycles)
     logic [79:0]          data_mid1_dly   [0:MID1_DELAY-1];
@@ -120,7 +122,55 @@ module mxfp_dot_prop_mxfp8_dot6aitb #(
         end
     end
 
-    // Bot delay line (6 cycles)
+    // Mid3 delay line (6 cycles)
+    logic [79:0]          data_mid3_dly   [0:MID3_DELAY-1];
+    logic [E_SHARED-1:0]  sh_exp_mid3_dly [0:MID3_DELAY-1];
+    logic                 load_en_mid3_dly[0:MID3_DELAY-1];
+
+    always_ff @(posedge clk) begin
+        if (rst) begin
+            for (int s = 0; s < MID3_DELAY; s++) begin
+                data_mid3_dly[s]    <= '0;
+                sh_exp_mid3_dly[s]  <= '0;
+                load_en_mid3_dly[s] <= 1'b0;
+            end
+        end else begin
+            data_mid3_dly[0]    <= data_unpacked[3];
+            sh_exp_mid3_dly[0]  <= shared_exponent_i;
+            load_en_mid3_dly[0] <= load_en_i;
+            for (int s = 1; s < MID3_DELAY; s++) begin
+                data_mid3_dly[s]    <= data_mid3_dly[s-1];
+                sh_exp_mid3_dly[s]  <= sh_exp_mid3_dly[s-1];
+                load_en_mid3_dly[s] <= load_en_mid3_dly[s-1];
+            end
+        end
+    end
+
+    // Mid4 delay line (8 cycles)
+    logic [79:0]          data_mid4_dly   [0:MID4_DELAY-1];
+    logic [E_SHARED-1:0]  sh_exp_mid4_dly [0:MID4_DELAY-1];
+    logic                 load_en_mid4_dly[0:MID4_DELAY-1];
+
+    always_ff @(posedge clk) begin
+        if (rst) begin
+            for (int s = 0; s < MID4_DELAY; s++) begin
+                data_mid4_dly[s]    <= '0;
+                sh_exp_mid4_dly[s]  <= '0;
+                load_en_mid4_dly[s] <= 1'b0;
+            end
+        end else begin
+            data_mid4_dly[0]    <= data_unpacked[4];
+            sh_exp_mid4_dly[0]  <= shared_exponent_i;
+            load_en_mid4_dly[0] <= load_en_i;
+            for (int s = 1; s < MID4_DELAY; s++) begin
+                data_mid4_dly[s]    <= data_mid4_dly[s-1];
+                sh_exp_mid4_dly[s]  <= sh_exp_mid4_dly[s-1];
+                load_en_mid4_dly[s] <= load_en_mid4_dly[s-1];
+            end
+        end
+    end
+
+    // Bot delay line (10 cycles)
     logic [79:0]          data_bot_dly   [0:BOT_DELAY-1];
     logic [E_SHARED-1:0]  sh_exp_bot_dly [0:BOT_DELAY-1];
     logic                 load_en_bot_dly[0:BOT_DELAY-1];
@@ -133,7 +183,7 @@ module mxfp_dot_prop_mxfp8_dot6aitb #(
                 load_en_bot_dly[s] <= 1'b0;
             end
         end else begin
-            data_bot_dly[0]    <= data_unpacked[3];
+            data_bot_dly[0]    <= data_unpacked[5];
             sh_exp_bot_dly[0]  <= shared_exponent_i;
             load_en_bot_dly[0] <= load_en_i;
             for (int s = 1; s < BOT_DELAY; s++) begin
@@ -232,6 +282,64 @@ module mxfp_dot_prop_mxfp8_dot6aitb #(
         .fp32_flags_col2_o(fp32_flags_col2_mid2)
     );
     
+    // Mid3 PE
+    logic [31:0] fp32_dot_out_col1_mid3;
+    logic [31:0] fp32_dot_out_col2_mid3;
+    logic [31:0] fp32_cascade_out_col1_mid3;
+    logic [31:0] fp32_cascade_out_col2_mid3;
+    logic [3:0]  fp32_flags_col1_mid3;
+    logic [3:0]  fp32_flags_col2_mid3;
+
+    fp_aitb_proposed #(
+        .MODE(MODE),
+        .IS_SIM(IS_SIM)
+    ) aitb_mid3 (
+        .clk(clk),
+        .rst(rst),
+        .acc_en_i(1'b0),
+        .zero_en_i(1'b0),
+        .load_en_i(load_en_mid3_dly[MID3_DELAY-1]),
+        .data_i(data_mid3_dly[MID3_DELAY-1]),
+        .shared_exponent_i(sh_exp_mid3_dly[MID3_DELAY-1]),
+        .fp32_cascade_in_col1_i(fp32_cascade_out_col1_mid2),
+        .fp32_cascade_in_col2_i(fp32_cascade_out_col2_mid2),
+        .fp32_dot_out_col1_o(fp32_dot_out_col1_mid3),
+        .fp32_dot_out_col2_o(fp32_dot_out_col2_mid3),
+        .fp32_cascade_out_col1_o(fp32_cascade_out_col1_mid3),
+        .fp32_cascade_out_col2_o(fp32_cascade_out_col2_mid3),
+        .fp32_flags_col1_o(fp32_flags_col1_mid3),
+        .fp32_flags_col2_o(fp32_flags_col2_mid3)
+    );
+
+    // Mid4 PE
+    logic [31:0] fp32_dot_out_col1_mid4;
+    logic [31:0] fp32_dot_out_col2_mid4;
+    logic [31:0] fp32_cascade_out_col1_mid4;
+    logic [31:0] fp32_cascade_out_col2_mid4;
+    logic [3:0]  fp32_flags_col1_mid4;
+    logic [3:0]  fp32_flags_col2_mid4;
+
+    fp_aitb_proposed #(
+        .MODE(MODE),
+        .IS_SIM(IS_SIM)
+    ) aitb_mid4 (
+        .clk(clk),
+        .rst(rst),
+        .acc_en_i(1'b0),
+        .zero_en_i(1'b0),
+        .load_en_i(load_en_mid4_dly[MID4_DELAY-1]),
+        .data_i(data_mid4_dly[MID4_DELAY-1]),
+        .shared_exponent_i(sh_exp_mid4_dly[MID4_DELAY-1]),
+        .fp32_cascade_in_col1_i(fp32_cascade_out_col1_mid3),
+        .fp32_cascade_in_col2_i(fp32_cascade_out_col2_mid3),
+        .fp32_dot_out_col1_o(fp32_dot_out_col1_mid4),
+        .fp32_dot_out_col2_o(fp32_dot_out_col2_mid4),
+        .fp32_cascade_out_col1_o(fp32_cascade_out_col1_mid4),
+        .fp32_cascade_out_col2_o(fp32_cascade_out_col2_mid4),
+        .fp32_flags_col1_o(fp32_flags_col1_mid4),
+        .fp32_flags_col2_o(fp32_flags_col2_mid4)
+    );
+
     // Bot PE
     logic [31:0] fp32_dot_out_col1_bot;
     logic [31:0] fp32_dot_out_col2_bot;
@@ -252,8 +360,8 @@ module mxfp_dot_prop_mxfp8_dot6aitb #(
         .load_en_i(load_en_bot_dly[BOT_DELAY-1]),
         .data_i(data_bot_dly[BOT_DELAY-1]),
         .shared_exponent_i(sh_exp_bot_dly[BOT_DELAY-1]),
-        .fp32_cascade_in_col1_i(fp32_cascade_out_col1_mid2),
-        .fp32_cascade_in_col2_i(fp32_cascade_out_col2_mid2),
+        .fp32_cascade_in_col1_i(fp32_cascade_out_col1_mid4),
+        .fp32_cascade_in_col2_i(fp32_cascade_out_col2_mid4),
         .fp32_dot_out_col1_o(fp32_dot_out_col1_bot),
         .fp32_dot_out_col2_o(fp32_dot_out_col2_bot),
         .fp32_cascade_out_col1_o(fp32_cascade_out_col1_bot),
