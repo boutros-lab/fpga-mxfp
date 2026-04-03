@@ -49,8 +49,8 @@ module mxfp_dot_proposed #(
 				.fp32_flags_col2_o(fp32_flags_col2_o)
 			);
 		end
-		else if ((MODE == MXFP6_23) || (MODE == MXFP6_32)) begin
-			mxfp_dot_prop_mxfp6 #(
+		else if (MODE == MXFP6_23) begin
+			mxfp_dot_prop_mxfp6_e2m3_fix #(
 				.MODE(MODE),
 				.IS_SIM(IS_SIM),
 				.E(E),
@@ -59,7 +59,31 @@ module mxfp_dot_proposed #(
 				.FP_BIAS(FP_BIAS),
 				.SH_BIAS(SH_BIAS),
 				.DOT_LEN(DOT_LEN)
-			) dot_inst(
+			) dot_inst (
+				.clk(clk),
+				.rst(rst),
+				.load_en_i(load_en_i),
+				.valid_en_i(valid_en_i),
+				.mx_data_in_i(mx_data_in_i),
+				.shared_exponent_i(shared_exponent_i),
+				.fp32_dot_out_col1_o(fp32_dot_out_col1_o),
+				.fp32_dot_out_col2_o(fp32_dot_out_col2_o),
+				.valid_out_o(valid_out_o),
+				.fp32_flags_col1_o(fp32_flags_col1_o),
+				.fp32_flags_col2_o(fp32_flags_col2_o)
+			);
+		end
+		else if (MODE == MXFP6_32) begin
+			mxfp_dot_prop_mxfp6_e3m2_fix #(
+				.MODE(MODE),
+				.IS_SIM(IS_SIM),
+				.E(E),
+				.M(M),
+				.E_SHARED(E_SHARED),
+				.FP_BIAS(FP_BIAS),
+				.SH_BIAS(SH_BIAS),
+				.DOT_LEN(DOT_LEN)
+			) dot_inst (
 				.clk(clk),
 				.rst(rst),
 				.load_en_i(load_en_i),
