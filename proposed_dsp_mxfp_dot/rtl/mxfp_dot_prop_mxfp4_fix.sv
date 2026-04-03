@@ -1,6 +1,6 @@
 import pkg_aitb::*;
 
-module mxfp_dot_prop_mxfp4 #(
+module mxfp_dot_prop_mxfp4_fix #(
     parameter mxfp_mode_e MODE = MXFP4,
     parameter bit IS_SIM = 1,
     // Latency of 1 AITB
@@ -107,17 +107,18 @@ module mxfp_dot_prop_mxfp4 #(
     // Top of the chain PE
     fp_aitb_proposed #(
         .MODE(MODE),
-        .IS_SIM(IS_SIM)
+        .IS_SIM(IS_SIM),
+        .CHAIN_MODE("zero_tensor_chain_output")
     ) aitb_top (
         .clk(clk),
         .rst(rst),
         .acc_en_i(1'b0),
-        .zero_en_i(1'b0),
+        .zero_en_i(1'b1),
         .load_en_i(load_en_i),
         .data_i(data_unpacked[0]),
         .shared_exponent_i(adjusted_sh_exp),
-        .fp32_cascade_in_col1_i('0),
-        .fp32_cascade_in_col2_i('0),
+        //.fp32_cascade_in_col1_i('0),
+        //.fp32_cascade_in_col2_i('0),
         .fp32_dot_out_col1_o(fp32_dot_out_col1_top),
         .fp32_dot_out_col2_o(fp32_dot_out_col2_top),
         .fp32_cascade_out_col1_o(fp32_cascade_out_col1_top),
