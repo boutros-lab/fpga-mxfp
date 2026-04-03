@@ -26,7 +26,7 @@ module mxfp_dot_proposed #(
 );
     generate
 		if (MODE == MXFP4) begin
-			mxfp_dot_prop_mxfp4 #(
+			mxfp_dot_prop_mxfp4_fix #(
 				.MODE(MODE),
 				.IS_SIM(IS_SIM),
 				.E(E),
