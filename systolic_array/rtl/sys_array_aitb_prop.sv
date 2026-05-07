@@ -7,10 +7,12 @@ import pkg_aitb::*;
 // 4) If doing E4M3, need to specify whether an AITB can support DOT6 or DOT5 (IS_DOT6 param)
 
 module sys_array_aitb_prop #(
-    parameter mxfp_mode_e MODE = MXFP4,
+//   parameter mxfp_mode_e MODE = mxfp_mode_e'(MODE_INT),
+    parameter MODE_INT = 0,
     parameter bit IS_SIM = 1,
     // If AITB supports DOT6 set to 1, if not (DOT5) set to 0
     parameter bit IS_DOT6 = 1,
+    parameter bit IS_DOT4 = 1,
     // Size of the array (NxN)
     parameter N = 2,
     // Number format params
@@ -49,6 +51,7 @@ module sys_array_aitb_prop #(
     output [3:0] fp32_flags_col2_o [0:N-1][0:N-1]
 );
     
+	localparam mxfp_mode_e MODE = mxfp_mode_e'(MODE_INT);
     // Load enable pipeline needed too
     // load_en asserted 1 cycle before "column 2" weights are presented
     // load_en stays high when "column 2" weights presented
@@ -186,6 +189,7 @@ module sys_array_aitb_prop #(
                     .MODE(MODE),
                     .IS_SIM(IS_SIM),
                     .IS_DOT6(IS_DOT6),
+                    .IS_DOT4(IS_DOT4),
                     .M(MAN_W),
                     .E(EXP_W),
                     .E_SHARED(SHARED_EXP_W),

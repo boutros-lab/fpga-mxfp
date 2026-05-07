@@ -3,7 +3,8 @@ import pkg_aitb::*;
 // aitb_asic/rtl/mxfp_aitb/naive_mxfp_aitb_top.sv
 
 module mxfp_dot_proposed #(
-    parameter mxfp_mode_e MODE = MXFP4,
+//    parameter mxfp_mode_e MODE = MXFP4,
+    parameter MODE_INT = 0,
     parameter bit IS_SIM = 1,
 	parameter bit IS_DOT6 = 1,
 	parameter bit IS_DOT4 = 1,
@@ -26,9 +27,11 @@ module mxfp_dot_proposed #(
 	output logic [3:0] fp32_flags_col1_o,
 	output logic [3:0] fp32_flags_col2_o
 );
+
+	localparam mxfp_mode_e MODE = mxfp_mode_e'(MODE_INT);
     generate
 		if (MODE == MXFP4) begin
-			mxfp_dot_prop_mxfp4_fix #(
+			mxfp_dot_prop_mxfp4 #(
 				.MODE(MODE),
 				.IS_SIM(IS_SIM),
 				.E(E),

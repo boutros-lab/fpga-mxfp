@@ -13,6 +13,8 @@ set DEVICE     "A5EC065BB32AE4S"
 set SDC_FILE   [file join $ROOT cons sys_array_aitb.sdc]
 set EXP_WIDTH  [lindex $argv 2]
 set MAN_WIDTH  [lindex $argv 3]
+set ARR_SIZE   [lindex $argv 4] 
+
 
 if {[project_exists $PROJ]} {
     project_open -revision $REV $PROJ
@@ -25,8 +27,8 @@ set_global_assignment -name FAMILY $FAMILY
 set_global_assignment -name DEVICE $DEVICE
 
 # Set Quartus Version
-set_global_assignment -name ORIGINAL_QUARTUS_VERSION 24.2.0
-set_global_assignment -name LAST_QUARTUS_VERSION "24.2.0 Pro Edition"
+set_global_assignment -name ORIGINAL_QUARTUS_VERSION 25.3.0
+set_global_assignment -name LAST_QUARTUS_VERSION "25.3.0 Pro Edition"
 # Get Verilog files and SDC file
 set PACKED_MUL [file join $ROOT .. packed_multiplier]
 set AITB_RTL   [file join $ROOT .. ai_tensor_block rtl]
@@ -39,7 +41,7 @@ set_global_assignment -name SYSTEMVERILOG_FILE [file normalize [file join $PACKE
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize [file join $PACKED_MUL DSP_2x18x18.sv]]
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize [file join $PACKED_MUL reduction.sv]]
 # NOTE: stuck for this parameter assignment. Must only compile one at a time for correct functionning
-set_global_assignment -name VHDL_FILE [file normalize [file join $PACKED_MUL flopoco_fx2fp_pipelined mxfp_e4m3_to_fp32.vhdl]]
+set_global_assignment -name VHDL_FILE [file normalize [file join $PACKED_MUL flopoco_fx2fp_pipelined mxfp_e${EXP_WIDTH}m${MAN_WIDTH}_to_fp32.vhdl]]
 # "../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e5m2_to_fp32.vhdl"
 # "../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e3m2_to_fp32.vhdl"
 # "../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e2m1_to_fp32.vhdl"
@@ -52,7 +54,7 @@ set_global_assignment -name SDC_FILE [file normalize $SDC_FILE]
 # Set number of processors and top design
 set_global_assignment -name TOP_LEVEL_ENTITY sys_array_packed_mult
 set_global_assignment -name NUM_PARALLEL_PROCESSORS 24
-set_global_assignment -name PROJECT_OUTPUT_DIRECTORY "output_files_E${EXP_WIDTH}_M${MAN_WIDTH}"
+set_global_assignment -name PROJECT_OUTPUT_DIRECTORY "output_files_packed_E${EXP_WIDTH}_M${MAN_WIDTH}_N${ARR_SIZE}"
 
 # Set virtual pins
 set_instance_assignment -name VIRTUAL_PIN ON -to rst -entity sys_array_packed_mult
@@ -68,6 +70,7 @@ set_instance_assignment -name VIRTUAL_PIN ON -to valid_o -entity sys_array_packe
 # Set parameters
 set_parameter -name MAN_W    $MAN_WIDTH
 set_parameter -name EXP_W    $EXP_WIDTH
+set_parameter -name N        $ARR_SIZE
 
 # Other Assignments
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
