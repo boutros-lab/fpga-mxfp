@@ -12,8 +12,6 @@ syn242aitb:
 	quartus_sh -t syn/setup_24_2_aitb.tcl mxfp_dot_cli aitb_E$E_M$M_N$N $E $M $N
 	quartus_sh -t syn/syn_24_2.tcl mxfp_dot_cli build_24_2 aitb_E$E_M$M_N$N
 
-# Hardcoded exp and man since it requires different module to be compiled.
-# just to test it passes the flow
 syn242packed:
 	quartus_sh -t syn/setup_24_2_packed.tcl mxfp_dot_cli packed_E$E_M$M_N$N $E $M $N
 	quartus_sh -t syn/syn_24_2.tcl mxfp_dot_cli build_24_2 packed_E$E_M$M_N$N 
