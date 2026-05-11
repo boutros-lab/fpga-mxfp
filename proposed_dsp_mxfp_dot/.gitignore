@@ -13,3 +13,4 @@ simv.daidir
 inter.vpd
 ucli.key
 .restartSimSession.tcl.old
+mxfp_dot_proposed_tb.tcl
