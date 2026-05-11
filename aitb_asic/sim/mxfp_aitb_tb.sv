@@ -11,6 +11,7 @@ module mxfp_aitb_tb();
 
 localparam CLK_PERIOD  = 2;   // Clock period in ns
 localparam TEST_LENGTH = `TESTS;
+localparam FIXED_INPUTS = `FIXED_INPUTS && !((`EXP_WIDTH == 4) && (`MAN_WIDTH == 3));
 
 // DUT signals
 logic clk;
@@ -32,6 +33,16 @@ initial begin
 	forever #(CLK_PERIOD/2) clk = ~clk;
 end
 
+// Parameters
+localparam exp_width = `EXP_WIDTH;
+localparam man_width = `MAN_WIDTH;
+localparam exp_bias  = 2 ** (exp_width - 1) - 1;
+localparam k         = `K;
+localparam bit_width = 1 + exp_width + man_width;
+
+localparam mxfp_fixed_width   = (1 << exp_width) + man_width;
+localparam flat_element_width = FIXED_INPUTS ? mxfp_fixed_width : bit_width;
+
 // Functions
 function real geterror(input real dut_fp32, input real ref_fp32);
 	real error;
@@ -45,16 +56,26 @@ function real geterror(input real dut_fp32, input real ref_fp32);
 	return error;
 endfunction
 
+function automatic logic signed [mxfp_fixed_width-1:0] fix2float (
+	input logic [bit_width-1:0] float
+);
+	logic        [mxfp_fixed_width-2:0] u_fixed;
+	logic signed [mxfp_fixed_width-1:0] fixed;
+
+	localparam exp_width_n0 = exp_width + (exp_width == 0); // Avoid error
+
+	u_fixed = float == 'b0 ? 'b0 
+			       : {|float[man_width+:exp_width_n0], float[0+:man_width]} << (float[man_width+:exp_width_n0] - |float[man_width+:exp_width_n0]);
+	
+	fixed = float[man_width+exp_width] ? -u_fixed
+					   : u_fixed;
+	
+	return exp_width == 0 ? float : fixed;
+endfunction
+
 let max(a, b) = (a > b) ? a : b;
 
 // Get generated data
-//    Parameters
-localparam exp_width = `EXP_WIDTH;
-localparam man_width = `MAN_WIDTH;
-localparam exp_bias  = 2 ** (exp_width - 1) - 1;
-localparam k         = `K;
-localparam bit_width = 1 + exp_width + man_width;
-
 logic [bit_width-1:0] vector_a[TEST_LENGTH][k];
 logic [bit_width-1:0] vector_b[TEST_LENGTH][k]; // Common for all vectors
 
@@ -169,7 +190,8 @@ initial begin
 	i_data_flat = 80'b0;
 
 	for (i = 0; i < k; i++) begin
-		i_data_flat[i*bit_width+:bit_width] = vector_b[0][i];
+		i_data_flat[i*flat_element_width+:flat_element_width] = FIXED_INPUTS ? fix2float(vector_b[0][i]) 
+										     : vector_b[0][i];
 	end
 
 	i_sh_exp = shared_exp_b[0];
@@ -181,7 +203,8 @@ initial begin
 	i_data_flat = 80'b0;
 
 	for (i = 0; i < k; i++) begin
-		i_data_flat[i*bit_width+:bit_width] = vector_b[0][i];
+		i_data_flat[i*flat_element_width+:flat_element_width] = FIXED_INPUTS ? fix2float(vector_b[0][i]) 
+										     : vector_b[0][i];
 	end
 
 	i_sh_exp = shared_exp_b[0];
@@ -198,7 +221,9 @@ initial begin
 		i_data_flat = 80'b0;
 
 		for (j = 0; j < k; j++) begin
-			i_data_flat[j*bit_width+:bit_width] = vector_a[i][j];
+			i_data_flat[j*flat_element_width+:flat_element_width] = FIXED_INPUTS ? fix2float(vector_a[i][j]) 
+											     : vector_a[i][j];
+
 		end
 
 		i_sh_exp = shared_exp_a[i];

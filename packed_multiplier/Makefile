@@ -21,6 +21,8 @@ synth:
 	quartus_sh --set DEVICE=A5EC065BB32AE4S $(DUT)
 	quartus_sh --set VHDL_FILE=$(FLOPOCO_VHDL) $(DUT)
 	echo 'set_instance_assignment -name VIRTUAL_PIN ON -to *' >> $(DUT).qsf
+	echo 'set_parameter -name exponent_width $(E)' >> $(DUT).qsf
+	echo 'set_parameter -name mantissa_width $(M)' >> $(DUT).qsf
 	quartus_sh --flow compile $(DUT)
 
 clean:

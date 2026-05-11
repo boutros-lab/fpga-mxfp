@@ -76,7 +76,10 @@ always_ff @(posedge clk) begin
         automatic shortreal s = $bitstoshortreal(s3_row_sum[i]);
         for (int j = 0; j < N; j++) begin
             automatic shortreal e = $bitstoshortreal(s3_exp[i][j]);
-            out_data[i][j] <= $shortrealtobits(e / s);
+            if (s == 0.0)
+                out_data[i][j] <= 32'b0;
+            else
+                out_data[i][j] <= $shortrealtobits(e / s);
         end
     end
 end
