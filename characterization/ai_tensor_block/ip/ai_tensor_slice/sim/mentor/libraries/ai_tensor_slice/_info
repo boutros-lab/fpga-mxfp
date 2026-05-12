@@ -1,0 +1,54 @@
+m255
+K4
+z2
+!s12c _opt
+Z0 !s99 nomlopt
+!s11f vlog 2025.2 2025.05, May 31 2025
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z1 d/home/aelsousy/ece722_proj/ip/ai_tensor_slice/sim/mentor
+T_opt
+!i145 1
+!i144 0
+!s110 1763567453
+V8hz^J2PO7<0[DS5UfN21C0
+04 15 4 work ai_tensor_slice fast 0
+=1-4845e6ee7425-691de75d-1df45-225c47
+R0
+!s12f OEM100
+!s12b OEM100
+!s124 OEM25U2 
+!s135 nogc
+o-quiet -auto_acc_if_foreign -work ai_tensor_slice -L work -L work_lib -L lpm_ver -L sgate_ver -L altera_ver -L altera_mf_ver -L altera_lnsim_ver -L tennm_ver -L tennm_sm_hps_ver -L tennm_sm4_hssi_ver -L tennm_revb_hvio_ver -L tennm_revb_io96_ver -L agilex_native_tensor_dsp_100 -L ai_tensor_slice
+Z2 tCvgOpt 0
+n@_opt
+OL;O;2025.2;82
+vai_tensor_slice
+2../ai_tensor_slice.v
+DXx6 sv_std 3 std 0 22 @5XbY]_OacJl=`ToSm<M^0
+!s110 1763567452
+!i10b 1
+!s100 dL<ajYH4NZc^]JAD@cZzP3
+I7=dZeVzW`Q8adXaaJCo8Q0
+S1
+R1
+w1763426603
+8../ai_tensor_slice.v
+F../ai_tensor_slice.v
+!i122 0
+L0 6 49
+VDg1SIo80bB@j0V0VzS_@n1
+OL;L;2025.2;82
+r1
+!s85 0
+31
+!s108 1763567452.000000
+!s107 ../ai_tensor_slice.v|
+!s90 -sv|-suppress|13338|../ai_tensor_slice.v|-work|./libraries/ai_tensor_slice|-statslog|./libraries/stats_log|-csession=incr|-csessiondir|./libraries/sessions|
+!i113 0
+o-suppress 13338 -sv -work ./libraries/ai_tensor_slice -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+R2

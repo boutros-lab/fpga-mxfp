@@ -1,0 +1,44 @@
+set_global_assignment -entity "aitb_no_chain_in" -library "aitb_no_chain_in" -name IP_TOOL_NAME "QsysPrimePro"
+set_global_assignment -entity "aitb_no_chain_in" -library "aitb_no_chain_in" -name IP_TOOL_VERSION "25.3"
+set_global_assignment -entity "aitb_no_chain_in" -library "aitb_no_chain_in" -name IP_TOOL_ENV "QsysPrimePro"
+set_global_assignment -entity "aitb_no_chain_in" -library "aitb_no_chain_in" -name IP_TOOL_VENDOR_NAME "Altera Corporation"
+set_global_assignment -entity "aitb_no_chain_in" -library "aitb_no_chain_in" -name IP_TOP_LEVEL_COMPONENT_NAME "agilex_native_tensor_dsp"
+set_global_assignment -entity "aitb_no_chain_in" -library "aitb_no_chain_in" -name PRE_COMPILED_MODULE "ON"
+set_global_assignment -entity "aitb_no_chain_in" -library "aitb_no_chain_in" -name OCS_IP_FILE [file join $::quartus(qip_path) "../aitb_no_chain_in.ip"]
+set_global_assignment -entity "aitb_no_chain_in" -library "aitb_no_chain_in" -name OCS_IP_TYPE "agilex_native_tensor_dsp"
+set_global_assignment -entity "aitb_no_chain_in" -library "aitb_no_chain_in" -name OCS_IP_VERSION "1.0.0"
+set_global_assignment -entity "aitb_no_chain_in" -library "aitb_no_chain_in" -name OCS_IP_HASH "wg5iiha"
+set_global_assignment -library "aitb_no_chain_in" -name SOPCINFO_FILE [file join $::quartus(qip_path) "aitb_no_chain_in.sopcinfo"]
+set_global_assignment -entity "aitb_no_chain_in" -library "aitb_no_chain_in" -name SLD_INFO "QSYS_NAME aitb_no_chain_in HAS_SOPCINFO 1 GENERATION_ID 0"
+set_global_assignment -library "aitb_no_chain_in" -name MISC_FILE [file join $::quartus(qip_path) "aitb_no_chain_in.cmp"]
+set_global_assignment -entity "aitb_no_chain_in" -library "aitb_no_chain_in" -name IP_TARGETED_DEVICE_FAMILY "Agilex 5"
+set_global_assignment -entity "aitb_no_chain_in" -library "aitb_no_chain_in" -name IP_GENERATED_DEVICE_FAMILY "{Agilex 5}"
+set_global_assignment -entity "aitb_no_chain_in" -library "aitb_no_chain_in" -name IP_QSYS_MODE "STANDALONE"
+set_global_assignment -name SYNTHESIS_ONLY_QIP ON
+set_global_assignment -library "aitb_no_chain_in" -name MISC_FILE [file join $::quartus(qip_path) "../aitb_no_chain_in.ip"]
+
+set_global_assignment -entity "aitb_no_chain_in_agilex_native_tensor_dsp_100_wg5iiha" -library "agilex_native_tensor_dsp_100" -name IP_COMPONENT_NAME "YWl0Yl9ub19jaGFpbl9pbl9hZ2lsZXhfbmF0aXZlX3RlbnNvcl9kc3BfMTAwX3dnNWlpaGE="
+set_global_assignment -entity "aitb_no_chain_in_agilex_native_tensor_dsp_100_wg5iiha" -library "agilex_native_tensor_dsp_100" -name IP_COMPONENT_DISPLAY_NAME "TmF0aXZlIEFJIE9wdGltaXplZCBEU1AgQWdpbGV4IEZQR0EgSVA="
+set_global_assignment -entity "aitb_no_chain_in_agilex_native_tensor_dsp_100_wg5iiha" -library "agilex_native_tensor_dsp_100" -name IP_COMPONENT_REPORT_HIERARCHY "Off"
+set_global_assignment -entity "aitb_no_chain_in_agilex_native_tensor_dsp_100_wg5iiha" -library "agilex_native_tensor_dsp_100" -name IP_COMPONENT_INTERNAL "Off"
+set_global_assignment -entity "aitb_no_chain_in_agilex_native_tensor_dsp_100_wg5iiha" -library "agilex_native_tensor_dsp_100" -name IP_COMPONENT_AUTHOR "QWx0ZXJhIENvcnBvcmF0aW9u"
+set_global_assignment -entity "aitb_no_chain_in_agilex_native_tensor_dsp_100_wg5iiha" -library "agilex_native_tensor_dsp_100" -name IP_COMPONENT_VERSION "MS4wLjA="
+set_global_assignment -entity "aitb_no_chain_in_agilex_native_tensor_dsp_100_wg5iiha" -library "agilex_native_tensor_dsp_100" -name IP_COMPONENT_DESCRIPTION "VGhlIE5hdGl2ZSBBSSBPcHRpbWl6ZWQgRFNQIEFnaWxleCBGUEdBIElQIGFsbG93cyB1c2VycyB0byBjb25maWd1cmUgYWxsIHRoZSB2YXJpYWJsZSBwcmVjaXNpb24gRFNQIHByaW1lIGJsb2NrIG9wZXJhdGlvbmFsIG1vZGVzIGFuZCBmZWF0dXJlcy4="
+set_global_assignment -entity "aitb_no_chain_in_agilex_native_tensor_dsp_100_wg5iiha" -library "agilex_native_tensor_dsp_100" -name IP_COMPONENT_GROUP "RFNQL1ByaW1pdGl2ZSBEU1A="
+set_global_assignment -entity "aitb_no_chain_in_agilex_native_tensor_dsp_100_wg5iiha" -library "agilex_native_tensor_dsp_100" -name IP_COMPONENT_DOCUMENTATION_LINK "aHR0cHM6Ly93d3cuaW50ZWwuY29tL2NvbnRlbnQvd3d3L3VzL2VuL2RvY3MvcHJvZ3JhbW1hYmxlLzgxMzk2OC5odG1s"
+set_global_assignment -entity "aitb_no_chain_in" -library "aitb_no_chain_in" -name IP_COMPONENT_NAME "YWl0Yl9ub19jaGFpbl9pbg=="
+set_global_assignment -entity "aitb_no_chain_in" -library "aitb_no_chain_in" -name IP_COMPONENT_DISPLAY_NAME "c3lzdGVt"
+set_global_assignment -entity "aitb_no_chain_in" -library "aitb_no_chain_in" -name IP_COMPONENT_REPORT_HIERARCHY "On"
+set_global_assignment -entity "aitb_no_chain_in" -library "aitb_no_chain_in" -name IP_COMPONENT_INTERNAL "Off"
+set_global_assignment -entity "aitb_no_chain_in" -library "aitb_no_chain_in" -name IP_COMPONENT_AUTHOR "QWx0ZXJhIENvcnBvcmF0aW9u"
+set_global_assignment -entity "aitb_no_chain_in" -library "aitb_no_chain_in" -name IP_COMPONENT_VERSION "MS4w"
+
+
+set_global_assignment -library "agilex_native_tensor_dsp_100" -name VERILOG_FILE [file join $::quartus(qip_path) "agilex_native_tensor_dsp_100/synth/aitb_no_chain_in_agilex_native_tensor_dsp_100_wg5iiha.v"]
+set_global_assignment -library "aitb_no_chain_in" -name VERILOG_FILE [file join $::quartus(qip_path) "synth/aitb_no_chain_in.v"]
+
+
+set_global_assignment -entity "aitb_no_chain_in_agilex_native_tensor_dsp_100_wg5iiha" -library "agilex_native_tensor_dsp_100" -name IP_TOOL_NAME "agilex_native_tensor_dsp"
+set_global_assignment -entity "aitb_no_chain_in_agilex_native_tensor_dsp_100_wg5iiha" -library "agilex_native_tensor_dsp_100" -name IP_TOOL_VERSION "1.0.0"
+set_global_assignment -entity "aitb_no_chain_in_agilex_native_tensor_dsp_100_wg5iiha" -library "agilex_native_tensor_dsp_100" -name IP_TOOL_ENV "QsysPrimePro"
+
