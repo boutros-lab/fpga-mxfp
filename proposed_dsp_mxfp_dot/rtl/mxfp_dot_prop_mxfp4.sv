@@ -1,3 +1,22 @@
+// //////////////////////////////////////////////////////////////////////////////////////
+// Module: mxfp_dot_prop_mxfp4
+//
+// Description:
+// MXFP4 dot product unit instantiating 2 of our proposed DSP blocks, 
+// each perform a dot-16 E2M1 dot product.
+//
+// Parameters:
+//  Default parameter values are the correct values.
+// - MODE: used by our DSP block to select the appropriate configuration according to the MXFP format.
+// - IS_SIM: passed to fp_aitb_proposed.
+// - LAT_AITB: the latency of a single DSP block in tensor block mode. Used to match valid signal's latency
+//   to the latency of the computation.
+// - E: exponent width of selected MXFP format.
+// - M: mantissa width of selected MXFP format.
+// - E_SHARED: shared exponent widht of MXFP format.
+// - DOT_LEN: length of dot product being implemented.
+// //////////////////////////////////////////////////////////////////////////////////////
+
 import pkg_aitb::*;
 
 module mxfp_dot_prop_mxfp4 #(
@@ -8,8 +27,6 @@ module mxfp_dot_prop_mxfp4 #(
     parameter E = 2,
     parameter M = 1,
 	parameter E_SHARED = 8,
-	parameter FP_BIAS = 1, // MX-FP BIAS
-	parameter SH_BIAS = 127, // Shared EXP bias
 	parameter DOT_LEN = 32
 ) (
     input logic clk,
@@ -27,7 +44,8 @@ module mxfp_dot_prop_mxfp4 #(
 
     localparam int NUM_AITBS = 2;
     // Total latency = LAT_AITB + STAGGER
-    // Top DSP takes LAT_AITB cycles. DSPs in cascade is registered and then we need another cycle for the addition.
+    // Top DSP takes LAT_AITB cycles. 
+    // The cascade input of a DSP is registered and then we need another cycle for the addition.
     localparam int STAGGER = 2;
     localparam int LAT = LAT_AITB + STAGGER;
 
@@ -44,7 +62,7 @@ module mxfp_dot_prop_mxfp4 #(
     assign valid_out_o = valid_pipe[LAT-1];
 
     logic [79:0] data_unpacked [0:NUM_AITBS-1];
-    // Unpack inputs
+    // Unpack inputs (each DSP block takes 16 MXFP4 elements)
     genvar i;
     generate
     for (i = 0; i < DOT_LEN; i++) begin : unpack
@@ -53,7 +71,7 @@ module mxfp_dot_prop_mxfp4 #(
         assign data_unpacked[aitb_idx][word_idx*(M+E+1) +: (M+E+1)] = mx_data_in_i[i];
     end
     endgenerate
-    // Zero out unused bits (16 words × 4 bits)
+    // Zero out unused bits (16 words * 4 bits)
     assign data_unpacked[0][79:64] = 16'b0;
     assign data_unpacked[1][79:64] = 16'b0;
 

@@ -1,3 +1,17 @@
+// //////////////////////////////////////////////////////////////////////////////////////
+// Module: fp_aitb_proposed
+//
+// Description:
+// Wrapper module that instantiates either our proposed DSP block's RTL (for behavioural simulation) 
+// or the Agilex-5 DSP block IP for implementation in Quartus, as a pin-compatible stand-in.
+//
+// Parameters:
+// - MODE: used by our DSP block to select the appropriate configuration according to the MXFP format.
+// - CHAIN_MODE: parameter to configure the Agilex-5 DSP block IP.
+// - IS_SIM: set to 1 to use instantiate our DSP block, set to 0 to instantiate the Agilex-5 DSP block IP.
+//
+// //////////////////////////////////////////////////////////////////////////////////////
+
 import pkg_aitb::*;
 
 module fp_aitb_proposed #(
