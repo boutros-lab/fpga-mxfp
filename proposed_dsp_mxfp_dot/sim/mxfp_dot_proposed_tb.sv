@@ -1,3 +1,13 @@
+// //////////////////////////////////////////////////////////////////////////////////////
+// Testbench: mxfp_dot_proposed_tb
+// DUT: mxfp_dot_proposed
+//
+// Description:
+// Testbench to verify the `mxfp_dot_proposed` module by loading in `NUM_LOADS` sets of vectors 
+// followed by streaming in `REUSE_FACTOR` vectors.
+//
+// //////////////////////////////////////////////////////////////////////////////////////
+
 `timescale 1ns/1ps
 
 import pkg_aitb::*;
@@ -6,27 +16,29 @@ module mxfp_dot_proposed_tb;
     // -----------------------------------------------------------------
     // Parameters
     // -----------------------------------------------------------------
-    localparam mxfp_mode_e MODE = MXFP8_52;
-    localparam bit IS_SIM = 1;
+    // See `systolic_array/syn/setup_24_2_mxfp_dot_prop.tcl` for correspondance between MXFP format and MODE_INT value.
+    localparam MODE_INT = 4;
+    localparam bit IS_SIM  = 1;
+    localparam bit IS_DOT4 = 1;
     localparam EXP_W          = 5;
     localparam MAN_W          = 2;
-    localparam DATA_MX_W      = 1 + MAN_W + EXP_W;   // 4 bits for MXFP4
+    localparam DATA_MX_W      = 1 + MAN_W + EXP_W;
     localparam SHARED_EXP_W   = 8;
-    localparam FP_BIAS        = 1;
-    localparam SHARED_EXP_BIAS= 127;
     localparam DOT_LEN        = 32;
     localparam DATA_OUT_W     = 32;
 
-    localparam NUM_LOADS      = 2;      // Weight-load phases
+    localparam NUM_LOADS      = 2;     // Weight-load phases
     localparam REUSE_FACTOR   = 5;     // Activation vectors per load
 
     // -----------------------------------------------------------------
     // Stimulus / golden storage
+    // Here, we generate the test vectors and the outputs using a "SW" golden model.
     // -----------------------------------------------------------------
     // Col1 weights (loaded second into PE, produces col1 output)
     shortreal w1_vec_real [0:NUM_LOADS-1][0:DOT_LEN-1];
     // Col2 weights (loaded first into PE, produces col2 output)
     shortreal w2_vec_real [0:NUM_LOADS-1][0:DOT_LEN-1];
+    // The activations (vectors "dotted" with the weights)
     shortreal x_vec_real  [0:NUM_LOADS-1][0:REUSE_FACTOR-1][0:DOT_LEN-1];
 
     shortreal dot_gold_col1_real [0:NUM_LOADS-1][0:REUSE_FACTOR-1];
@@ -150,7 +162,7 @@ module mxfp_dot_proposed_tb;
     logic                    rst;
     logic                    load_en;
     logic                    valid_en;
-    logic [DATA_MX_W-1:0]   mx_data_in [0:DOT_LEN-1];
+    logic [DATA_MX_W-1:0]    mx_data_in [0:DOT_LEN-1];
     logic [SHARED_EXP_W-1:0] shared_exponent;
     logic [DATA_OUT_W-1:0]   fp32_dot_out_col1;
     logic [DATA_OUT_W-1:0]   fp32_dot_out_col2;
@@ -162,13 +174,12 @@ module mxfp_dot_proposed_tb;
     // DUT
     // -----------------------------------------------------------------
     mxfp_dot_proposed #(
-        .MODE     (MODE),
+        .MODE_INT (MODE_INT),
         .IS_SIM   (IS_SIM),
+        .IS_DOT4  (IS_DOT4),
         .E        (EXP_W),
         .M        (MAN_W),
         .E_SHARED (SHARED_EXP_W),
-        .FP_BIAS  (FP_BIAS),
-        .SH_BIAS  (SHARED_EXP_BIAS),
         .DOT_LEN  (DOT_LEN)
     ) dut (
         .clk                 (clk),
@@ -204,17 +215,17 @@ module mxfp_dot_proposed_tb;
 
     // -----------------------------------------------------------------
     // Driver
+    // Applies the stimulus to the DUT.
     //
-    // Protocol (from the original mxfp_dot_tb):
+    // Protocol:
     //   1. Assert load_en one cycle before col2 weights
-    //   2. Drive col2 weights (w2) + shared exp  -- 1 cycle
-    //   3. De-assert load_en, drive col1 weights (w1) + shared exp -- 1 cycle
+    //   2. Drive col2 weights (w2) + shared exp
+    //   3. De-assert load_en, drive col1 weights (w1) + shared exp
     //   4. For each reuse vector: assert valid_en, drive activation
-    //      data + shared exp -- 1 cycle each
+    //      data + shared exp
     //      (re-assert load_en on last reuse cycle if another load follows)
     //   5. De-assert valid_en
     //
-    // All stimulus applied on @(negedge clk) using NBA (<=).
     // -----------------------------------------------------------------
     integer di, dj;
     initial begin : DRIVER
@@ -235,17 +246,17 @@ module mxfp_dot_proposed_tb;
         @(negedge clk);
 
         for (dj = 0; dj < NUM_LOADS; dj = dj + 1) begin
-            // -- Assert load_en one cycle before col2 data --
+            // Assert load_en one cycle before col2 data
             load_en <= 1'b1;
 
             @(negedge clk);
-            // -- Drive col2 weights (loaded first, produces col2 output) --
+            // Drive col2 weights (loaded first, produces col2 output)
             for (di = 0; di < DOT_LEN; di = di + 1)
                 mx_data_in[di] <= w2_vec_mem[dj][di];
             shared_exponent <= w2_shared_exp[dj];
 
             @(negedge clk);
-            // -- Drive col1 weights, de-assert load_en --
+            // Drive col1 weights, de-assert load_en
             load_en <= 1'b0;
             for (di = 0; di < DOT_LEN; di = di + 1)
                 mx_data_in[di] <= w1_vec_mem[dj][di];
@@ -253,7 +264,7 @@ module mxfp_dot_proposed_tb;
 
             @(negedge clk);
 
-            // -- Stream reuse activation vectors --
+            // Stream reuse activation vectors
             for (int rv_idx = 0; rv_idx < REUSE_FACTOR; rv_idx = rv_idx + 1) begin
                 valid_en <= 1'b1;
                 for (di = 0; di < DOT_LEN; di = di + 1)
@@ -280,9 +291,8 @@ module mxfp_dot_proposed_tb;
 
     // -----------------------------------------------------------------
     // Receiver / Checker
-    //
-    // Samples on @(posedge clk). Tracks which load/reuse output to
-    // expect next.  Stops simulation on first mismatch or after all
+    // Compares DUT outputs to the golden model's outputs.
+    // Stops simulation on first mismatch or after all
     // expected outputs are received.
     //
     // Uses ULP (unit in the last place) tolerance to account for
@@ -389,6 +399,7 @@ module mxfp_dot_proposed_tb;
         return (fp32_ulp_diff(a, b) <= max_ulp);
     endfunction
 
+    // Dot product of two MXFP vectors; scales result by the combined shared exponents.
     function automatic shortreal dot(
         shortreal vec1[], shortreal vec2[],
         byte shared_exp1, byte shared_exp2
@@ -400,6 +411,7 @@ module mxfp_dot_proposed_tb;
         dot = shortreal'(dot * (2.0 ** corrected_exp));
     endfunction
 
+    // Converts an MXFP element (raw bits as int) to FP32, handling both normal and subnormal encodings.
     function automatic shortreal to_fp32(int fp_bits);
         localparam int M = MAN_W;
         localparam int E = EXP_W;
