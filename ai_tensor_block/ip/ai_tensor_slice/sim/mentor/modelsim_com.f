@@ -1,2 +1,0 @@
--makelib agilex_native_tensor_dsp_100 "../../agilex_native_tensor_dsp_100/sim/ai_tensor_slice_agilex_native_tensor_dsp_100_jv5neqi.v"   -end \
--makelib ai_tensor_slice "../ai_tensor_slice.v"   -end
