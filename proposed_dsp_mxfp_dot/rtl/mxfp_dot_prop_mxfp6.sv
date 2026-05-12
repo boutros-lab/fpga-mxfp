@@ -8,7 +8,7 @@
 // Parameters:
 //  Default parameter values are the correct values.
 // - MODE: used by our DSP block to select the appropriate configuration according to the MXFP format.
-// - IS_SIM: passed to fp_aitb_proposed.
+// - IS_SIM: passed to fp_aitb_proposed. Set to 1 to use instantiate our DSP block, set to 0 to instantiate the Agilex-5 DSP block IP.
 // - LAT_AITB: the latency of a single DSP block in tensor block mode. Used to match valid signal's latency
 //   to the latency of the computation.
 // - E: exponent width of selected MXFP format.

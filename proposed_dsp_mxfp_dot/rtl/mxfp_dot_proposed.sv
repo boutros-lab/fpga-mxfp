@@ -9,6 +9,7 @@
 // - MODE_INT: integer parameter to choose a MXFP format for DSP configuration.
 //   See `systolic_array/syn/setup_24_2_mxfp_dot_prop.tcl` for correspondance between MXFP format and MODE_INT value.
 // - IS_SIM: passed to fp_aitb_proposed by the mxfp_dot_prop format specific modules.
+//   Set to 1 to use instantiate our DSP block, set to 0 to instantiate the Agilex-5 DSP block IP.
 // - IS_DOT4: must be set to 1 for E5M2 dot products. Set to 0 otherwise.
 // - E: exponent width of selected MXFP format.
 // - M: mantissa width of selected MXFP format.
