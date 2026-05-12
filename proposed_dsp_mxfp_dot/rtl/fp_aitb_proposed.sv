@@ -45,7 +45,6 @@ module fp_aitb_proposed #(
                 .fp32_flags_col2(fp32_flags_col2_o)
             );
         end else begin	
-        // else TODO trick Quartus hehe
 			logic [31:0] cascade_data_out_col_1_w ;
 			logic [31:0] cascade_data_out_col_2_w ;
 			logic [31:0] fp32_col_1_w ;
@@ -58,8 +57,6 @@ module fp_aitb_proposed #(
 			assign fp32_dot_out_col2_o = fp32_col_2_w [31:0] ;
 			assign fp32_flags_col1_o = fp32_col_1_flag_w [3:0] ;
 			assign fp32_flags_col2_o = fp32_col_2_flag_w [3:0] ;
-
-
 
 			tennm_dsp_prime		tennm_dsp_prime_component (
 						 .clk (clk),
