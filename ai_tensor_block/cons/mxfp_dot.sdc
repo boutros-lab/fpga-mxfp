@@ -1,1 +1,0 @@
-create_clock -period 1.0 -name clk clk
