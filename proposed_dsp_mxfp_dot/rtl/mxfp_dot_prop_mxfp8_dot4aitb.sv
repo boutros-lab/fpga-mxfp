@@ -1,3 +1,22 @@
+// //////////////////////////////////////////////////////////////////////////////////////
+// Module: mxfp_dot_prop_mxfp8_dot4aitb
+//
+// Description:
+// MXFP8 dot product unit instantiating 8 of our proposed DSP blocks, 
+// each perform a dot-4 E5M2 dot product.
+//
+// Parameters:
+//  Default parameter values are the correct values.
+// - MODE: used by our DSP block to select the appropriate configuration according to the MXFP format.
+// - IS_SIM: passed to fp_aitb_proposed.
+// - LAT_AITB: the latency of a single DSP block in tensor block mode. Used to match valid signal's latency
+//   to the latency of the computation.
+// - E: exponent width of selected MXFP format.
+// - M: mantissa width of selected MXFP format.
+// - E_SHARED: shared exponent widht of MXFP format.
+// - DOT_LEN: length of dot product being implemented.
+// //////////////////////////////////////////////////////////////////////////////////////
+
 import pkg_aitb::*;
 
 module mxfp_dot_prop_mxfp8_dot4aitb #(
@@ -8,8 +27,6 @@ module mxfp_dot_prop_mxfp8_dot4aitb #(
     parameter E = 5,
     parameter M = 2,
 	parameter E_SHARED = 8,
-	parameter FP_BIAS = 1, // MX-FP BIAS
-	parameter SH_BIAS = 127, // Shared EXP bias
 	parameter DOT_LEN = 32
 ) (
     input logic clk,
