@@ -16,6 +16,6 @@ RTL descriptions of the dot product units.
 ### sim
 Testbench for functional verification and simulation scripts.
 - `mxfp_dot_proposed_tb.sv`: testbench to verify `mxfp_dot_proposed` module by loading in `NUM_LOADS` sets of vectors followed by streaming in `REUSE_FACTOR` vectors.
-- `run_sim_mxfp_dot_proposed_vcs.sh` and `setup_sim_mxfp_dot_proposed_vcs.sh`: scripts to simulate `mxfp_dot_proposed_tb` with VCS 2016.06-1.
+- `run_sim_mxfp_dot_proposed_vcs.sh` and `setup_sim_mxfp_dot_proposed_vcs.sh`: scripts to simulate `mxfp_dot_proposed_tb` with VCS 2016.06-1. To run the simulation: `bash run_sim_mxfp_dot_proposed_vcs.sh`.
 
 See the `systolic_array` directory for details on simulating `mxfp_dot_proposed_tb` using ModelSim/QuestaSim.
