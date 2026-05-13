@@ -1,0 +1,555 @@
+
+Warning-[LINX_KRNL] Unsupported Linux kernel
+  Linux kernel '6.8.0-100-generic' is not supported.
+  Supported versions are 2.4* or 2.6*.
+
+                         Chronologic VCS (TM)
+        Version L-2016.06-1_Full64 -- Wed May 13 10:06:35 2026
+               Copyright (c) 1991-2016 by Synopsys Inc.
+                         ALL RIGHTS RESERVED
+
+This program is proprietary and confidential information of Synopsys Inc.
+and may be used and disclosed only as authorized in a license agreement
+controlling such use and disclosure.
+
+Parsing design file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_lnsim.sv'
+Parsing design file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/tennm_atoms.sv'
+Parsing design file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv'
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[NZIR] Incorrect size number
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+  The specified width is '0'. Nonzero unsigned decimal number is required as 
+  the size constant. This '0' width will be ignored.
+
+
+Warning-[NZIR] Incorrect size number
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+  The specified width is '0'. Nonzero unsigned decimal number is required as 
+  the size constant. This '0' width will be ignored.
+
+
+Warning-[NZIR] Incorrect size number
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+  The specified width is '0'. Nonzero unsigned decimal number is required as 
+  the size constant. This '0' width will be ignored.
+
+
+Warning-[NZIR] Incorrect size number
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+  The specified width is '0'. Nonzero unsigned decimal number is required as 
+  the size constant. This '0' width will be ignored.
+
+
+Warning-[FLWI] For loop without initializer
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 19
+
+
+Parsing design file '../../aitb_asic/rtl/pkg_aitb.sv'
+Parsing design file 'mxfp_dot_proposed_tb.sv'
+Parsing design file '../rtl/mxfp_dot_proposed.sv'
+
+Note-[SV-LCM-PPWI] Package previously wildcard imported
+../rtl/mxfp_dot_proposed.sv, 20
+$unit
+  Package 'pkg_aitb' already wildcard imported. 
+  Ignoring pkg_aitb::*
+  See the System Verilog LRM(1800-2005), section 18.1.
+
+Parsing design file '../rtl/mxfp_dot_prop_mxfp4.sv'
+
+Note-[SV-LCM-PPWI] Package previously wildcard imported
+../rtl/mxfp_dot_prop_mxfp4.sv, 20
+$unit
+  Package 'pkg_aitb' already wildcard imported. 
+  Ignoring pkg_aitb::*
+  See the System Verilog LRM(1800-2005), section 18.1.
+
+Parsing design file '../rtl/mxfp_dot_prop_mxfp6.sv'
+
+Note-[SV-LCM-PPWI] Package previously wildcard imported
+../rtl/mxfp_dot_prop_mxfp6.sv, 20
+$unit
+  Package 'pkg_aitb' already wildcard imported. 
+  Ignoring pkg_aitb::*
+  See the System Verilog LRM(1800-2005), section 18.1.
+
+Parsing design file '../rtl/mxfp_dot_prop_mxfp8.sv'
+
+Note-[SV-LCM-PPWI] Package previously wildcard imported
+../rtl/mxfp_dot_prop_mxfp8.sv, 20
+$unit
+  Package 'pkg_aitb' already wildcard imported. 
+  Ignoring pkg_aitb::*
+  See the System Verilog LRM(1800-2005), section 18.1.
+
+Parsing design file '../rtl/mxfp_dot_prop_mxfp8_dot4aitb.sv'
+
+Note-[SV-LCM-PPWI] Package previously wildcard imported
+../rtl/mxfp_dot_prop_mxfp8_dot4aitb.sv, 20
+$unit
+  Package 'pkg_aitb' already wildcard imported. 
+  Ignoring pkg_aitb::*
+  See the System Verilog LRM(1800-2005), section 18.1.
+
+Parsing design file '../rtl/fp_aitb_proposed.sv'
+
+Note-[SV-LCM-PPWI] Package previously wildcard imported
+../rtl/fp_aitb_proposed.sv, 15
+$unit
+  Package 'pkg_aitb' already wildcard imported. 
+  Ignoring pkg_aitb::*
+  See the System Verilog LRM(1800-2005), section 18.1.
+
+Parsing design file '../../aitb_asic/rtl/mxfp_aitb/naive_mxfp_aitb_top.sv'
+
+Note-[SV-LCM-PPWI] Package previously wildcard imported
+../../aitb_asic/rtl/mxfp_aitb/naive_mxfp_aitb_top.sv, 5
+$unit
+  Package 'pkg_aitb' already wildcard imported. 
+  Ignoring pkg_aitb::*
+  See the System Verilog LRM(1800-2005), section 18.1.
+
+Parsing design file '../../aitb_asic/rtl/mxfp_aitb/config_gen.sv'
+
+Note-[SV-LCM-PPWI] Package previously wildcard imported
+../../aitb_asic/rtl/mxfp_aitb/config_gen.sv, 5
+$unit
+  Package 'pkg_aitb' already wildcard imported. 
+  Ignoring pkg_aitb::*
+  See the System Verilog LRM(1800-2005), section 18.1.
+
+Parsing design file '../../aitb_asic/rtl/in_reg_bank.sv'
+
+Note-[SV-LCM-PPWI] Package previously wildcard imported
+../../aitb_asic/rtl/in_reg_bank.sv, 1
+$unit
+  Package 'pkg_aitb' already wildcard imported. 
+  Ignoring pkg_aitb::*
+  See the System Verilog LRM(1800-2005), section 18.1.
+
+Parsing design file '../../aitb_asic/rtl/pipeline.sv'
+Parsing design file '../../aitb_asic/rtl/mxfp_aitb/input_preparation_mxfp.sv'
+
+Note-[SV-LCM-PPWI] Package previously wildcard imported
+../../aitb_asic/rtl/mxfp_aitb/input_preparation_mxfp.sv, 7
+$unit
+  Package 'pkg_aitb' already wildcard imported. 
+  Ignoring pkg_aitb::*
+  See the System Verilog LRM(1800-2005), section 18.1.
+
+Parsing design file '../../aitb_asic/rtl/mxfp_dot/naive_mxfp_dot_fixed.sv'
+
+Note-[SV-LCM-PPWI] Package previously wildcard imported
+../../aitb_asic/rtl/mxfp_dot/naive_mxfp_dot_fixed.sv, 4
+$unit
+  Package 'pkg_aitb' already wildcard imported. 
+  Ignoring pkg_aitb::*
+  See the System Verilog LRM(1800-2005), section 18.1.
+
+Parsing design file '../../aitb_asic/rtl/mxfp_dot/config_fix2fp32.sv'
+Parsing design file '../../aitb_asic/rtl/mxfp_dot/mxfp_mult_shift.sv'
+Parsing design file '../../aitb_asic/rtl/mxfp_dot/naive_reduction.sv'
+
+Note-[SV-LCM-PPWI] Package previously wildcard imported
+../../aitb_asic/rtl/mxfp_dot/naive_reduction.sv, 5
+$unit
+  Package 'pkg_aitb' already wildcard imported. 
+  Ignoring pkg_aitb::*
+  See the System Verilog LRM(1800-2005), section 18.1.
+
+Parsing design file '../../aitb_asic/rtl/mxfp_dot/mxfp_multiply.sv'
+Parsing design file '../../aitb_asic/rtl/mxfp_dot/pow2_reduction_norecurse.sv'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_primitives.v'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/220model.v'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/sgate.v'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_mf.v'
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_mf.v, 51
+  Text macro (MAX_WIDTH) is redefined. The last definition will override 
+  previous ones.
+  In /tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_lnsim.sv,
+  20660, it was defined as 2048
+
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_primitives.v'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/220model.v'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/sgate.v'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_mf.v'
+CPU time: 28.316 seconds to compile
+Unsupported Linux kernel (6.8.0-100-generic), will try Linux
+                     Synopsys 1076 VHDL Analyzer
+                 Version L-2016.06-1 -- Jul 16, 2016
+              Copyright (c) 1991-2016 by Synopsys Inc.
+                         ALL RIGHTS RESERVED
+
+This program is proprietary and confidential information of Synopsys Inc.
+and may be used and disclosed only as authorized in a license agreement
+controlling such use and disclosure.
+
+Parsing design file '../../aitb_asic/rtl/ieee_fp32_add.vhdl'
+Parsing design file '../../aitb_asic/rtl/mxfp_dot/flopoco_normalizers/normalizer_sgn_70b.vhdl'
+Parsing design file '../../aitb_asic/rtl/mxfp_dot/flopoco_shifters/fp8_67_shifter.vhdl'
+
+Warning-[LINX_KRNL] Unsupported Linux kernel
+  Linux kernel '6.8.0-100-generic' is not supported.
+  Supported versions are 2.4* or 2.6*.
+
+
+Warning-[LCA_FEATURES_ENABLED] Usage warning
+  LCA features enabled by '-lca' argument on the command line.  For more 
+  information regarding list of LCA features please refer to Chapter "LCA 
+  features" in the VCS/VCS-MX Release Notes
+
+Doing common elaboration 
+
+Warning-[LINX_KRNL] Unsupported Linux kernel
+  Linux kernel '6.8.0-100-generic' is not supported.
+  Supported versions are 2.4* or 2.6*.
+
+                         Chronologic VCS (TM)
+        Version L-2016.06-1_Full64 -- Wed May 13 10:07:05 2026
+               Copyright (c) 1991-2016 by Synopsys Inc.
+                         ALL RIGHTS RESERVED
+
+This program is proprietary and confidential information of Synopsys Inc.
+and may be used and disclosed only as authorized in a license agreement
+controlling such use and disclosure.
+
+Top Level Modules:
+       mxfp_dot_proposed_tb
+assign 2 mxfp_dot_proposed_tb/EXP_W (Command line)
+assign 1 mxfp_dot_proposed_tb/MAN_W (Command line)
+assign 0 mxfp_dot_proposed_tb/IS_DOT4 (Command line)
+assign 0 mxfp_dot_proposed_tb/MODE_INT (Command line)
+TimeScale is 1 ps / 1 ps
+
+Warning-[TFIPC] Too few instance port connections
+../rtl/mxfp_dot_prop_mxfp4.sv, 114
+"fp_aitb_proposed #(.MODE(MODE), .IS_SIM(IS_SIM), .CHAIN_MODE("zero_tensor_chain_output")) aitb_top( .clk (clk),  .rst (rst),  .acc_en_i (1'b0),  .zero_en_i (1'b1),  .load_en_i (load_en_i),  .data_i (data_unpacked[0]),  .shared_exponent_i (shared_exponent_i),  .fp32_dot_out_col1_o (fp32_dot_out_col1_top),  .fp32_dot_out_col2_o (fp32_dot_out_col2_top),  .fp32_cascade_out_col1_o (fp32_cascade_out_col1_top),  .fp32_cascade_out_col2_o (fp32_cascade_out_col2_top),  .fp32_flags_col1_o (fp32_flags_col1_top),  .fp32_flags_col2_o (fp32_flags_col2_top));"
+  The above instance has fewer port connections than the module definition.
+  Please use '+lint=TFIPC-L' to print out detailed information of unconnected 
+  ports.
+
+
+Warning-[PCWM-W] Port connection width mismatch
+../../aitb_asic/rtl/mxfp_dot/naive_mxfp_dot_fixed.sv, 97
+" mxfp_mult_shift #(3, 3, 6, pkg_aitb::MXFP6_PRODUCT_WIDTH, 1, , , , , ) inst_mxfp6_mult[0].genblk1.u_mxfp_mult_shift_mxfp6( .fixed (fixed_mult),  .sign_shift (i_sign_shift),  .exp_bits (i_exp_bits),  .man_bits (i_man_bits),  .exp_mask (i_exp_mask),  .man_mask (i_man_mask),  .fixed_a (i_fixed_a[(0 + FP8_OPS)]),  .fixed_b (i_fixed_b[(0 + FP8_OPS)]),  .mxfp_a (i_mxfp6_a[0]),  .mxfp_b (i_mxfp6_b[0]),  .mxfp_mult_fixed (mxfp6_mult_result[0]));"
+  The following 3-bit expression is connected to 2-bit port "exp_bits" of 
+  module "mxfp_mult_shift", instance 
+  "inst_mxfp6_mult[0].genblk1.u_mxfp_mult_shift_mxfp6".
+  Expression: i_exp_bits
+  	use +lint=PCWM for more details
+
+
+Warning-[PCWM-W] Port connection width mismatch
+../../aitb_asic/rtl/mxfp_dot/naive_mxfp_dot_fixed.sv, 97
+" mxfp_mult_shift #(3, 3, 6, pkg_aitb::MXFP6_PRODUCT_WIDTH, 1, , , , , ) inst_mxfp6_mult[0].genblk1.u_mxfp_mult_shift_mxfp6( .fixed (fixed_mult),  .sign_shift (i_sign_shift),  .exp_bits (i_exp_bits),  .man_bits (i_man_bits),  .exp_mask (i_exp_mask),  .man_mask (i_man_mask),  .fixed_a (i_fixed_a[(0 + FP8_OPS)]),  .fixed_b (i_fixed_b[(0 + FP8_OPS)]),  .mxfp_a (i_mxfp6_a[0]),  .mxfp_b (i_mxfp6_b[0]),  .mxfp_mult_fixed (mxfp6_mult_result[0]));"
+  The following 5-bit expression is connected to 3-bit port "exp_mask" of 
+  module "mxfp_mult_shift", instance 
+  "inst_mxfp6_mult[0].genblk1.u_mxfp_mult_shift_mxfp6".
+  Expression: i_exp_mask
+  	use +lint=PCWM for more details
+
+
+Warning-[PCWM-W] Port connection width mismatch
+../../aitb_asic/rtl/mxfp_dot/naive_mxfp_dot_fixed.sv, 97
+" mxfp_mult_shift #(3, 3, 6, pkg_aitb::MXFP6_PRODUCT_WIDTH, 1, , , , , ) inst_mxfp6_mult[1].genblk1.u_mxfp_mult_shift_mxfp6( .fixed (fixed_mult),  .sign_shift (i_sign_shift),  .exp_bits (i_exp_bits),  .man_bits (i_man_bits),  .exp_mask (i_exp_mask),  .man_mask (i_man_mask),  .fixed_a (i_fixed_a[(1 + FP8_OPS)]),  .fixed_b (i_fixed_b[(1 + FP8_OPS)]),  .mxfp_a (i_mxfp6_a[1]),  .mxfp_b (i_mxfp6_b[1]),  .mxfp_mult_fixed (mxfp6_mult_result[1]));"
+  The following 3-bit expression is connected to 2-bit port "exp_bits" of 
+  module "mxfp_mult_shift", instance 
+  "inst_mxfp6_mult[1].genblk1.u_mxfp_mult_shift_mxfp6".
+  Expression: i_exp_bits
+  	use +lint=PCWM for more details
+
+
+Warning-[PCWM-W] Port connection width mismatch
+../../aitb_asic/rtl/mxfp_dot/naive_mxfp_dot_fixed.sv, 97
+" mxfp_mult_shift #(3, 3, 6, pkg_aitb::MXFP6_PRODUCT_WIDTH, 1, , , , , ) inst_mxfp6_mult[1].genblk1.u_mxfp_mult_shift_mxfp6( .fixed (fixed_mult),  .sign_shift (i_sign_shift),  .exp_bits (i_exp_bits),  .man_bits (i_man_bits),  .exp_mask (i_exp_mask),  .man_mask (i_man_mask),  .fixed_a (i_fixed_a[(1 + FP8_OPS)]),  .fixed_b (i_fixed_b[(1 + FP8_OPS)]),  .mxfp_a (i_mxfp6_a[1]),  .mxfp_b (i_mxfp6_b[1]),  .mxfp_mult_fixed (mxfp6_mult_result[1]));"
+  The following 5-bit expression is connected to 3-bit port "exp_mask" of 
+  module "mxfp_mult_shift", instance 
+  "inst_mxfp6_mult[1].genblk1.u_mxfp_mult_shift_mxfp6".
+  Expression: i_exp_mask
+  	use +lint=PCWM for more details
+
+
+Warning-[PCWM-W] Port connection width mismatch
+../../aitb_asic/rtl/mxfp_dot/naive_mxfp_dot_fixed.sv, 124
+" mxfp_mult_shift #(3, 3, 6, pkg_aitb::MXFP6_PRODUCT_WIDTH, 0, , , , , ) inst_mxfp6_mult[2].genblk1.u_mxfp_mult_shift_mxfp6( .sign_shift (i_sign_shift),  .exp_bits (i_exp_bits),  .man_bits (i_man_bits),  .exp_mask (i_exp_mask),  .man_mask (i_man_mask),  .mxfp_a (i_mxfp6_a[2]),  .mxfp_b (i_mxfp6_b[2]),  .mxfp_mult_fixed (inst_mxfp6_mult[2].genblk1.mxfp_mult_fixed));"
+  The following 3-bit expression is connected to 2-bit port "exp_bits" of 
+  module "mxfp_mult_shift", instance 
+  "inst_mxfp6_mult[2].genblk1.u_mxfp_mult_shift_mxfp6".
+  Expression: i_exp_bits
+  	use +lint=PCWM for more details
+
+
+Warning-[PCWM-W] Port connection width mismatch
+../../aitb_asic/rtl/mxfp_dot/naive_mxfp_dot_fixed.sv, 124
+" mxfp_mult_shift #(3, 3, 6, pkg_aitb::MXFP6_PRODUCT_WIDTH, 0, , , , , ) inst_mxfp6_mult[2].genblk1.u_mxfp_mult_shift_mxfp6( .sign_shift (i_sign_shift),  .exp_bits (i_exp_bits),  .man_bits (i_man_bits),  .exp_mask (i_exp_mask),  .man_mask (i_man_mask),  .mxfp_a (i_mxfp6_a[2]),  .mxfp_b (i_mxfp6_b[2]),  .mxfp_mult_fixed (inst_mxfp6_mult[2].genblk1.mxfp_mult_fixed));"
+  The following 5-bit expression is connected to 3-bit port "exp_mask" of 
+  module "mxfp_mult_shift", instance 
+  "inst_mxfp6_mult[2].genblk1.u_mxfp_mult_shift_mxfp6".
+  Expression: i_exp_mask
+  	use +lint=PCWM for more details
+
+
+Warning-[PCWM-W] Port connection width mismatch
+../../aitb_asic/rtl/mxfp_dot/naive_mxfp_dot_fixed.sv, 124
+" mxfp_mult_shift #(3, 3, 6, pkg_aitb::MXFP6_PRODUCT_WIDTH, 0, , , , , ) inst_mxfp6_mult[3].genblk1.u_mxfp_mult_shift_mxfp6( .sign_shift (i_sign_shift),  .exp_bits (i_exp_bits),  .man_bits (i_man_bits),  .exp_mask (i_exp_mask),  .man_mask (i_man_mask),  .mxfp_a (i_mxfp6_a[3]),  .mxfp_b (i_mxfp6_b[3]),  .mxfp_mult_fixed (inst_mxfp6_mult[3].genblk1.mxfp_mult_fixed));"
+  The following 3-bit expression is connected to 2-bit port "exp_bits" of 
+  module "mxfp_mult_shift", instance 
+  "inst_mxfp6_mult[3].genblk1.u_mxfp_mult_shift_mxfp6".
+  Expression: i_exp_bits
+  	use +lint=PCWM for more details
+
+
+Warning-[PCWM-W] Port connection width mismatch
+../../aitb_asic/rtl/mxfp_dot/naive_mxfp_dot_fixed.sv, 124
+" mxfp_mult_shift #(3, 3, 6, pkg_aitb::MXFP6_PRODUCT_WIDTH, 0, , , , , ) inst_mxfp6_mult[3].genblk1.u_mxfp_mult_shift_mxfp6( .sign_shift (i_sign_shift),  .exp_bits (i_exp_bits),  .man_bits (i_man_bits),  .exp_mask (i_exp_mask),  .man_mask (i_man_mask),  .mxfp_a (i_mxfp6_a[3]),  .mxfp_b (i_mxfp6_b[3]),  .mxfp_mult_fixed (inst_mxfp6_mult[3].genblk1.mxfp_mult_fixed));"
+  The following 5-bit expression is connected to 3-bit port "exp_mask" of 
+  module "mxfp_mult_shift", instance 
+  "inst_mxfp6_mult[3].genblk1.u_mxfp_mult_shift_mxfp6".
+  Expression: i_exp_mask
+  	use +lint=PCWM for more details
+
+
+Note-[SIMU-RESOLUTION] Simulation time resolution
+  Simulation time resolution is 1 PS
+
+Starting vcs inline pass...
+16 unique modules to generate
+recompiling package vcs_paramclassrepository
+recompiling package pkg_aitb
+recompiling module mxfp_dot_proposed_tb
+recompiling module mxfp_dot_proposed
+recompiling module mxfp_dot_prop_mxfp4
+recompiling module fp_aitb_proposed
+recompiling module pipeline
+recompiling module pipeline
+recompiling module pipeline
+recompiling module pipeline
+recompiling module input_preparation_mxfp
+recompiling module naive_mxfp_dot_fixed
+recompiling module config_fix2fp32
+recompiling module ieee_fp32_add
+recompiling module mxfp_mult_shift
+recompiling module mxfp_mult_shift
+recompiling module mxfp_mult_shift
+recompiling module mxfp_mult_shift
+recompiling module naive_reduction
+recompiling module pow2_reduction_norecurse
+recompiling module pow2_reduction_norecurse
+recompiling module pow2_reduction_norecurse
+recompiling module normalizer_sgn_70b
+recompiling module fp8_67_shifter
+24 of 16 modules done
+/usr/bin/ld: warning: rmapats_mop.o: missing .note.GNU-stack section implies executable stack
+/usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+rm -f _csrc*.so pre_vcsobj_*.so share_vcsobj_*.so
+if [ -x ../simv ]; then chmod -x ../simv; fi
+g++  -o ../simv   -Wl,-rpath-link=./ -Wl,-rpath='$ORIGIN'/simv.daidir/ -Wl,-rpath=./simv.daidir/ -Wl,-rpath='$ORIGIN'/simv.daidir//scsim.db.dir  -L/usr/lib/x86_64-linux-gnu -L/lib/x86_64-linux-gnu -Wl,--no-as-needed -no-pie -rdynamic -Wl,-E -lncurses  amcQwB.o objs/amcQw_d.o  _2495115_archive_1.so  SIM_l.o       rmapats_mop.o rmapats.o rmar.o  rmar_llvm_0_1.o rmar_llvm_0_0.o       linux64_scvhdl_0.so vh/scscomm.o vh/scsFilelist.o    /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libzerosoft_rt_stubs.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/liberrorinf.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libsnpsmalloc.so    /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libvirsim.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libvcsnew.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/vcs_main.o /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libvcsmx.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libreader_common.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libBA.a /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libsimprofile.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libuclinative.so   -Wl,-whole-archive  -Wl,-no-whole-archive       ./../simv.daidir/vc_hdrs.o    /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/vcs_save_restore_new.o -ldl  -lc -lm -lpthread -ldl 
+/usr/bin/ld: warning: libncurses.so.5, needed by /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libuclinative.so, may conflict with libncurses.so.6
+/usr/bin/ld: warning: rmapats_mop.o: missing .note.GNU-stack section implies executable stack
+/usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+../simv up to date
+CPU time: 2.224 seconds to compile + .369 seconds to elab + .488 seconds to link
+
+Note-[RT_BS] Larger stack needed
+  Note: Bumping stack limit from 8192 to 8194 Kbytes.
+
+Chronologic VCS simulator copyright 1991-2016
+Contains Synopsys proprietary information.
+Compiler version L-2016.06-1_Full64; Runtime version L-2016.06-1_Full64;  May 13 10:07 2026
+============================================================
+DATA_GEN: Generated 2 load(s), 5 reuse vectors each
+============================================================
+  G_col1[ld=0][rv=0] = 0x41b00000 (22.000000)
+  G_col2[ld=0][rv=0] = 0xc0e00000 (-7.000000)
+  G_col1[ld=0][rv=1] = 0xc1f20000 (-30.250000)
+  G_col2[ld=0][rv=1] = 0xc20a8000 (-34.625000)
+  G_col1[ld=0][rv=2] = 0x40800000 (4.000000)
+  G_col2[ld=0][rv=2] = 0xc20d8000 (-35.375000)
+  G_col1[ld=0][rv=3] = 0x41dd0000 (27.625000)
+  G_col2[ld=0][rv=3] = 0x40f80000 (7.750000)
+  G_col1[ld=0][rv=4] = 0xc1810000 (-16.125000)
+  G_col2[ld=0][rv=4] = 0x41e50000 (28.625000)
+  G_col1[ld=1][rv=0] = 0xc1b50000 (-22.625000)
+  G_col2[ld=1][rv=0] = 0xc2198000 (-38.375000)
+  G_col1[ld=1][rv=1] = 0x41cd0000 (25.625000)
+  G_col2[ld=1][rv=1] = 0xc20f0000 (-35.750000)
+  G_col1[ld=1][rv=2] = 0xc0280000 (-2.625000)
+  G_col2[ld=1][rv=2] = 0xc20a0000 (-34.500000)
+  G_col1[ld=1][rv=3] = 0xc1680000 (-14.500000)
+  G_col2[ld=1][rv=3] = 0xc12a0000 (-10.625000)
+  G_col1[ld=1][rv=4] = 0x40200000 (2.500000)
+  G_col2[ld=1][rv=4] = 0x3f200000 (0.625000)
+============================================================
+[185000] OUT ld=0 rv=0  dut_col1=0x41b00000 gold_col1=0x41b00000 (0 ULP)  dut_col2=0xc0e00000 gold_col2=0xc0e00000 (0 ULP)  flags1=xxxx flags2=xxxx
+[195000] OUT ld=0 rv=1  dut_col1=0xc1f20000 gold_col1=0xc1f20000 (0 ULP)  dut_col2=0xc20a8000 gold_col2=0xc20a8000 (0 ULP)  flags1=xxxx flags2=xxxx
+[205000] OUT ld=0 rv=2  dut_col1=0x40800000 gold_col1=0x40800000 (0 ULP)  dut_col2=0xc20d8000 gold_col2=0xc20d8000 (0 ULP)  flags1=xxxx flags2=xxxx
+[215000] OUT ld=0 rv=3  dut_col1=0x41dd0000 gold_col1=0x41dd0000 (0 ULP)  dut_col2=0x40f80000 gold_col2=0x40f80000 (0 ULP)  flags1=xxxx flags2=xxxx
+[225000] OUT ld=0 rv=4  dut_col1=0xc1810000 gold_col1=0xc1810000 (0 ULP)  dut_col2=0x41e50000 gold_col2=0x41e50000 (0 ULP)  flags1=xxxx flags2=xxxx
+[225000] Completed load phase 0 (5 outputs)
+[265000] OUT ld=1 rv=0  dut_col1=0xc1b50000 gold_col1=0xc1b50000 (0 ULP)  dut_col2=0xc2198000 gold_col2=0xc2198000 (0 ULP)  flags1=xxxx flags2=xxxx
+[275000] OUT ld=1 rv=1  dut_col1=0x41cd0000 gold_col1=0x41cd0000 (0 ULP)  dut_col2=0xc20f0000 gold_col2=0xc20f0000 (0 ULP)  flags1=xxxx flags2=xxxx
+[285000] OUT ld=1 rv=2  dut_col1=0xc0280000 gold_col1=0xc0280000 (0 ULP)  dut_col2=0xc20a0000 gold_col2=0xc20a0000 (0 ULP)  flags1=xxxx flags2=xxxx
+[295000] OUT ld=1 rv=3  dut_col1=0xc1680000 gold_col1=0xc1680000 (0 ULP)  dut_col2=0xc12a0000 gold_col2=0xc12a0000 (0 ULP)  flags1=xxxx flags2=xxxx
+[305000] OUT ld=1 rv=4  dut_col1=0x40200000 gold_col1=0x40200000 (0 ULP)  dut_col2=0x3f200000 gold_col2=0x3f200000 (0 ULP)  flags1=xxxx flags2=xxxx
+[305000] Completed load phase 1 (5 outputs)
+============================================================
+[305000] TEST PASSED: received all 10 expected outputs.
+============================================================
+$finish called from file "mxfp_dot_proposed_tb.sv", line 372.
+$finish at simulation time               305000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 305000 ps
+CPU Time:      0.310 seconds;       Data structure size:   0.2Mb
+Wed May 13 10:07:09 2026
