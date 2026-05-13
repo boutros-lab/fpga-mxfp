@@ -1,9 +1,29 @@
+// //////////////////////////////////////////////////////////////////////////////////////
+// Module: sys_array_aitb
+//
+// Description:
+// Systolic array design whose processing element (PE) is a MXFP dot product unit using 
+// the Agilex-5 DSP block configured in tensor mode (for E2M3 and E2M1 MXFP formats).
+//
+// Parameters:
+// - N: size of the systolic array (NxN PEs).
+// - EXP_W: exponent width of selected MXFP format.
+// - MAN_W: mantissa width of selected MXFP format.
+// - DATA_W: data width of selected MXFP format.
+// - SHARED_EXP_W: shared exponent width of MXFP format.
+// - FP_BIAS: MX-FP bias passed to the PE.
+// - SHARED_EXP_BIAS: Shared exponent bias passed to the PE.
+// - DOT_LEN: length of dot product being implemented by PE. Also length of vectors in PE / MXFP block size.
+// - PIPE: parameter for additional pipelining of the PE's input, passed to the PE.
+// - DATA_OUT_W: data width of output products.
+// //////////////////////////////////////////////////////////////////////////////////////
+
 module sys_array_aitb #(
     // Size of the array (NxN)
     parameter N = 2,
     // Number format params
-    parameter MAN_W = 3,
     parameter EXP_W = 2,
+    parameter MAN_W = 3,
     parameter DATA_MX_W = 1 + MAN_W + EXP_W,
     parameter SHARED_EXP_W = 8,
     // MX-FP Bias
@@ -37,7 +57,7 @@ module sys_array_aitb #(
     output [3:0] fp32_flags_col2_o [0:N-1][0:N-1]
 );
     
-    // Load enable pipeline needed too
+    // Load enable pipeline needed
     // load_en asserted 1 cycle before "column 2" weights are presented
     // load_en stays high when "column 2" weights presented
     // load_en deasserts when "column 1" weights presented
@@ -109,7 +129,7 @@ module sys_array_aitb #(
 
     // Activation pipeline implementation
     // - Activations go down every cycle
-    // - Driver must make activations provided when weight loading is done
+    // - Driver provides activations when weight loading is done
     always_ff @( posedge clk) begin
         integer r, c, i;
         if (rst) begin
@@ -176,8 +196,8 @@ module sys_array_aitb #(
                     .E_SHARED(SHARED_EXP_W),
                     .FP_BIAS(FP_BIAS),
                     .SH_BIAS(SHARED_EXP_BIAS),
-                    .DOT_LEN(DOT_LEN),
                     .PIPE(PIPE)
+                    .DOT_LEN(DOT_LEN)
                 ) pe_inst (
                     .clk(clk),
                     .rst(rst),
