@@ -229,7 +229,7 @@ function automatic shortreal to_fp32 (int fp_bits);
 	if (M_bits == 0 && E_bits == 0) begin // ZERO
 		to_fp32 = sign * 0.0;
 	end
-	else if (E_bits == 0) begin //CURSED SUBNORMALS
+	else if (E_bits == 0) begin // SUBNORMALS
 		to_fp32 = sign * (2.0 ** (1 - BIAS)) * (M_bits / shortreal'(1 << M));
 	end
 	else begin // NORMALs
