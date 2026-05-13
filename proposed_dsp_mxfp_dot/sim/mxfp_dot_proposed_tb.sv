@@ -17,11 +17,11 @@ module mxfp_dot_proposed_tb;
     // Parameters
     // -----------------------------------------------------------------
     // See `systolic_array/syn/setup_24_2_mxfp_dot_prop.tcl` for correspondance between MXFP format and MODE_INT value.
-    localparam MODE_INT = 4;
+    parameter  MODE_INT = 4;
     localparam bit IS_SIM  = 1;
-    localparam bit IS_DOT4 = 1;
-    localparam EXP_W          = 5;
-    localparam MAN_W          = 2;
+    parameter  bit IS_DOT4 = 1;
+    parameter  EXP_W          = 5;
+    parameter  MAN_W          = 2;
     localparam DATA_MX_W      = 1 + MAN_W + EXP_W;
     localparam SHARED_EXP_W   = 8;
     localparam DOT_LEN        = 32;
