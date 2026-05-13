@@ -7,3 +7,5 @@ TOP_LEVEL_NAME="mxfp_dot_tb"
 sh setup_sim_mxfpdot_vcs.sh QUARTUS_INSTALL_DIR=$QUARTUS_INSTALL_DIR USER_DEFINED_ELAB_OPTIONS="\"$USER_DEFINED_ELAB_OPTIONS\"" SKIP_SIM=$SKIP_SIM TOP_LEVEL_NAME=$TOP_LEVEL_NAME > rtl_sim_log
 
 ./simv -gui +vcs+lic+wait
+# no gui
+#./simv +vcs+lic+wait

@@ -31,11 +31,10 @@ fi
 
 ELAB_OPTIONS=""
 
-design_files="../../ai_tensor_block/sim/mxfp_dot_tb.sv
-../rtl/sys_array_aitb.sv
-../../ai_tensor_block/rtl/mxfp_dot.sv
-../../ai_tensor_block/rtl/fp_aitb.sv
-../../ai_tensor_block/rtl/pipeline.sv
+design_files="../../characterization/ai_tensor_block/sim/mxfp_dot_tb.sv
+../../characterization/ai_tensor_block/rtl/mxfp_dot.sv
+../../characterization/ai_tensor_block/rtl/fp_aitb.sv
+../../characterization/ai_tensor_block/rtl/pipeline.sv
 "
 
 vcs -lca -full64 -timescale=1ps/1ps -sverilog -ld /usr/bin/g++-4.8 +verilog2001ext+.v $USER_DEFINED_ELAB_OPTIONS \

@@ -1,36 +1,31 @@
-`timescale 1ns/1ps
+// //////////////////////////////////////////////////////////////////////////////////////
+// Testbench: sys_array_aitb_tb
+// DUT: sys_array_aitb
+//
+// Description:
+// Testbench to verify the `sys_array_aitb` module by loading in a set of vectors from a 
+// "weight" matrix followed by streaming in `P` sets of "activation" vectors.
+//
+// //////////////////////////////////////////////////////////////////////////////////////
+
+`timescale 1ns / 1ps
+
 module sys_array_aitb_tb;
-    localparam N = 3;
+
+    // Parameters
+    // Size of systolic array
+    parameter N = 3;
     // Number of sets of activations to stream in.
     localparam P = 2;
-    localparam EXP_W = 2;
-    localparam MAN_W = 3;
+    
+    parameter EXP_W = 2;
+    parameter MAN_W = 3;
     localparam DATA_MX_W = 1 + MAN_W + EXP_W;
     localparam SHARED_EXP_W = 8;
     localparam FP_BIAS = 1;
     localparam SHARED_EXP_BIAS = 127;
     localparam DOT_LEN = 32;
     localparam DATA_OUT_W = 32;
-    
-    // If want to use hex files
-    // NOTE: issue with this is the hex from testbench/scripts/generate_data.py does not seem to be exactly like our PEs
-    //logic hex_loaded_done;
-    //logic [DATA_MX_W-1:0] w0_vec_mem [0:DOT_LEN-1];
-    //logic [DATA_MX_W-1:0] x0_vec_mem [0:DOT_LEN-1];
-    //logic [SHARED_EXP_W-1:0] w0_shared_exp_mem [0:0];
-    //logic [SHARED_EXP_W-1:0] x0_shared_exp_mem [0:0];
-    //logic [DATA_OUT_W-1:0] gold_dot_mem [0:0];
-    //initial begin : LOAD_HEX
-    //    hex_loaded_done = 1'b0;
-    //    $display("[%0t] Reading hex files...", $time);
-    //    $readmemh("../data/vector_a.hex", w0_vec_mem);
-    //    $readmemh("../data/vector_b.hex", x0_vec_mem);
-    //    $readmemh("../data/shared_exp_a.hex", w0_shared_exp_mem);
-    //    $readmemh("../data/shared_exp_a.hex", x0_shared_exp_mem);
-    //    $readmemh("../data/fp32_result.hex", gold_dot_mem);
-    //    $display("[%0t] Finished reading hex files.", $time);
-    //    hex_loaded_done = 1'b1;
-    //end
 
     // Generate the inputs ourselves
     // Col1 weights (loaded second into PE, produces col1 output)
@@ -233,8 +228,8 @@ module sys_array_aitb_tb;
     // DUT
     sys_array_aitb #(
         .N(N),
-        .MAN_W(MAN_W),
         .EXP_W(EXP_W),
+        .MAN_W(MAN_W),
         .DATA_MX_W(DATA_MX_W),
         .SHARED_EXP_W(SHARED_EXP_W),
         .FP_BIAS(FP_BIAS),
@@ -351,8 +346,6 @@ module sys_array_aitb_tb;
             //    valid_top_i_dut[i] <= 1'b0;
             //end
 
-            //repeat (N+2) @(negedge clk);  // temporary debug bubble
-
         end
         
         @(negedge clk);
@@ -466,6 +459,7 @@ module sys_array_aitb_tb;
     end
 
     // "Golden" model
+    // Dot product of two MXFP vectors; scales result by the combined shared exponents.
     function automatic shortreal dot (shortreal vec1[], shortreal vec2[], byte shared_exp1, byte shared_exp2);
         int corrected_exp = shared_exp1-127+shared_exp2-127;
         dot = 0.0;
@@ -475,6 +469,7 @@ module sys_array_aitb_tb;
         dot = shortreal'(dot * (2.0 ** (corrected_exp))); // 127 is exponent bias from OCP-MX Standard
     endfunction
 
+    // Converts an MXFP element (raw bits as int) to FP32, handling both normal and subnormal encodings.
     function automatic shortreal to_fp32 (int fp_bits);
 
         localparam int M = MAN_W;

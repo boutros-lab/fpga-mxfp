@@ -196,7 +196,7 @@ module sys_array_aitb #(
                     .E_SHARED(SHARED_EXP_W),
                     .FP_BIAS(FP_BIAS),
                     .SH_BIAS(SHARED_EXP_BIAS),
-                    .PIPE(PIPE)
+                    .PIPE(PIPE),
                     .DOT_LEN(DOT_LEN)
                 ) pe_inst (
                     .clk(clk),

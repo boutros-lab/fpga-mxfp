@@ -1,0 +1,570 @@
+
+Warning-[LINX_KRNL] Unsupported Linux kernel
+  Linux kernel '6.8.0-100-generic' is not supported.
+  Supported versions are 2.4* or 2.6*.
+
+*** Using loader /usr/bin/g++-4.8 instead of cc ...
+                         Chronologic VCS (TM)
+        Version L-2016.06-1_Full64 -- Wed May 13 17:01:31 2026
+               Copyright (c) 1991-2016 by Synopsys Inc.
+                         ALL RIGHTS RESERVED
+
+This program is proprietary and confidential information of Synopsys Inc.
+and may be used and disclosed only as authorized in a license agreement
+controlling such use and disclosure.
+
+
+Warning-[LCA_FEATURES_ENABLED] Usage warning
+  LCA features enabled by '-lca' argument on the command line.  For more 
+  information regarding list of LCA features please refer to Chapter "LCA 
+  features" in the VCS/VCS-MX Release Notes
+
+Parsing design file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_lnsim.sv'
+Parsing design file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/tennm_atoms.sv'
+Parsing design file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv'
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[NZIR] Incorrect size number
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+  The specified width is '0'. Nonzero unsigned decimal number is required as 
+  the size constant. This '0' width will be ignored.
+
+
+Warning-[NZIR] Incorrect size number
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+  The specified width is '0'. Nonzero unsigned decimal number is required as 
+  the size constant. This '0' width will be ignored.
+
+
+Warning-[NZIR] Incorrect size number
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+  The specified width is '0'. Nonzero unsigned decimal number is required as 
+  the size constant. This '0' width will be ignored.
+
+
+Warning-[NZIR] Incorrect size number
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+  The specified width is '0'. Nonzero unsigned decimal number is required as 
+  the size constant. This '0' width will be ignored.
+
+
+Warning-[FLWI] For loop without initializer
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 19
+
+
+Parsing design file 'sys_array_aitb_tb.sv'
+Parsing design file '../rtl/sys_array_aitb.sv'
+Parsing design file '../../characterization/ai_tensor_block/rtl/mxfp_dot.sv'
+
+Warning-[IPDW] Identifier previously declared
+../../characterization/ai_tensor_block/rtl/mxfp_dot.sv, 92
+  Second declaration for identifier 'j' ignored
+  Identifier 'j' previously declared as genvar. 
+  [../../characterization/ai_tensor_block/rtl/mxfp_dot.sv, 49]
+
+
+Warning-[IPDW] Identifier previously declared
+../../characterization/ai_tensor_block/rtl/mxfp_dot.sv, 110
+  Second declaration for identifier 'j' ignored
+  Identifier 'j' previously declared as genvar. 
+  [../../characterization/ai_tensor_block/rtl/mxfp_dot.sv, 49]
+
+
+Warning-[IPDW] Identifier previously declared
+../../characterization/ai_tensor_block/rtl/mxfp_dot.sv, 130
+  Second declaration for identifier 'j' ignored
+  Identifier 'j' previously declared as genvar. 
+  [../../characterization/ai_tensor_block/rtl/mxfp_dot.sv, 49]
+
+
+Warning-[IPDW] Identifier previously declared
+../../characterization/ai_tensor_block/rtl/mxfp_dot.sv, 150
+  Second declaration for identifier 'j' ignored
+  Identifier 'j' previously declared as genvar. 
+  [../../characterization/ai_tensor_block/rtl/mxfp_dot.sv, 49]
+
+Parsing design file '../../characterization/ai_tensor_block/rtl/fp_aitb.sv'
+Parsing design file '../../characterization/ai_tensor_block/rtl/pipeline.sv'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_primitives.v'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/220model.v'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/sgate.v'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_mf.v'
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_mf.v, 51
+  Text macro (MAX_WIDTH) is redefined. The last definition will override 
+  previous ones.
+  In /tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_lnsim.sv,
+  20660, it was defined as 2048
+
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_primitives.v'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/220model.v'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/sgate.v'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_mf.v'
+Top Level Modules:
+       sys_array_aitb_tb
+
+Warning-[UII-L] Interface not instantiated
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_lnsim.sv, 38655
+  Interface 'twentynm_prblock_if' defined in logic library 'work' is never 
+  instantiated in design. It will be ignored.
+
+
+Warning-[UII-L] Interface not instantiated
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_lnsim.sv, 39069
+  Interface 'altera_pr_persona_if' defined in logic library 'work' is never 
+  instantiated in design. It will be ignored.
+
+
+Warning-[UII-L] Interface not instantiated
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_lnsim.sv, 40889
+  Interface 'config_stream_endpoint_pr_if' defined in logic library 'work' is 
+  never instantiated in design. It will be ignored.
+
+
+Warning-[UII-L] Interface not instantiated
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_lnsim.sv, 41789
+  Interface 'tennm_noc_axi_if' defined in logic library 'work' is never 
+  instantiated in design. It will be ignored.
+
+
+Warning-[UII-L] Interface not instantiated
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_lnsim.sv, 41818
+  Interface 'tennm_noc_axi_trans_q_if' defined in logic library 'work' is 
+  never instantiated in design. It will be ignored.
+
+assign 2 sys_array_aitb_tb/EXP_W (Command line)
+assign 1 sys_array_aitb_tb/MAN_W (Command line)
+TimeScale is 1 ps / 1 ps
+
+Warning-[TFIPC] Too few instance port connections
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TFIPC] Too few instance port connections
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[PCWM-W] Port connection width mismatch
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[PCWM-W] Port connection width mismatch
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[PCWM-W] Port connection width mismatch
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[PCWM-W] Port connection width mismatch
+../../characterization/ai_tensor_block/rtl/fp_aitb.sv, 38
+"tennm_dsp_prime tennm_dsp_prime_component( .clk (clk),  .ena (1'b1),  .acc_en (acc_en),  .zero_en (zero_en),  .load_bb_one (load_en),  .load_bb_two (1'b0),  .load_buf_sel (1'b0),  .shared_exponent (shared_exponent),  .clr ({rst, rst}),  .data_in ({16'b0, data_in[10], data_in[9], data_in[8], data_in[7], data_in[6], data_in[5], data_in[4], data_in[3], data_in[2], data_in[1]}),  .cascade_data_in ({cascade_data_in_col_2, cascade_data_in_col_1}),  .cascade_data_out ({cascade_data_out_col_2_w, cascade_data_out_col_1_w}),  .result_l ({fp32_col_2_w[4:0], fp32_col_1_w[31:0]}),  .result_h ({fp32_col_2_flag_w[3:0], fp32_col_1_flag_w[3:0], fp32_col_2_w[31:5]}));"
+  The following 37-bit expression is connected to 38-bit port "result_l" of 
+  module "tennm_dsp_prime", instance "tennm_dsp_prime_component".
+  Expression: {fp32_col_2_w[4:0], fp32_col_1_w[31:0]}
+  	use +lint=PCWM for more details
+
+
+Warning-[PCWM-W] Port connection width mismatch
+../../characterization/ai_tensor_block/rtl/fp_aitb.sv, 38
+"tennm_dsp_prime tennm_dsp_prime_component( .clk (clk),  .ena (1'b1),  .acc_en (acc_en),  .zero_en (zero_en),  .load_bb_one (load_en),  .load_bb_two (1'b0),  .load_buf_sel (1'b0),  .shared_exponent (shared_exponent),  .clr ({rst, rst}),  .data_in ({16'b0, data_in[10], data_in[9], data_in[8], data_in[7], data_in[6], data_in[5], data_in[4], data_in[3], data_in[2], data_in[1]}),  .cascade_data_in ({cascade_data_in_col_2, cascade_data_in_col_1}),  .cascade_data_out ({cascade_data_out_col_2_w, cascade_data_out_col_1_w}),  .result_l ({fp32_col_2_w[4:0], fp32_col_1_w[31:0]}),  .result_h ({fp32_col_2_flag_w[3:0], fp32_col_1_flag_w[3:0], fp32_col_2_w[31:5]}));"
+  The following 35-bit expression is connected to 37-bit port "result_h" of 
+  module "tennm_dsp_prime", instance "tennm_dsp_prime_component".
+  Expression: {fp32_col_2_flag_w[3:0], fp32_col_1_flag_w[3:0], 
+  fp32_col_2_w[31:5]}
+  	use +lint=PCWM for more details
+
+
+Warning-[PCWM-W] Port connection width mismatch
+../../characterization/ai_tensor_block/rtl/fp_aitb.sv, 38
+"tennm_dsp_prime tennm_dsp_prime_component( .clk (clk),  .ena (1'b1),  .acc_en (acc_en),  .zero_en (zero_en),  .load_bb_one (load_en),  .load_bb_two (1'b0),  .load_buf_sel (1'b0),  .shared_exponent (shared_exponent),  .clr ({rst, rst}),  .data_in ({16'b0, data_in[10], data_in[9], data_in[8], data_in[7], data_in[6], data_in[5], data_in[4], data_in[3], data_in[2], data_in[1]}),  .cascade_data_in ({cascade_data_in_col_2, cascade_data_in_col_1}),  .cascade_data_out ({cascade_data_out_col_2_w, cascade_data_out_col_1_w}),  .result_l ({fp32_col_2_w[4:0], fp32_col_1_w[31:0]}),  .result_h ({fp32_col_2_flag_w[3:0], fp32_col_1_flag_w[3:0], fp32_col_2_w[31:5]}));"
+  The following 37-bit expression is connected to 38-bit port "result_l" of 
+  module "tennm_dsp_prime", instance "tennm_dsp_prime_component".
+  Expression: {fp32_col_2_w[4:0], fp32_col_1_w[31:0]}
+  	use +lint=PCWM for more details
+
+
+Warning-[PCWM-W] Port connection width mismatch
+../../characterization/ai_tensor_block/rtl/fp_aitb.sv, 38
+"tennm_dsp_prime tennm_dsp_prime_component( .clk (clk),  .ena (1'b1),  .acc_en (acc_en),  .zero_en (zero_en),  .load_bb_one (load_en),  .load_bb_two (1'b0),  .load_buf_sel (1'b0),  .shared_exponent (shared_exponent),  .clr ({rst, rst}),  .data_in ({16'b0, data_in[10], data_in[9], data_in[8], data_in[7], data_in[6], data_in[5], data_in[4], data_in[3], data_in[2], data_in[1]}),  .cascade_data_in ({cascade_data_in_col_2, cascade_data_in_col_1}),  .cascade_data_out ({cascade_data_out_col_2_w, cascade_data_out_col_1_w}),  .result_l ({fp32_col_2_w[4:0], fp32_col_1_w[31:0]}),  .result_h ({fp32_col_2_flag_w[3:0], fp32_col_1_flag_w[3:0], fp32_col_2_w[31:5]}));"
+  The following 35-bit expression is connected to 37-bit port "result_h" of 
+  module "tennm_dsp_prime", instance "tennm_dsp_prime_component".
+  Expression: {fp32_col_2_flag_w[3:0], fp32_col_1_flag_w[3:0], 
+  fp32_col_2_w[31:5]}
+  	use +lint=PCWM for more details
+
+
+Warning-[PCWM-W] Port connection width mismatch
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[PCWM-W] Port connection width mismatch
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[PCWM-W] Port connection width mismatch
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+Notice: Ports coerced to inout, use -notice for details
+Starting vcs inline pass...
+81 unique modules to generate
+recompiling package vcs_paramclassrepository
+recompiling package altera_lnsim_functions
+recompiling package altera_generic_pll_functions
+recompiling package fourteennm_iopll_functions
+recompiling package twentynm_prblock_test_pkg
+recompiling package config_stream_endpoint_pr_test_pkg
+recompiling package tennm_noc_simulation_pkg
+recompiling module tennm_dsp_prime
+recompiling module tennm_dsp_prime
+recompiling package <protected>
+recompiling package <protected>
+recompiling package <protected>
+recompiling package <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+50 of 81 modules done
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module <protected>
+recompiling module sys_array_aitb_tb
+recompiling module sys_array_aitb
+recompiling module mxfp_dot
+recompiling module fp_aitb
+recompiling module fp_aitb
+recompiling module pipeline
+recompiling module pipeline
+recompiling module pipeline
+87 of 81 modules done
+/usr/bin/ld: warning: rmapats_mop.o: missing .note.GNU-stack section implies executable stack
+/usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+rm -f _csrc*.so pre_vcsobj_*.so share_vcsobj_*.so
+if [ -x ../simv ]; then chmod -x ../simv; fi
+/usr/bin/g++-4.8  -o ../simv   -Wl,-rpath-link=./ -Wl,-rpath='$ORIGIN'/simv.daidir/ -Wl,-rpath=./simv.daidir/ -Wl,-rpath='$ORIGIN'/simv.daidir//scsim.db.dir  -L/usr/lib/x86_64-linux-gnu -L/lib/x86_64-linux-gnu -Wl,--no-as-needed -rdynamic   amcQwB.o objs/amcQw_d.o  _2677816_archive_1.so  SIM_l.o       rmapats_mop.o rmapats.o rmar.o  rmar_llvm_0_1.o rmar_llvm_0_0.o          /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libzerosoft_rt_stubs.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libvirsim.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/liberrorinf.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libsnpsmalloc.so    /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libvcsnew.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libsimprofile.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libreader_common.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libBA.a /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libuclinative.so   -Wl,-whole-archive /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libvcsucli.so -Wl,-no-whole-archive          /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/vcs_save_restore_new.o -ldl  -lc -lm -lpthread -ldl 
+/usr/bin/ld: warning: rmapats_mop.o: missing .note.GNU-stack section implies executable stack
+/usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+../simv up to date
+CPU time: 34.296 seconds to compile + 1.427 seconds to elab + .410 seconds to link
+
+Note-[RT_BS] Larger stack needed
+  Note: Bumping stack limit from 8192 to 8195 Kbytes.
+
+Chronologic VCS simulator copyright 1991-2016
+Contains Synopsys proprietary information.
+Compiler version L-2016.06-1_Full64; Runtime version L-2016.06-1_Full64;  May 13 17:02 2026
+============================================================
+DATA_GEN: Generated col1 weights
+============================================================
+W1[0] exp=127 : 4 1 9 3 d d 5 2 1 d 6 d d c 9 6 5 a 5 7 2 f 2 e 8 5 c d d 5 3 a
+W1[1] exp=127 : 0 0 a d 6 3 d 3 b 5 2 e d f 3 a a c 2 a 1 8 8 9 b 6 6 e c a b 1
+W1[2] exp=127 : 5 f b a e 5 1 9 2 c f f 8 7 f c b 9 9 0 7 1 6 c 2 8 7 d 2 e d 9
+============================================================
+DATA_GEN: Generated col2 weights
+============================================================
+W2[0] exp=127 : f 3 5 8 b 9 f a 8 6 e c a 6 3 3 f 3 f 4 7 b 6 a 9 d a 5 5 f 9 4
+W2[1] exp=127 : 0 a b e c a d 3 6 e 7 a 6 8 9 8 4 3 4 9 b d 9 d 6 a 6 5 6 4 7 9
+W2[2] exp=127 : 4 8 8 d 7 e 8 c d 9 c 6 a d 6 0 3 a e a 5 a 9 7 6 0 6 6 d c 6 8
+============================================================
+DATA_GEN: Generated activation sets
+============================================================
+X[p=0][c=0] exp=126 : e b f 9 a 1 7 1 6 0 5 5 9 1 5 8 b 3 c a e 8 9 1 e 6 f a a d e 8
+X[p=0][c=1] exp=126 : 9 8 a 3 b 7 6 a 4 9 2 4 f 6 a 2 2 d 4 4 a 9 1 e b b f 9 6 5 f b
+X[p=0][c=2] exp=126 : 8 e b 2 8 d b 2 e d c 8 1 6 1 b 8 3 6 b 2 4 3 8 2 8 9 5 1 b 1 8
+X[p=1][c=0] exp=126 : 7 1 f 4 8 6 4 2 6 1 5 d b 5 d 7 4 7 7 9 9 b 9 1 1 a a 5 3 c 2 e
+X[p=1][c=1] exp=126 : 8 f 6 0 8 0 8 6 5 0 4 9 0 c a 2 5 1 7 3 9 6 5 1 d a 7 c c 1 b 6
+X[p=1][c=2] exp=126 : 7 e c 5 0 0 2 4 d d b 9 e d b f 3 3 d 1 4 5 0 d 2 8 d 2 4 6 c 0
+============================================================
+DATA_GEN: Golden dot products (col1)
+============================================================
+G_col1[p=0][0][0] = 0x40800000 (4.000000)
+G_col1[p=0][0][1] = 0x41dd0000 (27.625000)
+G_col1[p=0][0][2] = 0xc1810000 (-16.125000)
+G_col1[p=0][1][0] = 0xc1060000 (-8.375000)
+G_col1[p=0][1][1] = 0xc1e00000 (-28.000000)
+G_col1[p=0][1][2] = 0xc1a40000 (-20.500000)
+G_col1[p=0][2][0] = 0xc20d8000 (-35.375000)
+G_col1[p=0][2][1] = 0x40f80000 (7.750000)
+G_col1[p=0][2][2] = 0x41e50000 (28.625000)
+G_col1[p=1][0][0] = 0x42018000 (32.375000)
+G_col1[p=1][0][1] = 0x41360000 (11.375000)
+G_col1[p=1][0][2] = 0x410a0000 (8.625000)
+G_col1[p=1][1][0] = 0xc1b50000 (-22.625000)
+G_col1[p=1][1][1] = 0x41cd0000 (25.625000)
+G_col1[p=1][1][2] = 0xc0280000 (-2.625000)
+G_col1[p=1][2][0] = 0x419f0000 (19.875000)
+G_col1[p=1][2][1] = 0x41d70000 (26.875000)
+G_col1[p=1][2][2] = 0x41c60000 (24.750000)
+============================================================
+DATA_GEN: Golden dot products (col2)
+============================================================
+G_col2[p=0][0][0] = 0xc1970000 (-18.875000)
+G_col2[p=0][0][1] = 0xc14e0000 (-12.875000)
+G_col2[p=0][0][2] = 0x40c80000 (6.250000)
+G_col2[p=0][1][0] = 0xc1e10000 (-28.125000)
+G_col2[p=0][1][1] = 0xc1ea0000 (-29.250000)
+G_col2[p=0][1][2] = 0x40cc0000 (6.375000)
+G_col2[p=0][2][0] = 0xc2020000 (-32.500000)
+G_col2[p=0][2][1] = 0xc2988000 (-76.250000)
+G_col2[p=0][2][2] = 0x40fc0000 (7.875000)
+G_col2[p=1][0][0] = 0xc2198000 (-38.375000)
+G_col2[p=1][0][1] = 0xc20f0000 (-35.750000)
+G_col2[p=1][0][2] = 0xc20a0000 (-34.500000)
+G_col2[p=1][1][0] = 0x420b8000 (34.875000)
+G_col2[p=1][1][1] = 0x413e0000 (11.875000)
+G_col2[p=1][1][2] = 0xc1870000 (-16.875000)
+G_col2[p=1][2][0] = 0xc20f0000 (-35.750000)
+G_col2[p=1][2][1] = 0xc1ae0000 (-21.750000)
+G_col2[p=1][2][2] = 0xc0b40000 (-5.625000)
+============================================================
+[305000] OUT row=0 col=0 expect_p=0 dut_col1=0x40800000 gold_col1=0x40800000 dut_col2=0xc1970000 gold_col2=0xc1970000
+[305000] OUT row=0 col=1 expect_p=0 dut_col1=0x41dd0000 gold_col1=0x41dd0000 dut_col2=0xc14e0000 gold_col2=0xc14e0000
+[305000] OUT row=0 col=2 expect_p=0 dut_col1=0xc1810000 gold_col1=0xc1810000 dut_col2=0x40c80000 gold_col2=0x40c80000
+[305000] Completed row 0 for activation set 0
+[315000] OUT row=0 col=0 expect_p=1 dut_col1=0x42018000 gold_col1=0x42018000 dut_col2=0xc2198000 gold_col2=0xc2198000
+[315000] OUT row=0 col=1 expect_p=1 dut_col1=0x41360000 gold_col1=0x41360000 dut_col2=0xc20f0000 gold_col2=0xc20f0000
+[315000] OUT row=0 col=2 expect_p=1 dut_col1=0x410a0000 gold_col1=0x410a0000 dut_col2=0xc20a0000 gold_col2=0xc20a0000
+[315000] OUT row=1 col=0 expect_p=0 dut_col1=0xc1060000 gold_col1=0xc1060000 dut_col2=0xc1e10000 gold_col2=0xc1e10000
+[315000] OUT row=1 col=1 expect_p=0 dut_col1=0xc1e00000 gold_col1=0xc1e00000 dut_col2=0xc1ea0000 gold_col2=0xc1ea0000
+[315000] OUT row=1 col=2 expect_p=0 dut_col1=0xc1a40000 gold_col1=0xc1a40000 dut_col2=0x40cc0000 gold_col2=0x40cc0000
+[315000] Completed row 0 for activation set 1
+[315000] Completed row 1 for activation set 0
+[325000] OUT row=1 col=0 expect_p=1 dut_col1=0xc1b50000 gold_col1=0xc1b50000 dut_col2=0x420b8000 gold_col2=0x420b8000
+[325000] OUT row=1 col=1 expect_p=1 dut_col1=0x41cd0000 gold_col1=0x41cd0000 dut_col2=0x413e0000 gold_col2=0x413e0000
+[325000] OUT row=1 col=2 expect_p=1 dut_col1=0xc0280000 gold_col1=0xc0280000 dut_col2=0xc1870000 gold_col2=0xc1870000
+[325000] OUT row=2 col=0 expect_p=0 dut_col1=0xc20d8000 gold_col1=0xc20d8000 dut_col2=0xc2020000 gold_col2=0xc2020000
+[325000] OUT row=2 col=1 expect_p=0 dut_col1=0x40f80000 gold_col1=0x40f80000 dut_col2=0xc2988000 gold_col2=0xc2988000
+[325000] OUT row=2 col=2 expect_p=0 dut_col1=0x41e50000 gold_col1=0x41e50000 dut_col2=0x40fc0000 gold_col2=0x40fc0000
+[325000] Completed row 1 for activation set 1
+[325000] Completed row 2 for activation set 0
+[335000] OUT row=2 col=0 expect_p=1 dut_col1=0x419f0000 gold_col1=0x419f0000 dut_col2=0xc20f0000 gold_col2=0xc20f0000
+[335000] OUT row=2 col=1 expect_p=1 dut_col1=0x41d70000 gold_col1=0x41d70000 dut_col2=0xc1ae0000 gold_col2=0xc1ae0000
+[335000] OUT row=2 col=2 expect_p=1 dut_col1=0x41c60000 gold_col1=0x41c60000 dut_col2=0xc0b40000 gold_col2=0xc0b40000
+[335000] Completed row 2 for activation set 1
+============================================================
+[335000] TEST PASSED: received all expected outputs (18).
+============================================================
+$finish called from file "sys_array_aitb_tb.sv", line 455.
+$finish at simulation time               335000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 335000 ps
+CPU Time:      0.630 seconds;       Data structure size:  24.1Mb
+Wed May 13 17:02:09 2026
