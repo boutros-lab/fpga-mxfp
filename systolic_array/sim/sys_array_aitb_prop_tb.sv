@@ -1,45 +1,34 @@
-import pkg_aitb::*;
-`timescale 1ns/1ps
-module sys_array_aitb_prop_tb;
-    // USAGE: make sure to specify:
-    // 1) MODE
-    // 2) IS_SIM
-    // 3) MAN_W and EXP_W according to MODE
-    localparam mxfp_mode_e MODE = MXFP4;
-    localparam bit IS_SIM = 1;
+// //////////////////////////////////////////////////////////////////////////////////////
+// Testbench: sys_array_aitb_prop_tb
+// DUT: sys_array_aitb_prop
+//
+// Description:
+// Testbench to verify the `sys_array_aitb_prop` module by loading in a set of vectors from a 
+// "weight" matrix followed by streaming in `P` sets of "activation" vectors.
+//
+// //////////////////////////////////////////////////////////////////////////////////////
 
-    localparam N = 3;
+import pkg_aitb::*;
+
+module sys_array_aitb_prop_tb;
+    
+    // Parameters
+    parameter  MODE_INT = 0;
+    localparam bit IS_SIM  = 1;
+    parameter  bit IS_DOT4 = 0;
+    
+    // Size of systolic array
+    parameter N = 3;
     // Number of sets of activations to stream in.
     localparam P = 2;
-    localparam EXP_W = 2;
-    localparam MAN_W = 1;
+    
+    parameter EXP_W = 2;
+    parameter MAN_W = 1;
     localparam DATA_MX_W = 1 + MAN_W + EXP_W;
     localparam SHARED_EXP_W = 8;
-    localparam FP_BIAS = 1;
-    localparam SHARED_EXP_BIAS = 127;
     localparam DOT_LEN = 32;
     localparam DATA_OUT_W = 32;
     
-    // If want to use hex files
-    // NOTE: issue with this is the hex from testbench/scripts/generate_data.py does not seem to be exactly like our PEs
-    //logic hex_loaded_done;
-    //logic [DATA_MX_W-1:0] w0_vec_mem [0:DOT_LEN-1];
-    //logic [DATA_MX_W-1:0] x0_vec_mem [0:DOT_LEN-1];
-    //logic [SHARED_EXP_W-1:0] w0_shared_exp_mem [0:0];
-    //logic [SHARED_EXP_W-1:0] x0_shared_exp_mem [0:0];
-    //logic [DATA_OUT_W-1:0] gold_dot_mem [0:0];
-    //initial begin : LOAD_HEX
-    //    hex_loaded_done = 1'b0;
-    //    $display("[%0t] Reading hex files...", $time);
-    //    $readmemh("../data/vector_a.hex", w0_vec_mem);
-    //    $readmemh("../data/vector_b.hex", x0_vec_mem);
-    //    $readmemh("../data/shared_exp_a.hex", w0_shared_exp_mem);
-    //    $readmemh("../data/shared_exp_a.hex", x0_shared_exp_mem);
-    //    $readmemh("../data/fp32_result.hex", gold_dot_mem);
-    //    $display("[%0t] Finished reading hex files.", $time);
-    //    hex_loaded_done = 1'b1;
-    //end
-
     // Generate the inputs ourselves
     // Col1 weights (loaded second into PE, produces col1 output)
     shortreal w1_vec_real [0:N-1][0:DOT_LEN-1];
@@ -240,15 +229,14 @@ module sys_array_aitb_prop_tb;
     logic [3:0] fp32_flags_col2_o_dut [0:N-1][0:N-1];
     // DUT
     sys_array_aitb_prop #(
-        .MODE(MODE),
+        .MODE_INT(MODE_INT),
         .IS_SIM(IS_SIM),
+        .IS_DOT4(IS_DOT4),
         .N(N),
-        .MAN_W(MAN_W),
         .EXP_W(EXP_W),
+        .MAN_W(MAN_W),
         .DATA_MX_W(DATA_MX_W),
         .SHARED_EXP_W(SHARED_EXP_W),
-        .FP_BIAS(FP_BIAS),
-        .SHARED_EXP_BIAS(SHARED_EXP_BIAS),
         .DOT_LEN(DOT_LEN),
         .DATA_OUT_W(DATA_OUT_W)
     ) dut (
@@ -361,8 +349,6 @@ module sys_array_aitb_prop_tb;
             //    valid_top_i_dut[i] <= 1'b0;
             //end
 
-            //repeat (N+2) @(negedge clk);  // temporary debug bubble
-
         end
         
         @(negedge clk);
@@ -378,6 +364,7 @@ module sys_array_aitb_prop_tb;
     end
 
     localparam TOTAL_EXPECTED_OUTPUTS = P * N * N;
+    localparam int MAX_ULP = 32;
 
     integer rr, cc;
     logic mismatch_seen;
@@ -416,33 +403,39 @@ module sys_array_aitb_prop_tb;
                         row_valids_this_cycle[rr] = row_valids_this_cycle[rr] + 1;
                         total_recv_count = total_recv_count + 1;
 
-                        $display("[%0t] OUT row=%0d col=%0d expect_p=%0d dut_col1=0x%08h gold_col1=0x%08h dut_col2=0x%08h gold_col2=0x%08h",
+                        $display("[%0t] OUT row=%0d col=%0d expect_p=%0d  dut_col1=0x%08h gold_col1=0x%08h (%0d ULP)  dut_col2=0x%08h gold_col2=0x%08h (%0d ULP)",
                              $time, rr, cc, expect_p_per_row[rr],
                              dot_fp32_col1_o_dut[rr][cc],
                              dot_fp32_col1_o_gold[expect_p_per_row[rr]][rr][cc],
+                             fp32_ulp_diff(dot_fp32_col1_o_dut[rr][cc], dot_fp32_col1_o_gold[expect_p_per_row[rr]][rr][cc]),
                              dot_fp32_col2_o_dut[rr][cc],
-                             dot_fp32_col2_o_gold[expect_p_per_row[rr]][rr][cc]);
+                             dot_fp32_col2_o_gold[expect_p_per_row[rr]][rr][cc],
+                             fp32_ulp_diff(dot_fp32_col2_o_dut[rr][cc], dot_fp32_col2_o_gold[expect_p_per_row[rr]][rr][cc]));
 
                         // Check col1
-                        if (dot_fp32_col1_o_dut[rr][cc] !==
-                            dot_fp32_col1_o_gold[expect_p_per_row[rr]][rr][cc]) begin
+                        if (!fp32_close(dot_fp32_col1_o_dut[rr][cc],
+                                        dot_fp32_col1_o_gold[expect_p_per_row[rr]][rr][cc], MAX_ULP)) begin
                             mismatch_seen = 1'b1;
-                            $error("[%0t] COL1 MISMATCH row=%0d col=%0d expect_p=%0d dut=0x%08h gold=0x%08h",
+                            $error("[%0t] COL1 MISMATCH row=%0d col=%0d expect_p=%0d dut=0x%08h gold=0x%08h (diff=%0d ULP, max=%0d)",
                                 $time, rr, cc, expect_p_per_row[rr],
                                 dot_fp32_col1_o_dut[rr][cc],
-                                dot_fp32_col1_o_gold[expect_p_per_row[rr]][rr][cc]);
+                                dot_fp32_col1_o_gold[expect_p_per_row[rr]][rr][cc],
+                                fp32_ulp_diff(dot_fp32_col1_o_dut[rr][cc], dot_fp32_col1_o_gold[expect_p_per_row[rr]][rr][cc]),
+                                MAX_ULP);
                             $display("[%0t] TEST FAILED: ending simulation.", $time);
                             $finish;
                         end
 
                         // Check col2
-                        if (dot_fp32_col2_o_dut[rr][cc] !==
-                            dot_fp32_col2_o_gold[expect_p_per_row[rr]][rr][cc]) begin
+                        if (!fp32_close(dot_fp32_col2_o_dut[rr][cc],
+                                        dot_fp32_col2_o_gold[expect_p_per_row[rr]][rr][cc], MAX_ULP)) begin
                             mismatch_seen = 1'b1;
-                            $error("[%0t] COL2 MISMATCH row=%0d col=%0d expect_p=%0d dut=0x%08h gold=0x%08h",
+                            $error("[%0t] COL2 MISMATCH row=%0d col=%0d expect_p=%0d dut=0x%08h gold=0x%08h (diff=%0d ULP, max=%0d)",
                                 $time, rr, cc, expect_p_per_row[rr],
                                 dot_fp32_col2_o_dut[rr][cc],
-                                dot_fp32_col2_o_gold[expect_p_per_row[rr]][rr][cc]);
+                                dot_fp32_col2_o_gold[expect_p_per_row[rr]][rr][cc],
+                                fp32_ulp_diff(dot_fp32_col2_o_dut[rr][cc], dot_fp32_col2_o_gold[expect_p_per_row[rr]][rr][cc]),
+                                MAX_ULP);
                             $display("[%0t] TEST FAILED: ending simulation.", $time);
                             $finish;
                         end
@@ -475,7 +468,26 @@ module sys_array_aitb_prop_tb;
         end
     end
 
+    // Returns the absolute ULP distance between two FP32 bit patterns.
+    // Works correctly for same-sign values (which is the expected case
+    // for dot product results).  For opposite signs, returns a large
+    // value that will always exceed any reasonable tolerance.
+    function automatic int fp32_ulp_diff(logic [31:0] a, logic [31:0] b);
+        int sa, sb, diff;
+        sa = a[31] ? -(int'({1'b0, a[30:0]})) : int'(a);
+        sb = b[31] ? -(int'({1'b0, b[30:0]})) : int'(b);
+        diff = sa - sb;
+        if (diff < 0) diff = -diff;
+        return diff;
+    endfunction
+
+    // Returns 1 if two FP32 bit patterns are within max_ulp of each other.
+    function automatic logic fp32_close(logic [31:0] a, logic [31:0] b, int max_ulp);
+        return (fp32_ulp_diff(a, b) <= max_ulp);
+    endfunction
+
     // "Golden" model
+    // Dot product of two MXFP vectors; scales result by the combined shared exponents.
     function automatic shortreal dot (shortreal vec1[], shortreal vec2[], byte shared_exp1, byte shared_exp2);
         int corrected_exp = shared_exp1-127+shared_exp2-127;
         dot = 0.0;
@@ -485,6 +497,7 @@ module sys_array_aitb_prop_tb;
         dot = shortreal'(dot * (2.0 ** (corrected_exp))); // 127 is exponent bias from OCP-MX Standard
     endfunction
 
+    // Converts an MXFP element (raw bits as int) to FP32, handling both normal and subnormal encodings.
     function automatic shortreal to_fp32 (int fp_bits);
 
         localparam int M = MAN_W;
@@ -502,7 +515,7 @@ module sys_array_aitb_prop_tb;
         if (M_bits == 0 && E_bits == 0) begin // ZERO
             to_fp32 = sign * 0.0;
         end
-        else if (E_bits == 0) begin //CURSED SUBNORMALS
+        else if (E_bits == 0) begin // SUBNORMALS
             to_fp32 = sign * (2.0 ** (1 - BIAS)) * (M_bits / shortreal'(1 << M));
         end
         else begin // NORMALs

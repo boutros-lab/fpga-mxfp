@@ -41,6 +41,7 @@ design_files=(
 "../../proposed_dsp_mxfp_dot/rtl/mxfp_dot_prop_mxfp4.sv"
 "../../proposed_dsp_mxfp_dot/rtl/mxfp_dot_prop_mxfp6.sv"
 "../../proposed_dsp_mxfp_dot/rtl/mxfp_dot_prop_mxfp8.sv"
+"../../proposed_dsp_mxfp_dot/rtl/mxfp_dot_prop_mxfp8_dot4aitb.sv"
 "../../proposed_dsp_mxfp_dot/rtl/fp_aitb_proposed.sv"
 "../../aitb_asic/rtl/mxfp_aitb/naive_mxfp_aitb_top.sv"
 "../../aitb_asic/rtl/mxfp_aitb/config_gen.sv"

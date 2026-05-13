@@ -1,0 +1,617 @@
+
+Warning-[LINX_KRNL] Unsupported Linux kernel
+  Linux kernel '6.8.0-100-generic' is not supported.
+  Supported versions are 2.4* or 2.6*.
+
+                         Chronologic VCS (TM)
+        Version L-2016.06-1_Full64 -- Wed May 13 12:05:19 2026
+               Copyright (c) 1991-2016 by Synopsys Inc.
+                         ALL RIGHTS RESERVED
+
+This program is proprietary and confidential information of Synopsys Inc.
+and may be used and disclosed only as authorized in a license agreement
+controlling such use and disclosure.
+
+Parsing design file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_lnsim.sv'
+Parsing design file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/tennm_atoms.sv'
+Parsing design file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv'
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[NZIR] Incorrect size number
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+  The specified width is '0'. Nonzero unsigned decimal number is required as 
+  the size constant. This '0' width will be ignored.
+
+
+Warning-[NZIR] Incorrect size number
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+  The specified width is '0'. Nonzero unsigned decimal number is required as 
+  the size constant. This '0' width will be ignored.
+
+
+Warning-[NZIR] Incorrect size number
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+  The specified width is '0'. Nonzero unsigned decimal number is required as 
+  the size constant. This '0' width will be ignored.
+
+
+Warning-[NZIR] Incorrect size number
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+  The specified width is '0'. Nonzero unsigned decimal number is required as 
+  the size constant. This '0' width will be ignored.
+
+
+Warning-[FLWI] For loop without initializer
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 19
+
+
+Parsing design file '../../aitb_asic/rtl/pkg_aitb.sv'
+Parsing design file 'sys_array_aitb_prop_tb.sv'
+Parsing design file '../rtl/sys_array_aitb_prop.sv'
+
+Note-[SV-LCM-PPWI] Package previously wildcard imported
+../rtl/sys_array_aitb_prop.sv, 22
+$unit
+  Package 'pkg_aitb' already wildcard imported. 
+  Ignoring pkg_aitb::*
+  See the System Verilog LRM(1800-2005), section 18.1.
+
+Parsing design file '../../proposed_dsp_mxfp_dot/rtl/mxfp_dot_proposed.sv'
+
+Note-[SV-LCM-PPWI] Package previously wildcard imported
+../../proposed_dsp_mxfp_dot/rtl/mxfp_dot_proposed.sv, 20
+$unit
+  Package 'pkg_aitb' already wildcard imported. 
+  Ignoring pkg_aitb::*
+  See the System Verilog LRM(1800-2005), section 18.1.
+
+Parsing design file '../../proposed_dsp_mxfp_dot/rtl/mxfp_dot_prop_mxfp4.sv'
+
+Note-[SV-LCM-PPWI] Package previously wildcard imported
+../../proposed_dsp_mxfp_dot/rtl/mxfp_dot_prop_mxfp4.sv, 20
+$unit
+  Package 'pkg_aitb' already wildcard imported. 
+  Ignoring pkg_aitb::*
+  See the System Verilog LRM(1800-2005), section 18.1.
+
+Parsing design file '../../proposed_dsp_mxfp_dot/rtl/mxfp_dot_prop_mxfp6.sv'
+
+Note-[SV-LCM-PPWI] Package previously wildcard imported
+../../proposed_dsp_mxfp_dot/rtl/mxfp_dot_prop_mxfp6.sv, 20
+$unit
+  Package 'pkg_aitb' already wildcard imported. 
+  Ignoring pkg_aitb::*
+  See the System Verilog LRM(1800-2005), section 18.1.
+
+Parsing design file '../../proposed_dsp_mxfp_dot/rtl/mxfp_dot_prop_mxfp8.sv'
+
+Note-[SV-LCM-PPWI] Package previously wildcard imported
+../../proposed_dsp_mxfp_dot/rtl/mxfp_dot_prop_mxfp8.sv, 20
+$unit
+  Package 'pkg_aitb' already wildcard imported. 
+  Ignoring pkg_aitb::*
+  See the System Verilog LRM(1800-2005), section 18.1.
+
+Parsing design file '../../proposed_dsp_mxfp_dot/rtl/mxfp_dot_prop_mxfp8_dot4aitb.sv'
+
+Note-[SV-LCM-PPWI] Package previously wildcard imported
+../../proposed_dsp_mxfp_dot/rtl/mxfp_dot_prop_mxfp8_dot4aitb.sv, 20
+$unit
+  Package 'pkg_aitb' already wildcard imported. 
+  Ignoring pkg_aitb::*
+  See the System Verilog LRM(1800-2005), section 18.1.
+
+Parsing design file '../../proposed_dsp_mxfp_dot/rtl/fp_aitb_proposed.sv'
+
+Note-[SV-LCM-PPWI] Package previously wildcard imported
+../../proposed_dsp_mxfp_dot/rtl/fp_aitb_proposed.sv, 15
+$unit
+  Package 'pkg_aitb' already wildcard imported. 
+  Ignoring pkg_aitb::*
+  See the System Verilog LRM(1800-2005), section 18.1.
+
+Parsing design file '../../aitb_asic/rtl/mxfp_aitb/naive_mxfp_aitb_top.sv'
+
+Note-[SV-LCM-PPWI] Package previously wildcard imported
+../../aitb_asic/rtl/mxfp_aitb/naive_mxfp_aitb_top.sv, 5
+$unit
+  Package 'pkg_aitb' already wildcard imported. 
+  Ignoring pkg_aitb::*
+  See the System Verilog LRM(1800-2005), section 18.1.
+
+Parsing design file '../../aitb_asic/rtl/mxfp_aitb/config_gen.sv'
+
+Note-[SV-LCM-PPWI] Package previously wildcard imported
+../../aitb_asic/rtl/mxfp_aitb/config_gen.sv, 5
+$unit
+  Package 'pkg_aitb' already wildcard imported. 
+  Ignoring pkg_aitb::*
+  See the System Verilog LRM(1800-2005), section 18.1.
+
+Parsing design file '../../aitb_asic/rtl/in_reg_bank.sv'
+
+Note-[SV-LCM-PPWI] Package previously wildcard imported
+../../aitb_asic/rtl/in_reg_bank.sv, 1
+$unit
+  Package 'pkg_aitb' already wildcard imported. 
+  Ignoring pkg_aitb::*
+  See the System Verilog LRM(1800-2005), section 18.1.
+
+Parsing design file '../../aitb_asic/rtl/pipeline.sv'
+Parsing design file '../../aitb_asic/rtl/mxfp_aitb/input_preparation_mxfp.sv'
+
+Note-[SV-LCM-PPWI] Package previously wildcard imported
+../../aitb_asic/rtl/mxfp_aitb/input_preparation_mxfp.sv, 7
+$unit
+  Package 'pkg_aitb' already wildcard imported. 
+  Ignoring pkg_aitb::*
+  See the System Verilog LRM(1800-2005), section 18.1.
+
+Parsing design file '../../aitb_asic/rtl/mxfp_dot/naive_mxfp_dot_fixed.sv'
+
+Note-[SV-LCM-PPWI] Package previously wildcard imported
+../../aitb_asic/rtl/mxfp_dot/naive_mxfp_dot_fixed.sv, 4
+$unit
+  Package 'pkg_aitb' already wildcard imported. 
+  Ignoring pkg_aitb::*
+  See the System Verilog LRM(1800-2005), section 18.1.
+
+Parsing design file '../../aitb_asic/rtl/mxfp_dot/config_fix2fp32.sv'
+Parsing design file '../../aitb_asic/rtl/mxfp_dot/mxfp_mult_shift.sv'
+Parsing design file '../../aitb_asic/rtl/mxfp_dot/naive_reduction.sv'
+
+Note-[SV-LCM-PPWI] Package previously wildcard imported
+../../aitb_asic/rtl/mxfp_dot/naive_reduction.sv, 5
+$unit
+  Package 'pkg_aitb' already wildcard imported. 
+  Ignoring pkg_aitb::*
+  See the System Verilog LRM(1800-2005), section 18.1.
+
+Parsing design file '../../aitb_asic/rtl/mxfp_dot/mxfp_multiply.sv'
+Parsing design file '../../aitb_asic/rtl/mxfp_dot/pow2_reduction_norecurse.sv'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_primitives.v'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/220model.v'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/sgate.v'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_mf.v'
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_mf.v, 51
+  Text macro (MAX_WIDTH) is redefined. The last definition will override 
+  previous ones.
+  In /tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_lnsim.sv,
+  20660, it was defined as 2048
+
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_primitives.v'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/220model.v'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/sgate.v'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_mf.v'
+CPU time: 35.463 seconds to compile
+Unsupported Linux kernel (6.8.0-100-generic), will try Linux
+                     Synopsys 1076 VHDL Analyzer
+                 Version L-2016.06-1 -- Jul 16, 2016
+              Copyright (c) 1991-2016 by Synopsys Inc.
+                         ALL RIGHTS RESERVED
+
+This program is proprietary and confidential information of Synopsys Inc.
+and may be used and disclosed only as authorized in a license agreement
+controlling such use and disclosure.
+
+Parsing design file '../../aitb_asic/rtl/ieee_fp32_add.vhdl'
+Parsing design file '../../aitb_asic/rtl/mxfp_dot/flopoco_normalizers/normalizer_sgn_70b.vhdl'
+Parsing design file '../../aitb_asic/rtl/mxfp_dot/flopoco_shifters/fp8_67_shifter.vhdl'
+
+Warning-[LINX_KRNL] Unsupported Linux kernel
+  Linux kernel '6.8.0-100-generic' is not supported.
+  Supported versions are 2.4* or 2.6*.
+
+
+Warning-[LCA_FEATURES_ENABLED] Usage warning
+  LCA features enabled by '-lca' argument on the command line.  For more 
+  information regarding list of LCA features please refer to Chapter "LCA 
+  features" in the VCS/VCS-MX Release Notes
+
+Doing common elaboration 
+
+Warning-[LINX_KRNL] Unsupported Linux kernel
+  Linux kernel '6.8.0-100-generic' is not supported.
+  Supported versions are 2.4* or 2.6*.
+
+                         Chronologic VCS (TM)
+        Version L-2016.06-1_Full64 -- Wed May 13 12:05:57 2026
+               Copyright (c) 1991-2016 by Synopsys Inc.
+                         ALL RIGHTS RESERVED
+
+This program is proprietary and confidential information of Synopsys Inc.
+and may be used and disclosed only as authorized in a license agreement
+controlling such use and disclosure.
+
+Top Level Modules:
+       sys_array_aitb_prop_tb
+assign 4 sys_array_aitb_prop_tb/MODE_INT (Command line)
+assign 5 sys_array_aitb_prop_tb/EXP_W (Command line)
+assign 2 sys_array_aitb_prop_tb/MAN_W (Command line)
+assign 1 sys_array_aitb_prop_tb/IS_DOT4 (Command line)
+TimeScale is 1 ps / 1 ps
+
+Warning-[TFIPC] Too few instance port connections
+../../proposed_dsp_mxfp_dot/rtl/mxfp_dot_prop_mxfp8_dot4aitb.sv, 276
+"fp_aitb_proposed #(.MODE(MODE), .IS_SIM(IS_SIM), .CHAIN_MODE("zero_tensor_chain_output")) aitb_top( .clk (clk),  .rst (rst),  .acc_en_i (1'b0),  .zero_en_i (1'b1),  .load_en_i (load_en_i),  .data_i (data_unpacked[0]),  .shared_exponent_i (shared_exponent_i),  .fp32_dot_out_col1_o (fp32_dot_out_col1_top),  .fp32_dot_out_col2_o (fp32_dot_out_col2_top),  .fp32_cascade_out_col1_o (fp32_cascade_out_col1_top),  .fp32_cascade_out_col2_o (fp32_cascade_out_col2_top),  .fp32_flags_col1_o (fp32_flags_col1_top),  .fp32_flags_col2_o (fp32_flags_col2_top));"
+  The above instance has fewer port connections than the module definition.
+  Please use '+lint=TFIPC-L' to print out detailed information of unconnected 
+  ports.
+
+
+Warning-[PCWM-W] Port connection width mismatch
+../../aitb_asic/rtl/mxfp_dot/naive_mxfp_dot_fixed.sv, 97
+" mxfp_mult_shift #(3, 3, 6, pkg_aitb::MXFP6_PRODUCT_WIDTH, 1, , , , , ) inst_mxfp6_mult[0].genblk1.u_mxfp_mult_shift_mxfp6( .fixed (fixed_mult),  .sign_shift (i_sign_shift),  .exp_bits (i_exp_bits),  .man_bits (i_man_bits),  .exp_mask (i_exp_mask),  .man_mask (i_man_mask),  .fixed_a (i_fixed_a[(0 + FP8_OPS)]),  .fixed_b (i_fixed_b[(0 + FP8_OPS)]),  .mxfp_a (i_mxfp6_a[0]),  .mxfp_b (i_mxfp6_b[0]),  .mxfp_mult_fixed (mxfp6_mult_result[0]));"
+  The following 3-bit expression is connected to 2-bit port "exp_bits" of 
+  module "mxfp_mult_shift", instance 
+  "inst_mxfp6_mult[0].genblk1.u_mxfp_mult_shift_mxfp6".
+  Expression: i_exp_bits
+  	use +lint=PCWM for more details
+
+
+Warning-[PCWM-W] Port connection width mismatch
+../../aitb_asic/rtl/mxfp_dot/naive_mxfp_dot_fixed.sv, 97
+" mxfp_mult_shift #(3, 3, 6, pkg_aitb::MXFP6_PRODUCT_WIDTH, 1, , , , , ) inst_mxfp6_mult[0].genblk1.u_mxfp_mult_shift_mxfp6( .fixed (fixed_mult),  .sign_shift (i_sign_shift),  .exp_bits (i_exp_bits),  .man_bits (i_man_bits),  .exp_mask (i_exp_mask),  .man_mask (i_man_mask),  .fixed_a (i_fixed_a[(0 + FP8_OPS)]),  .fixed_b (i_fixed_b[(0 + FP8_OPS)]),  .mxfp_a (i_mxfp6_a[0]),  .mxfp_b (i_mxfp6_b[0]),  .mxfp_mult_fixed (mxfp6_mult_result[0]));"
+  The following 5-bit expression is connected to 3-bit port "exp_mask" of 
+  module "mxfp_mult_shift", instance 
+  "inst_mxfp6_mult[0].genblk1.u_mxfp_mult_shift_mxfp6".
+  Expression: i_exp_mask
+  	use +lint=PCWM for more details
+
+
+Warning-[PCWM-W] Port connection width mismatch
+../../aitb_asic/rtl/mxfp_dot/naive_mxfp_dot_fixed.sv, 97
+" mxfp_mult_shift #(3, 3, 6, pkg_aitb::MXFP6_PRODUCT_WIDTH, 1, , , , , ) inst_mxfp6_mult[1].genblk1.u_mxfp_mult_shift_mxfp6( .fixed (fixed_mult),  .sign_shift (i_sign_shift),  .exp_bits (i_exp_bits),  .man_bits (i_man_bits),  .exp_mask (i_exp_mask),  .man_mask (i_man_mask),  .fixed_a (i_fixed_a[(1 + FP8_OPS)]),  .fixed_b (i_fixed_b[(1 + FP8_OPS)]),  .mxfp_a (i_mxfp6_a[1]),  .mxfp_b (i_mxfp6_b[1]),  .mxfp_mult_fixed (mxfp6_mult_result[1]));"
+  The following 3-bit expression is connected to 2-bit port "exp_bits" of 
+  module "mxfp_mult_shift", instance 
+  "inst_mxfp6_mult[1].genblk1.u_mxfp_mult_shift_mxfp6".
+  Expression: i_exp_bits
+  	use +lint=PCWM for more details
+
+
+Warning-[PCWM-W] Port connection width mismatch
+../../aitb_asic/rtl/mxfp_dot/naive_mxfp_dot_fixed.sv, 97
+" mxfp_mult_shift #(3, 3, 6, pkg_aitb::MXFP6_PRODUCT_WIDTH, 1, , , , , ) inst_mxfp6_mult[1].genblk1.u_mxfp_mult_shift_mxfp6( .fixed (fixed_mult),  .sign_shift (i_sign_shift),  .exp_bits (i_exp_bits),  .man_bits (i_man_bits),  .exp_mask (i_exp_mask),  .man_mask (i_man_mask),  .fixed_a (i_fixed_a[(1 + FP8_OPS)]),  .fixed_b (i_fixed_b[(1 + FP8_OPS)]),  .mxfp_a (i_mxfp6_a[1]),  .mxfp_b (i_mxfp6_b[1]),  .mxfp_mult_fixed (mxfp6_mult_result[1]));"
+  The following 5-bit expression is connected to 3-bit port "exp_mask" of 
+  module "mxfp_mult_shift", instance 
+  "inst_mxfp6_mult[1].genblk1.u_mxfp_mult_shift_mxfp6".
+  Expression: i_exp_mask
+  	use +lint=PCWM for more details
+
+
+Warning-[PCWM-W] Port connection width mismatch
+../../aitb_asic/rtl/mxfp_dot/naive_mxfp_dot_fixed.sv, 124
+" mxfp_mult_shift #(3, 3, 6, pkg_aitb::MXFP6_PRODUCT_WIDTH, 0, , , , , ) inst_mxfp6_mult[2].genblk1.u_mxfp_mult_shift_mxfp6( .sign_shift (i_sign_shift),  .exp_bits (i_exp_bits),  .man_bits (i_man_bits),  .exp_mask (i_exp_mask),  .man_mask (i_man_mask),  .mxfp_a (i_mxfp6_a[2]),  .mxfp_b (i_mxfp6_b[2]),  .mxfp_mult_fixed (inst_mxfp6_mult[2].genblk1.mxfp_mult_fixed));"
+  The following 3-bit expression is connected to 2-bit port "exp_bits" of 
+  module "mxfp_mult_shift", instance 
+  "inst_mxfp6_mult[2].genblk1.u_mxfp_mult_shift_mxfp6".
+  Expression: i_exp_bits
+  	use +lint=PCWM for more details
+
+
+Warning-[PCWM-W] Port connection width mismatch
+../../aitb_asic/rtl/mxfp_dot/naive_mxfp_dot_fixed.sv, 124
+" mxfp_mult_shift #(3, 3, 6, pkg_aitb::MXFP6_PRODUCT_WIDTH, 0, , , , , ) inst_mxfp6_mult[2].genblk1.u_mxfp_mult_shift_mxfp6( .sign_shift (i_sign_shift),  .exp_bits (i_exp_bits),  .man_bits (i_man_bits),  .exp_mask (i_exp_mask),  .man_mask (i_man_mask),  .mxfp_a (i_mxfp6_a[2]),  .mxfp_b (i_mxfp6_b[2]),  .mxfp_mult_fixed (inst_mxfp6_mult[2].genblk1.mxfp_mult_fixed));"
+  The following 5-bit expression is connected to 3-bit port "exp_mask" of 
+  module "mxfp_mult_shift", instance 
+  "inst_mxfp6_mult[2].genblk1.u_mxfp_mult_shift_mxfp6".
+  Expression: i_exp_mask
+  	use +lint=PCWM for more details
+
+
+Warning-[PCWM-W] Port connection width mismatch
+../../aitb_asic/rtl/mxfp_dot/naive_mxfp_dot_fixed.sv, 124
+" mxfp_mult_shift #(3, 3, 6, pkg_aitb::MXFP6_PRODUCT_WIDTH, 0, , , , , ) inst_mxfp6_mult[3].genblk1.u_mxfp_mult_shift_mxfp6( .sign_shift (i_sign_shift),  .exp_bits (i_exp_bits),  .man_bits (i_man_bits),  .exp_mask (i_exp_mask),  .man_mask (i_man_mask),  .mxfp_a (i_mxfp6_a[3]),  .mxfp_b (i_mxfp6_b[3]),  .mxfp_mult_fixed (inst_mxfp6_mult[3].genblk1.mxfp_mult_fixed));"
+  The following 3-bit expression is connected to 2-bit port "exp_bits" of 
+  module "mxfp_mult_shift", instance 
+  "inst_mxfp6_mult[3].genblk1.u_mxfp_mult_shift_mxfp6".
+  Expression: i_exp_bits
+  	use +lint=PCWM for more details
+
+
+Warning-[PCWM-W] Port connection width mismatch
+../../aitb_asic/rtl/mxfp_dot/naive_mxfp_dot_fixed.sv, 124
+" mxfp_mult_shift #(3, 3, 6, pkg_aitb::MXFP6_PRODUCT_WIDTH, 0, , , , , ) inst_mxfp6_mult[3].genblk1.u_mxfp_mult_shift_mxfp6( .sign_shift (i_sign_shift),  .exp_bits (i_exp_bits),  .man_bits (i_man_bits),  .exp_mask (i_exp_mask),  .man_mask (i_man_mask),  .mxfp_a (i_mxfp6_a[3]),  .mxfp_b (i_mxfp6_b[3]),  .mxfp_mult_fixed (inst_mxfp6_mult[3].genblk1.mxfp_mult_fixed));"
+  The following 5-bit expression is connected to 3-bit port "exp_mask" of 
+  module "mxfp_mult_shift", instance 
+  "inst_mxfp6_mult[3].genblk1.u_mxfp_mult_shift_mxfp6".
+  Expression: i_exp_mask
+  	use +lint=PCWM for more details
+
+
+Note-[SIMU-RESOLUTION] Simulation time resolution
+  Simulation time resolution is 1 PS
+
+Starting vcs inline pass...
+17 unique modules to generate
+recompiling package vcs_paramclassrepository
+recompiling package pkg_aitb
+recompiling module sys_array_aitb_prop_tb
+recompiling module sys_array_aitb_prop
+recompiling module mxfp_dot_proposed
+recompiling module mxfp_dot_prop_mxfp8_dot4aitb
+recompiling module fp_aitb_proposed
+recompiling module pipeline
+recompiling module pipeline
+recompiling module pipeline
+recompiling module pipeline
+recompiling module input_preparation_mxfp
+recompiling module naive_mxfp_dot_fixed
+recompiling module config_fix2fp32
+recompiling module ieee_fp32_add
+recompiling module mxfp_mult_shift
+recompiling module mxfp_mult_shift
+recompiling module mxfp_mult_shift
+recompiling module mxfp_mult_shift
+recompiling module naive_reduction
+recompiling module pow2_reduction_norecurse
+recompiling module pow2_reduction_norecurse
+recompiling module pow2_reduction_norecurse
+recompiling module normalizer_sgn_70b
+recompiling module fp8_67_shifter
+25 of 17 modules done
+/usr/bin/ld: warning: rmapats_mop.o: missing .note.GNU-stack section implies executable stack
+/usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+rm -f _csrc*.so pre_vcsobj_*.so share_vcsobj_*.so
+if [ -x ../simv ]; then chmod -x ../simv; fi
+g++  -o ../simv   -Wl,-rpath-link=./ -Wl,-rpath='$ORIGIN'/simv.daidir/ -Wl,-rpath=./simv.daidir/ -Wl,-rpath='$ORIGIN'/simv.daidir//scsim.db.dir  -L/usr/lib/x86_64-linux-gnu -L/lib/x86_64-linux-gnu -Wl,--no-as-needed -no-pie -rdynamic -Wl,-E -lncurses  amcQwB.o objs/amcQw_d.o  _2549590_archive_1.so  SIM_l.o       rmapats_mop.o rmapats.o rmar.o  rmar_llvm_0_1.o rmar_llvm_0_0.o       linux64_scvhdl_0.so vh/scscomm.o vh/scsFilelist.o    /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libzerosoft_rt_stubs.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/liberrorinf.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libsnpsmalloc.so    /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libvirsim.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libvcsnew.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/vcs_main.o /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libvcsmx.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libreader_common.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libBA.a /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libsimprofile.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libuclinative.so   -Wl,-whole-archive  -Wl,-no-whole-archive       ./../simv.daidir/vc_hdrs.o    /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/vcs_save_restore_new.o -ldl  -lc -lm -lpthread -ldl 
+/usr/bin/ld: warning: libncurses.so.5, needed by /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libuclinative.so, may conflict with libncurses.so.6
+/usr/bin/ld: warning: rmapats_mop.o: missing .note.GNU-stack section implies executable stack
+/usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+../simv up to date
+CPU time: 1.885 seconds to compile + .443 seconds to elab + .531 seconds to link
+
+Note-[RT_BS] Larger stack needed
+  Note: Bumping stack limit from 8192 to 8195 Kbytes.
+
+Chronologic VCS simulator copyright 1991-2016
+Contains Synopsys proprietary information.
+Compiler version L-2016.06-1_Full64; Runtime version L-2016.06-1_Full64;  May 13 12:06 2026
+============================================================
+DATA_GEN: Generated col1 weights
+============================================================
+W1[0] exp=127 : 24 81 9 63 d 8d 65 12 1 d 76 3d ed 8c f9 c6 c5 aa e5 77 12 8f f2 ce e8 c5 5c bd 2d 65 63 a
+W1[1] exp=127 : 80 20 aa 9d 96 13 d 53 6b d5 2 ae 1d cf 23 a ca 3c f2 8a 41 d8 78 89 eb b6 c6 ae bc 2a b 71
+W1[2] exp=127 : 85 4f 3b 3a 7e 15 f1 d9 62 4c 9f 8f f8 b7 9f 5c 5b 89 49 d0 d7 51 96 c c2 c8 77 3d 12 7e 6d 39
+============================================================
+DATA_GEN: Generated col2 weights
+============================================================
+W2[0] exp=127 : 1f d3 85 78 5b 49 3f 2a 58 86 8e 9c fa 26 73 a3 2f b3 5f 44 f7 cb e6 5a 29 ed da 65 b5 df 79 44
+W2[1] exp=127 : d0 2a ab e dc 9a fd c3 56 4e 67 a b6 38 79 b8 94 93 4 59 db 4d d9 6d 76 ca b6 95 46 4 f7 69
+W2[2] exp=127 : b4 88 28 2d c7 2e 8 1c fd 29 1c 86 da 3d 66 70 73 ba 5e fa d5 1a b9 37 96 c0 26 b6 7d dc 86 78
+============================================================
+DATA_GEN: Generated activation sets
+============================================================
+X[p=0][c=0] exp=126 : 7e db cf 79 fa 61 17 a1 86 50 f5 35 29 c1 c5 98 4b 73 ec 8a 4e a8 a9 a1 e e6 9f 2a 2a 8d 9e 38
+X[p=0][c=1] exp=126 : 79 c8 ca 13 6b c7 b6 ba c4 b9 92 b4 7f 86 fa f2 32 bd 84 e4 ca a9 a1 8e fb b ef c9 36 75 8f 6b
+X[p=0][c=2] exp=126 : 88 ae 9b 92 28 2d 4b c2 1e d ec 18 d1 86 41 3b d8 53 56 5b e2 4 73 d8 12 b8 39 e5 a1 2b 81 c8
+X[p=1][c=0] exp=126 : 27 a1 1f 4 58 96 14 12 96 b1 55 ed 2b f5 ad 27 84 a7 e7 b9 49 db c9 51 a1 2a fa 45 83 7c 72 fe
+X[p=1][c=1] exp=126 : 68 6f 86 f0 38 40 28 f6 c5 c0 74 39 b0 3c 2a 62 15 e1 17 43 c9 86 25 c1 8d 5a 7 2c c 71 3b b6
+X[p=1][c=2] exp=126 : f7 9e 5c 55 20 a0 72 b4 dd d 4b 79 9e fd 7b 8f 3 e3 1d b1 44 95 e0 ed 52 f8 8d 52 84 46 8c 90
+============================================================
+DATA_GEN: Golden dot products (col1)
+============================================================
+G_col1[p=0][0][0] = 0xcd5be5ee (-230579936.000000)
+G_col1[p=0][0][1] = 0x4e376a42 (769298560.000000)
+G_col1[p=0][0][2] = 0xcd00efa3 (-135199280.000000)
+G_col1[p=0][1][0] = 0x4bc00fa7 (25173838.000000)
+G_col1[p=0][1][1] = 0x4ce7071f (121125112.000000)
+G_col1[p=0][1][2] = 0x4d5f65f5 (234250064.000000)
+G_col1[p=0][2][0] = 0xcf100009 (-2415921408.000000)
+G_col1[p=0][2][1] = 0xce3ed99c (-800483072.000000)
+G_col1[p=0][2][2] = 0x4917da3e (621987.875000)
+G_col1[p=1][0][0] = 0x4c255116 (43336792.000000)
+G_col1[p=1][0][1] = 0x4d42cb80 (204257280.000000)
+G_col1[p=1][0][2] = 0xce8aa5f6 (-1163066112.000000)
+G_col1[p=1][1][0] = 0xcdea9d07 (-492019936.000000)
+G_col1[p=1][1][1] = 0xc92a9582 (-698712.125000)
+G_col1[p=1][1][2] = 0xcaf0ffc1 (-7897056.500000)
+G_col1[p=1][2][0] = 0x4f183f5f (2554289920.000000)
+G_col1[p=1][2][1] = 0x4df10b1b (505504608.000000)
+G_col1[p=1][2][2] = 0xcc6ec654 (-62593360.000000)
+============================================================
+DATA_GEN: Golden dot products (col2)
+============================================================
+G_col2[p=0][0][0] = 0x4e1f5140 (668225536.000000)
+G_col2[p=0][0][1] = 0xcf3d32c9 (-3174222080.000000)
+G_col2[p=0][0][2] = 0x483c189c (192610.437500)
+G_col2[p=0][1][0] = 0xcb517288 (-13726344.000000)
+G_col2[p=0][1][1] = 0xcecb9884 (-1707885056.000000)
+G_col2[p=0][1][2] = 0xcaaa13d4 (-5573098.000000)
+G_col2[p=0][2][0] = 0xc8ff81da (-523278.812500)
+G_col2[p=0][2][1] = 0xcb86c108 (-17662480.000000)
+G_col2[p=0][2][2] = 0xcac65d9f (-6500047.500000)
+G_col2[p=1][0][0] = 0x4d65d1ed (240983760.000000)
+G_col2[p=1][0][1] = 0xcd02b108 (-137040000.000000)
+G_col2[p=1][0][2] = 0x4dec8f4a (496101696.000000)
+G_col2[p=1][1][0] = 0xcd8fecc8 (-301832448.000000)
+G_col2[p=1][1][1] = 0x4b5fda70 (14670448.000000)
+G_col2[p=1][1][2] = 0x4e1d2d0d (659243840.000000)
+G_col2[p=1][2][0] = 0xcec10a76 (-1619344128.000000)
+G_col2[p=1][2][1] = 0x49edbd88 (1947569.000000)
+G_col2[p=1][2][2] = 0x4c59f3b9 (57134820.000000)
+============================================================
+[385] OUT row=0 col=0 expect_p=0  dut_col1=0xcd5be5ee gold_col1=0xcd5be5ee (0 ULP)  dut_col2=0x4e1f5140 gold_col2=0x4e1f5140 (0 ULP)
+[385] OUT row=0 col=1 expect_p=0  dut_col1=0x4e376a42 gold_col1=0x4e376a42 (0 ULP)  dut_col2=0xcf3d32c9 gold_col2=0xcf3d32c9 (0 ULP)
+[385] OUT row=0 col=2 expect_p=0  dut_col1=0xcd00efa4 gold_col1=0xcd00efa3 (1 ULP)  dut_col2=0x483c1884 gold_col2=0x483c189c (24 ULP)
+[385] Completed row 0 for activation set 0
+[395] OUT row=0 col=0 expect_p=1  dut_col1=0x4c255114 gold_col1=0x4c255116 (2 ULP)  dut_col2=0x4d65d1ed gold_col2=0x4d65d1ed (0 ULP)
+[395] OUT row=0 col=1 expect_p=1  dut_col1=0x4d42cb7f gold_col1=0x4d42cb80 (1 ULP)  dut_col2=0xcd02b108 gold_col2=0xcd02b108 (0 ULP)
+[395] OUT row=0 col=2 expect_p=1  dut_col1=0xce8aa5f5 gold_col1=0xce8aa5f6 (1 ULP)  dut_col2=0x4dec8f49 gold_col2=0x4dec8f4a (1 ULP)
+[395] OUT row=1 col=0 expect_p=0  dut_col1=0x4bc00fa7 gold_col1=0x4bc00fa7 (0 ULP)  dut_col2=0xcb51728a gold_col2=0xcb517288 (2 ULP)
+[395] OUT row=1 col=1 expect_p=0  dut_col1=0x4ce7071f gold_col1=0x4ce7071f (0 ULP)  dut_col2=0xcecb9885 gold_col2=0xcecb9884 (1 ULP)
+[395] OUT row=1 col=2 expect_p=0  dut_col1=0x4d5f65f5 gold_col1=0x4d5f65f5 (0 ULP)  dut_col2=0xcaaa13d5 gold_col2=0xcaaa13d4 (1 ULP)
+[395] Completed row 0 for activation set 1
+[395] Completed row 1 for activation set 0
+[405] OUT row=1 col=0 expect_p=1  dut_col1=0xcdea9d08 gold_col1=0xcdea9d07 (1 ULP)  dut_col2=0xcd8fecc9 gold_col2=0xcd8fecc8 (1 ULP)
+[405] OUT row=1 col=1 expect_p=1  dut_col1=0xc92a9582 gold_col1=0xc92a9582 (0 ULP)  dut_col2=0x4b5fda70 gold_col2=0x4b5fda70 (0 ULP)
+[405] OUT row=1 col=2 expect_p=1  dut_col1=0xcaf0ffc3 gold_col1=0xcaf0ffc1 (2 ULP)  dut_col2=0x4e1d2d0d gold_col2=0x4e1d2d0d (0 ULP)
+[405] OUT row=2 col=0 expect_p=0  dut_col1=0xcf100009 gold_col1=0xcf100009 (0 ULP)  dut_col2=0xc8ff81db gold_col2=0xc8ff81da (1 ULP)
+[405] OUT row=2 col=1 expect_p=0  dut_col1=0xce3ed99d gold_col1=0xce3ed99c (1 ULP)  dut_col2=0xcb86c108 gold_col2=0xcb86c108 (0 ULP)
+[405] OUT row=2 col=2 expect_p=0  dut_col1=0x4917da3d gold_col1=0x4917da3e (1 ULP)  dut_col2=0xcac65d9f gold_col2=0xcac65d9f (0 ULP)
+[405] Completed row 1 for activation set 1
+[405] Completed row 2 for activation set 0
+[415] OUT row=2 col=0 expect_p=1  dut_col1=0x4f183f5e gold_col1=0x4f183f5f (1 ULP)  dut_col2=0xcec10a77 gold_col2=0xcec10a76 (1 ULP)
+[415] OUT row=2 col=1 expect_p=1  dut_col1=0x4df10b1a gold_col1=0x4df10b1b (1 ULP)  dut_col2=0x49edbd85 gold_col2=0x49edbd88 (3 ULP)
+[415] OUT row=2 col=2 expect_p=1  dut_col1=0xcc6ec656 gold_col1=0xcc6ec654 (2 ULP)  dut_col2=0x4c59f3b7 gold_col2=0x4c59f3b9 (2 ULP)
+[415] Completed row 2 for activation set 1
+============================================================
+[415] TEST PASSED: received all expected outputs (18).
+============================================================
+$finish called from file "sys_array_aitb_prop_tb.sv", line 465.
+$finish at simulation time                  415
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 415 ps
+CPU Time:      0.500 seconds;       Data structure size:   6.8Mb
+Wed May 13 12:06:01 2026
