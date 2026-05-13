@@ -4,7 +4,7 @@ Warning-[LINX_KRNL] Unsupported Linux kernel
   Supported versions are 2.4* or 2.6*.
 
                          Chronologic VCS (TM)
-        Version L-2016.06-1_Full64 -- Wed May 13 12:03:29 2026
+        Version L-2016.06-1_Full64 -- Wed May 13 14:56:20 2026
                Copyright (c) 1991-2016 by Synopsys Inc.
                          ALL RIGHTS RESERVED
 
@@ -334,7 +334,7 @@ Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/a
 Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/220model.v'
 Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/sgate.v'
 Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_mf.v'
-CPU time: 27.744 seconds to compile
+CPU time: 30.067 seconds to compile
 Unsupported Linux kernel (6.8.0-100-generic), will try Linux
                      Synopsys 1076 VHDL Analyzer
                  Version L-2016.06-1 -- Jul 16, 2016
@@ -366,7 +366,7 @@ Warning-[LINX_KRNL] Unsupported Linux kernel
   Supported versions are 2.4* or 2.6*.
 
                          Chronologic VCS (TM)
-        Version L-2016.06-1_Full64 -- Wed May 13 12:03:59 2026
+        Version L-2016.06-1_Full64 -- Wed May 13 14:56:52 2026
                Copyright (c) 1991-2016 by Synopsys Inc.
                          ALL RIGHTS RESERVED
 
@@ -376,9 +376,9 @@ controlling such use and disclosure.
 
 Top Level Modules:
        sys_array_aitb_prop_tb
-assign 1 sys_array_aitb_prop_tb/MODE_INT (Command line)
-assign 2 sys_array_aitb_prop_tb/EXP_W (Command line)
-assign 3 sys_array_aitb_prop_tb/MAN_W (Command line)
+assign 2 sys_array_aitb_prop_tb/MODE_INT (Command line)
+assign 3 sys_array_aitb_prop_tb/EXP_W (Command line)
+assign 2 sys_array_aitb_prop_tb/MAN_W (Command line)
 assign 0 sys_array_aitb_prop_tb/IS_DOT4 (Command line)
 TimeScale is 1 ps / 1 ps
 
@@ -505,19 +505,19 @@ recompiling module fp8_67_shifter
 /usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
 rm -f _csrc*.so pre_vcsobj_*.so share_vcsobj_*.so
 if [ -x ../simv ]; then chmod -x ../simv; fi
-g++  -o ../simv   -Wl,-rpath-link=./ -Wl,-rpath='$ORIGIN'/simv.daidir/ -Wl,-rpath=./simv.daidir/ -Wl,-rpath='$ORIGIN'/simv.daidir//scsim.db.dir  -L/usr/lib/x86_64-linux-gnu -L/lib/x86_64-linux-gnu -Wl,--no-as-needed -no-pie -rdynamic -Wl,-E -lncurses  amcQwB.o objs/amcQw_d.o  _2545587_archive_1.so  SIM_l.o       rmapats_mop.o rmapats.o rmar.o  rmar_llvm_0_1.o rmar_llvm_0_0.o       linux64_scvhdl_0.so vh/scscomm.o vh/scsFilelist.o    /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libzerosoft_rt_stubs.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/liberrorinf.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libsnpsmalloc.so    /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libvirsim.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libvcsnew.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/vcs_main.o /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libvcsmx.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libreader_common.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libBA.a /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libsimprofile.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libuclinative.so   -Wl,-whole-archive  -Wl,-no-whole-archive       ./../simv.daidir/vc_hdrs.o    /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/vcs_save_restore_new.o -ldl  -lc -lm -lpthread -ldl 
+g++  -o ../simv   -Wl,-rpath-link=./ -Wl,-rpath='$ORIGIN'/simv.daidir/ -Wl,-rpath=./simv.daidir/ -Wl,-rpath='$ORIGIN'/simv.daidir//scsim.db.dir  -L/usr/lib/x86_64-linux-gnu -L/lib/x86_64-linux-gnu -Wl,--no-as-needed -no-pie -rdynamic -Wl,-E -lncurses  amcQwB.o objs/amcQw_d.o  _2591316_archive_1.so  SIM_l.o       rmapats_mop.o rmapats.o rmar.o  rmar_llvm_0_1.o rmar_llvm_0_0.o       linux64_scvhdl_0.so vh/scscomm.o vh/scsFilelist.o    /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libzerosoft_rt_stubs.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/liberrorinf.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libsnpsmalloc.so    /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libvirsim.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libvcsnew.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/vcs_main.o /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libvcsmx.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libreader_common.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libBA.a /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libsimprofile.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libuclinative.so   -Wl,-whole-archive  -Wl,-no-whole-archive       ./../simv.daidir/vc_hdrs.o    /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/vcs_save_restore_new.o -ldl  -lc -lm -lpthread -ldl 
 /usr/bin/ld: warning: libncurses.so.5, needed by /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libuclinative.so, may conflict with libncurses.so.6
 /usr/bin/ld: warning: rmapats_mop.o: missing .note.GNU-stack section implies executable stack
 /usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
 ../simv up to date
-CPU time: 2.573 seconds to compile + .412 seconds to elab + .499 seconds to link
+CPU time: 1.875 seconds to compile + .417 seconds to elab + .522 seconds to link
 
 Note-[RT_BS] Larger stack needed
   Note: Bumping stack limit from 8192 to 8195 Kbytes.
 
 Chronologic VCS simulator copyright 1991-2016
 Contains Synopsys proprietary information.
-Compiler version L-2016.06-1_Full64; Runtime version L-2016.06-1_Full64;  May 13 12:04 2026
+Compiler version L-2016.06-1_Full64; Runtime version L-2016.06-1_Full64;  May 13 14:56 2026
 ============================================================
 DATA_GEN: Generated col1 weights
 ============================================================
@@ -542,69 +542,69 @@ X[p=1][c=2] exp=126 : 37 1e 1c 15 20 20 32 34 1d d b 39 1e 3d 3b f 3 23 1d 31 4 
 ============================================================
 DATA_GEN: Golden dot products (col1)
 ============================================================
-G_col1[p=0][0][0] = 0x4229f800 (42.492188)
-G_col1[p=0][0][1] = 0x418ab000 (17.335938)
-G_col1[p=0][0][2] = 0xc1eea000 (-29.828125)
-G_col1[p=0][1][0] = 0x4124a000 (10.289062)
-G_col1[p=0][1][1] = 0xbf2a0000 (-0.664062)
-G_col1[p=0][1][2] = 0x40e7c000 (7.242188)
-G_col1[p=0][2][0] = 0x41508000 (13.031250)
-G_col1[p=0][2][1] = 0xc1ac5000 (-21.539062)
-G_col1[p=0][2][2] = 0xc1875000 (-16.914062)
-G_col1[p=1][0][0] = 0x41174000 (9.453125)
-G_col1[p=1][0][1] = 0x41b16000 (22.171875)
-G_col1[p=1][0][2] = 0x41880000 (17.000000)
-G_col1[p=1][1][0] = 0x41b49000 (22.570312)
-G_col1[p=1][1][1] = 0xc21b5000 (-38.828125)
-G_col1[p=1][1][2] = 0x419e1000 (19.757812)
-G_col1[p=1][2][0] = 0x42088800 (34.132812)
-G_col1[p=1][2][1] = 0x422ee000 (43.718750)
-G_col1[p=1][2][2] = 0xc2567800 (-53.617188)
+G_col1[p=0][0][0] = 0x43914b80 (290.589844)
+G_col1[p=0][0][1] = 0x42a59e00 (82.808594)
+G_col1[p=0][0][2] = 0xc3421380 (-194.076172)
+G_col1[p=0][1][0] = 0xc2810100 (-64.501953)
+G_col1[p=0][1][1] = 0xc2a4cc00 (-82.398438)
+G_col1[p=0][1][2] = 0x4219f200 (38.486328)
+G_col1[p=0][2][0] = 0x42e5b400 (114.851562)
+G_col1[p=0][2][1] = 0xc2af4000 (-87.625000)
+G_col1[p=0][2][2] = 0xc3069e00 (-134.617188)
+G_col1[p=1][0][0] = 0xc209b000 (-34.421875)
+G_col1[p=1][0][1] = 0x42dc3500 (110.103516)
+G_col1[p=1][0][2] = 0x4304b680 (132.712891)
+G_col1[p=1][1][0] = 0x42ca7800 (101.234375)
+G_col1[p=1][1][1] = 0xc3007c00 (-128.484375)
+G_col1[p=1][1][2] = 0x43861f00 (268.242188)
+G_col1[p=1][2][0] = 0x4325c980 (165.787109)
+G_col1[p=1][2][1] = 0x43370600 (183.023438)
+G_col1[p=1][2][2] = 0xc3bf7380 (-382.902344)
 ============================================================
 DATA_GEN: Golden dot products (col2)
 ============================================================
-G_col2[p=0][0][0] = 0xc22a8800 (-42.632812)
-G_col2[p=0][0][1] = 0x412e0000 (10.875000)
-G_col2[p=0][0][2] = 0x415f4000 (13.953125)
-G_col2[p=0][1][0] = 0xc2978400 (-75.757812)
-G_col2[p=0][1][1] = 0x41c50000 (24.625000)
-G_col2[p=0][1][2] = 0x41b9e000 (23.234375)
-G_col2[p=0][2][0] = 0x41720000 (15.125000)
-G_col2[p=0][2][1] = 0xc122a000 (-10.164062)
-G_col2[p=0][2][2] = 0xc20e7800 (-35.617188)
-G_col2[p=1][0][0] = 0xc1935000 (-18.414062)
-G_col2[p=1][0][1] = 0xc08f4000 (-4.476562)
-G_col2[p=1][0][2] = 0x41a8e000 (21.109375)
-G_col2[p=1][1][0] = 0x420fb000 (35.921875)
-G_col2[p=1][1][1] = 0x41c17000 (24.179688)
-G_col2[p=1][1][2] = 0x411a4000 (9.640625)
-G_col2[p=1][2][0] = 0x41cac000 (25.343750)
-G_col2[p=1][2][1] = 0x403b0000 (2.921875)
-G_col2[p=1][2][2] = 0x42473800 (49.804688)
+G_col2[p=0][0][0] = 0xc3dc5600 (-440.671875)
+G_col2[p=0][0][1] = 0x42815600 (64.667969)
+G_col2[p=0][0][2] = 0x43319680 (177.587891)
+G_col2[p=0][1][0] = 0xc3c7d1c0 (-399.638672)
+G_col2[p=0][1][1] = 0x43432200 (195.132812)
+G_col2[p=0][1][2] = 0x433a2c00 (186.171875)
+G_col2[p=0][2][0] = 0x42733400 (60.800781)
+G_col2[p=0][2][1] = 0xc2ef5a00 (-119.675781)
+G_col2[p=0][2][2] = 0xc38b9c00 (-279.218750)
+G_col2[p=1][0][0] = 0xc3787300 (-248.449219)
+G_col2[p=1][0][1] = 0x40942000 (4.628906)
+G_col2[p=1][0][2] = 0x430b9c00 (139.609375)
+G_col2[p=1][1][0] = 0x42dc2a00 (110.082031)
+G_col2[p=1][1][1] = 0x42934800 (73.640625)
+G_col2[p=1][1][2] = 0x42f39600 (121.792969)
+G_col2[p=1][2][0] = 0x430b3c00 (139.234375)
+G_col2[p=1][2][1] = 0x430ccf00 (140.808594)
+G_col2[p=1][2][2] = 0x43ce7e00 (412.984375)
 ============================================================
-[285] OUT row=0 col=0 expect_p=0  dut_col1=0x4229f800 gold_col1=0x4229f800 (0 ULP)  dut_col2=0xc22a8800 gold_col2=0xc22a8800 (0 ULP)
-[285] OUT row=0 col=1 expect_p=0  dut_col1=0x418ab000 gold_col1=0x418ab000 (0 ULP)  dut_col2=0x412e0000 gold_col2=0x412e0000 (0 ULP)
-[285] OUT row=0 col=2 expect_p=0  dut_col1=0xc1eea000 gold_col1=0xc1eea000 (0 ULP)  dut_col2=0x415f4000 gold_col2=0x415f4000 (0 ULP)
+[285] OUT row=0 col=0 expect_p=0  dut_col1=0x43914b80 gold_col1=0x43914b80 (0 ULP)  dut_col2=0xc3dc5600 gold_col2=0xc3dc5600 (0 ULP)
+[285] OUT row=0 col=1 expect_p=0  dut_col1=0x42a59e00 gold_col1=0x42a59e00 (0 ULP)  dut_col2=0x42815600 gold_col2=0x42815600 (0 ULP)
+[285] OUT row=0 col=2 expect_p=0  dut_col1=0xc3421380 gold_col1=0xc3421380 (0 ULP)  dut_col2=0x43319680 gold_col2=0x43319680 (0 ULP)
 [285] Completed row 0 for activation set 0
-[295] OUT row=0 col=0 expect_p=1  dut_col1=0x41174000 gold_col1=0x41174000 (0 ULP)  dut_col2=0xc1935000 gold_col2=0xc1935000 (0 ULP)
-[295] OUT row=0 col=1 expect_p=1  dut_col1=0x41b16000 gold_col1=0x41b16000 (0 ULP)  dut_col2=0xc08f4000 gold_col2=0xc08f4000 (0 ULP)
-[295] OUT row=0 col=2 expect_p=1  dut_col1=0x41880000 gold_col1=0x41880000 (0 ULP)  dut_col2=0x41a8e000 gold_col2=0x41a8e000 (0 ULP)
-[295] OUT row=1 col=0 expect_p=0  dut_col1=0x4124a000 gold_col1=0x4124a000 (0 ULP)  dut_col2=0xc2978400 gold_col2=0xc2978400 (0 ULP)
-[295] OUT row=1 col=1 expect_p=0  dut_col1=0xbf2a0000 gold_col1=0xbf2a0000 (0 ULP)  dut_col2=0x41c50000 gold_col2=0x41c50000 (0 ULP)
-[295] OUT row=1 col=2 expect_p=0  dut_col1=0x40e7c000 gold_col1=0x40e7c000 (0 ULP)  dut_col2=0x41b9e000 gold_col2=0x41b9e000 (0 ULP)
+[295] OUT row=0 col=0 expect_p=1  dut_col1=0xc209b000 gold_col1=0xc209b000 (0 ULP)  dut_col2=0xc3787300 gold_col2=0xc3787300 (0 ULP)
+[295] OUT row=0 col=1 expect_p=1  dut_col1=0x42dc3500 gold_col1=0x42dc3500 (0 ULP)  dut_col2=0x40942000 gold_col2=0x40942000 (0 ULP)
+[295] OUT row=0 col=2 expect_p=1  dut_col1=0x4304b680 gold_col1=0x4304b680 (0 ULP)  dut_col2=0x430b9c00 gold_col2=0x430b9c00 (0 ULP)
+[295] OUT row=1 col=0 expect_p=0  dut_col1=0xc2810100 gold_col1=0xc2810100 (0 ULP)  dut_col2=0xc3c7d1c0 gold_col2=0xc3c7d1c0 (0 ULP)
+[295] OUT row=1 col=1 expect_p=0  dut_col1=0xc2a4cc00 gold_col1=0xc2a4cc00 (0 ULP)  dut_col2=0x43432200 gold_col2=0x43432200 (0 ULP)
+[295] OUT row=1 col=2 expect_p=0  dut_col1=0x4219f200 gold_col1=0x4219f200 (0 ULP)  dut_col2=0x433a2c00 gold_col2=0x433a2c00 (0 ULP)
 [295] Completed row 0 for activation set 1
 [295] Completed row 1 for activation set 0
-[305] OUT row=1 col=0 expect_p=1  dut_col1=0x41b49000 gold_col1=0x41b49000 (0 ULP)  dut_col2=0x420fb000 gold_col2=0x420fb000 (0 ULP)
-[305] OUT row=1 col=1 expect_p=1  dut_col1=0xc21b5000 gold_col1=0xc21b5000 (0 ULP)  dut_col2=0x41c17000 gold_col2=0x41c17000 (0 ULP)
-[305] OUT row=1 col=2 expect_p=1  dut_col1=0x419e1000 gold_col1=0x419e1000 (0 ULP)  dut_col2=0x411a4000 gold_col2=0x411a4000 (0 ULP)
-[305] OUT row=2 col=0 expect_p=0  dut_col1=0x41508000 gold_col1=0x41508000 (0 ULP)  dut_col2=0x41720000 gold_col2=0x41720000 (0 ULP)
-[305] OUT row=2 col=1 expect_p=0  dut_col1=0xc1ac5000 gold_col1=0xc1ac5000 (0 ULP)  dut_col2=0xc122a000 gold_col2=0xc122a000 (0 ULP)
-[305] OUT row=2 col=2 expect_p=0  dut_col1=0xc1875000 gold_col1=0xc1875000 (0 ULP)  dut_col2=0xc20e7800 gold_col2=0xc20e7800 (0 ULP)
+[305] OUT row=1 col=0 expect_p=1  dut_col1=0x42ca7800 gold_col1=0x42ca7800 (0 ULP)  dut_col2=0x42dc2a00 gold_col2=0x42dc2a00 (0 ULP)
+[305] OUT row=1 col=1 expect_p=1  dut_col1=0xc3007c00 gold_col1=0xc3007c00 (0 ULP)  dut_col2=0x42934800 gold_col2=0x42934800 (0 ULP)
+[305] OUT row=1 col=2 expect_p=1  dut_col1=0x43861f00 gold_col1=0x43861f00 (0 ULP)  dut_col2=0x42f39600 gold_col2=0x42f39600 (0 ULP)
+[305] OUT row=2 col=0 expect_p=0  dut_col1=0x42e5b400 gold_col1=0x42e5b400 (0 ULP)  dut_col2=0x42733400 gold_col2=0x42733400 (0 ULP)
+[305] OUT row=2 col=1 expect_p=0  dut_col1=0xc2af4000 gold_col1=0xc2af4000 (0 ULP)  dut_col2=0xc2ef5a00 gold_col2=0xc2ef5a00 (0 ULP)
+[305] OUT row=2 col=2 expect_p=0  dut_col1=0xc3069e00 gold_col1=0xc3069e00 (0 ULP)  dut_col2=0xc38b9c00 gold_col2=0xc38b9c00 (0 ULP)
 [305] Completed row 1 for activation set 1
 [305] Completed row 2 for activation set 0
-[315] OUT row=2 col=0 expect_p=1  dut_col1=0x42088800 gold_col1=0x42088800 (0 ULP)  dut_col2=0x41cac000 gold_col2=0x41cac000 (0 ULP)
-[315] OUT row=2 col=1 expect_p=1  dut_col1=0x422ee000 gold_col1=0x422ee000 (0 ULP)  dut_col2=0x403b0000 gold_col2=0x403b0000 (0 ULP)
-[315] OUT row=2 col=2 expect_p=1  dut_col1=0xc2567800 gold_col1=0xc2567800 (0 ULP)  dut_col2=0x42473800 gold_col2=0x42473800 (0 ULP)
+[315] OUT row=2 col=0 expect_p=1  dut_col1=0x4325c980 gold_col1=0x4325c980 (0 ULP)  dut_col2=0x430b3c00 gold_col2=0x430b3c00 (0 ULP)
+[315] OUT row=2 col=1 expect_p=1  dut_col1=0x43370600 gold_col1=0x43370600 (0 ULP)  dut_col2=0x430ccf00 gold_col2=0x430ccf00 (0 ULP)
+[315] OUT row=2 col=2 expect_p=1  dut_col1=0xc3bf7380 gold_col1=0xc3bf7380 (0 ULP)  dut_col2=0x43ce7e00 gold_col2=0x43ce7e00 (0 ULP)
 [315] Completed row 2 for activation set 1
 ============================================================
 [315] TEST PASSED: received all expected outputs (18).
@@ -613,5 +613,5 @@ $finish called from file "sys_array_aitb_prop_tb.sv", line 465.
 $finish at simulation time                  315
            V C S   S i m u l a t i o n   R e p o r t 
 Time: 315 ps
-CPU Time:      0.380 seconds;       Data structure size:   2.6Mb
-Wed May 13 12:04:04 2026
+CPU Time:      0.390 seconds;       Data structure size:   2.6Mb
+Wed May 13 14:56:56 2026

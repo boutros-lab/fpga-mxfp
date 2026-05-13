@@ -4,7 +4,7 @@ Warning-[LINX_KRNL] Unsupported Linux kernel
   Supported versions are 2.4* or 2.6*.
 
                          Chronologic VCS (TM)
-        Version L-2016.06-1_Full64 -- Wed May 13 12:04:40 2026
+        Version L-2016.06-1_Full64 -- Wed May 13 14:56:56 2026
                Copyright (c) 1991-2016 by Synopsys Inc.
                          ALL RIGHTS RESERVED
 
@@ -334,7 +334,7 @@ Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/a
 Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/220model.v'
 Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/sgate.v'
 Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_mf.v'
-CPU time: 31.485 seconds to compile
+CPU time: 27.797 seconds to compile
 Unsupported Linux kernel (6.8.0-100-generic), will try Linux
                      Synopsys 1076 VHDL Analyzer
                  Version L-2016.06-1 -- Jul 16, 2016
@@ -366,7 +366,7 @@ Warning-[LINX_KRNL] Unsupported Linux kernel
   Supported versions are 2.4* or 2.6*.
 
                          Chronologic VCS (TM)
-        Version L-2016.06-1_Full64 -- Wed May 13 12:05:14 2026
+        Version L-2016.06-1_Full64 -- Wed May 13 14:57:27 2026
                Copyright (c) 1991-2016 by Synopsys Inc.
                          ALL RIGHTS RESERVED
 
@@ -505,19 +505,19 @@ recompiling module fp8_67_shifter
 /usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
 rm -f _csrc*.so pre_vcsobj_*.so share_vcsobj_*.so
 if [ -x ../simv ]; then chmod -x ../simv; fi
-g++  -o ../simv   -Wl,-rpath-link=./ -Wl,-rpath='$ORIGIN'/simv.daidir/ -Wl,-rpath=./simv.daidir/ -Wl,-rpath='$ORIGIN'/simv.daidir//scsim.db.dir  -L/usr/lib/x86_64-linux-gnu -L/lib/x86_64-linux-gnu -Wl,--no-as-needed -no-pie -rdynamic -Wl,-E -lncurses  amcQwB.o objs/amcQw_d.o  _2548249_archive_1.so  SIM_l.o       rmapats_mop.o rmapats.o rmar.o  rmar_llvm_0_1.o rmar_llvm_0_0.o       linux64_scvhdl_0.so vh/scscomm.o vh/scsFilelist.o    /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libzerosoft_rt_stubs.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/liberrorinf.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libsnpsmalloc.so    /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libvirsim.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libvcsnew.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/vcs_main.o /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libvcsmx.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libreader_common.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libBA.a /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libsimprofile.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libuclinative.so   -Wl,-whole-archive  -Wl,-no-whole-archive       ./../simv.daidir/vc_hdrs.o    /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/vcs_save_restore_new.o -ldl  -lc -lm -lpthread -ldl 
+g++  -o ../simv   -Wl,-rpath-link=./ -Wl,-rpath='$ORIGIN'/simv.daidir/ -Wl,-rpath=./simv.daidir/ -Wl,-rpath='$ORIGIN'/simv.daidir//scsim.db.dir  -L/usr/lib/x86_64-linux-gnu -L/lib/x86_64-linux-gnu -Wl,--no-as-needed -no-pie -rdynamic -Wl,-E -lncurses  amcQwB.o objs/amcQw_d.o  _2592609_archive_1.so  SIM_l.o       rmapats_mop.o rmapats.o rmar.o  rmar_llvm_0_1.o rmar_llvm_0_0.o       linux64_scvhdl_0.so vh/scscomm.o vh/scsFilelist.o    /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libzerosoft_rt_stubs.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/liberrorinf.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libsnpsmalloc.so    /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libvirsim.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libvcsnew.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/vcs_main.o /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libvcsmx.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libreader_common.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libBA.a /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libsimprofile.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libuclinative.so   -Wl,-whole-archive  -Wl,-no-whole-archive       ./../simv.daidir/vc_hdrs.o    /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/vcs_save_restore_new.o -ldl  -lc -lm -lpthread -ldl 
 /usr/bin/ld: warning: libncurses.so.5, needed by /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libuclinative.so, may conflict with libncurses.so.6
 /usr/bin/ld: warning: rmapats_mop.o: missing .note.GNU-stack section implies executable stack
 /usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
 ../simv up to date
-CPU time: 2.664 seconds to compile + .427 seconds to elab + .476 seconds to link
+CPU time: 1.980 seconds to compile + .410 seconds to elab + .503 seconds to link
 
 Note-[RT_BS] Larger stack needed
   Note: Bumping stack limit from 8192 to 8195 Kbytes.
 
 Chronologic VCS simulator copyright 1991-2016
 Contains Synopsys proprietary information.
-Compiler version L-2016.06-1_Full64; Runtime version L-2016.06-1_Full64;  May 13 12:05 2026
+Compiler version L-2016.06-1_Full64; Runtime version L-2016.06-1_Full64;  May 13 14:57 2026
 ============================================================
 DATA_GEN: Generated col1 weights
 ============================================================
@@ -613,5 +613,5 @@ $finish called from file "sys_array_aitb_prop_tb.sv", line 465.
 $finish at simulation time                  335
            V C S   S i m u l a t i o n   R e p o r t 
 Time: 335 ps
-CPU Time:      0.400 seconds;       Data structure size:   3.5Mb
-Wed May 13 12:05:19 2026
+CPU Time:      0.420 seconds;       Data structure size:   3.5Mb
+Wed May 13 14:57:30 2026
