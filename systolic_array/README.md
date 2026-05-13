@@ -3,11 +3,13 @@ This directory contains systolic array implementations to perform matrix multipl
 
 ## File Descriptions
 Descriptions of the sub-directories are given below.
+
 ### cons
 Conatins the `sdc` used with Quartus to evaluate utilization and timing of the systolic arrays.
 
 ### rtl
-RTL descriptions of the systolic arrays.
+RTL descriptions of the systolic arrays. The systolic arrays implement matrix
+multiplications. The matrix multiplication is between a $N \times k$ matrix and a $k \times (N \times D)$ matrix, where $k = 32$ (MXFP block size) and $D$ is the number of 32-element MXFP dot product operations computed per processing element (PE).
 - `sys_array_aitb_prop.sv`: systolic array design whose PE is a MXFP dot product unit using our proposed DSP block. See the `proposed_dsp_mxfp_dot` directory for details on the dot product unit using our proposed DSP block.
 - `sys_array_aitb.sv`: systolic array design whose PE is a MXFP dot product unit using the Agilex-5 DSP block configured in tensor mode (for E2M3 and E2M1 MXFP formats).
 - `sys_array_packed_mult.sv`: systolic array design whose PE is a MXFP dot product unit using the Agilex-5 DSP block with the "Packed Fixed-Point Multiplier" approach (E3M2, E4M3 and E5M2 formats).

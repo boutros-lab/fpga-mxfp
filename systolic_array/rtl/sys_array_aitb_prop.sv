@@ -1,31 +1,40 @@
-import pkg_aitb::*;
+// //////////////////////////////////////////////////////////////////////////////////////
+// Module: sys_array_aitb_prop
+//
+// Description:
+// Systolic array design whose processing element (PE) is a MXFP dot product unit using our proposed DSP block.
+//
+// Parameters:
+// - MODE_INT: integer parameter to choose a MXFP format for DSP configuration.
+//   See `systolic_array/syn/setup_24_2_mxfp_dot_prop.tcl` for correspondance between MXFP format and MODE_INT value.
+// - IS_SIM: passed to fp_aitb_proposed by the mxfp_dot_prop format specific modules.
+//   Set to 1 to instantiate our DSP block, set to 0 to instantiate the Agilex-5 DSP block IP.
+// - IS_DOT4: must be set to 1 for E5M2 dot products. Set to 0 otherwise.
+// - N: size of the systolic array (NxN PEs).
+// - EXP_W: exponent width of selected MXFP format.
+// - MAN_W: mantissa width of selected MXFP format.
+// - DATA_W: data width of selected MXFP format.
+// - SHARED_EXP_W: shared exponent width of MXFP format.
+// - DOT_LEN: length of dot product being implemented by PE. Also length of vectors in PE / MXFP block size.
+// - DATA_OUT_W: data width of output products.
+// //////////////////////////////////////////////////////////////////////////////////////
 
-// USAGE: make sure to specify:
-// 1) MODE
-// 2) IS_SIM
-// 3) MAN_W and EXP_W according to MODE
-// 4) If doing E4M3, need to specify whether an AITB can support DOT6 or DOT5 (IS_DOT6 param)
+import pkg_aitb::*;
 
 module sys_array_aitb_prop #(
 //   parameter mxfp_mode_e MODE = mxfp_mode_e'(MODE_INT),
     parameter MODE_INT = 0,
     parameter bit IS_SIM = 1,
-    // If AITB supports DOT6 set to 1, if not (DOT5) set to 0
-    parameter bit IS_DOT6 = 1,
     parameter bit IS_DOT4 = 1,
     // Size of the array (NxN)
     parameter N = 2,
     // Number format params
-    parameter MAN_W = 1,
     parameter EXP_W = 2,
+    parameter MAN_W = 1,
     parameter DATA_MX_W = 1 + MAN_W + EXP_W,
     parameter SHARED_EXP_W = 8,
-    // MX-FP Bias
-    parameter FP_BIAS = 1,
-    parameter SHARED_EXP_BIAS = 127,
     // Number of elements in vector to "dot"
     parameter DOT_LEN = 32,
-    parameter PIPE = 0,
     // PEs compute a FP32 output
     parameter DATA_OUT_W = 32
 ) (
@@ -51,8 +60,7 @@ module sys_array_aitb_prop #(
     output [3:0] fp32_flags_col2_o [0:N-1][0:N-1]
 );
     
-	localparam mxfp_mode_e MODE = mxfp_mode_e'(MODE_INT);
-    // Load enable pipeline needed too
+    // Load enable pipeline needed
     // load_en asserted 1 cycle before "column 2" weights are presented
     // load_en stays high when "column 2" weights presented
     // load_en deasserts when "column 1" weights presented
@@ -124,7 +132,7 @@ module sys_array_aitb_prop #(
 
     // Activation pipeline implementation
     // - Activations go down every cycle
-    // - Driver must make activations provided when weight loading is done
+    // - Driver provides activations when weight loading is done
     always_ff @( posedge clk) begin
         integer r, c, i;
         if (rst) begin
@@ -186,15 +194,12 @@ module sys_array_aitb_prop #(
 
                 // PE Instance
                 mxfp_dot_proposed #(
-                    .MODE(MODE),
+                    .MODE_INT(MODE_INT),
                     .IS_SIM(IS_SIM),
-                    .IS_DOT6(IS_DOT6),
                     .IS_DOT4(IS_DOT4),
-                    .M(MAN_W),
                     .E(EXP_W),
+                    .M(MAN_W),
                     .E_SHARED(SHARED_EXP_W),
-                    .FP_BIAS(FP_BIAS),
-                    .SH_BIAS(SHARED_EXP_BIAS),
                     .DOT_LEN(DOT_LEN)
                 ) pe_inst (
                     .clk(clk),
