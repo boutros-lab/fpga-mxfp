@@ -29,7 +29,7 @@ for (( i=0; i<NUM_CONFIGS; i++ )); do
     MAN_W=${MAN_WS[$i]}
     IS_DOT4=${IS_DOT4S[$i]}
 
-    LOG="$LOG_DIR/sweep_vcs_sim_log_MODE${MODE}_E${EXP_W}_M${MAN_W}.txt"
+    LOG="$LOG_DIR/sweep_vcs_sim_sa_aitb_prop_log_MODE${MODE}_E${EXP_W}_M${MAN_W}.txt"
 
     echo "============================================================"
     echo "Config $((i+1))/$NUM_CONFIGS: MODE_INT=$MODE EXP_W=$EXP_W MAN_W=$MAN_W IS_DOT4=$IS_DOT4"
