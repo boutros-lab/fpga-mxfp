@@ -3,10 +3,7 @@ M ?= 1
 N ?= 2
 FP8_DOT4=0
 
-.PHONY: sim syn242 fitaitb fitpacked
-
-sim:
-	vsim -c -do "set M $M" -do "set E $E" -do "do sim/run_dot_aitb.tcl"
+.PHONY: fitaitb fitpacked
 
 syn242aitb:
 	quartus_sh -t syn/setup_24_2_aitb.tcl mxfp_dot_cli aitb_E$E_M$M_N$N $E $M $N
