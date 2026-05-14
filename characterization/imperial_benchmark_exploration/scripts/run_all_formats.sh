@@ -1,11 +1,12 @@
 #!/bin/bash
 
+PIPE=$1
 k=32
 input_stages=1
-dot_fp_stages=1
-pipeline_add=1
-pipeline_flopoco=1
-fp32_stages=1
+dot_fp_stages=$1
+pipeline_add=$1
+pipeline_flopoco=$1
+fp32_stages=$1
 output_stages=1
 mul_int="$RTL_ROOT/mul_int.sv"
 synthesis=true
@@ -96,7 +97,7 @@ echo "Project,Fmax,ALMs,DSPs" > $out
 for ((i=0; i<${#projects[@]}; i++)); do
 	if [ "$synthesis" == true ]; then
 		rm -rf ${proj_dirs[$i]}
-		
+
 		# Create Project
 		quartus_sh -t $PROJ_ROOT/quartus_tcl/dot_setup_fp32.tcl $PROJ_ROOT/${proj_dirs[$i]} ${projects[$i]} ${projects[$i]} ${exp[$i]} ${man[$i]} $k $input_stages $dot_fp_stages $pipeline_add $fp32_stages $output_stages $mul_int $pipeline_flopoco
 
