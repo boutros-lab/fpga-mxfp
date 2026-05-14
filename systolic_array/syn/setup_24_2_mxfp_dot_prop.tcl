@@ -13,9 +13,8 @@ set DEVICE     "A5EC065BB32AE4S"
 set SDC_FILE   [file join $ROOT cons sys_array_aitb.sdc]
 set EXP_WIDTH  [lindex $argv 2]
 set MAN_WIDTH  [lindex $argv 3]
-set ARR_SIZE   [lindex $argv 4] 
+set IS_FP8_DOT4   [lindex $argv 4] 
 set IS_SIM 0
-set IS_FP8_DOT4 0
 
 if {$EXP_WIDTH == 2} {
 	if {$MAN_WIDTH == 1} {
@@ -49,10 +48,8 @@ set_global_assignment -name DEVICE $DEVICE
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 25.3.0
 set_global_assignment -name LAST_QUARTUS_VERSION "25.3.0 Pro Edition"
 # Get Verilog files and SDC file
-set MXFP_DOT_RTL [file normalize [file join $ROOT .. ai_tensor_block rtl]]
 set PROP_MXFP_DOT_RTL [file normalize [file join $ROOT ..  proposed_dsp_mxfp_dot rtl]]
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize [file join $ROOT rtl pkg_aitb.sv]]
-set_global_assignment -name SYSTEMVERILOG_FILE [file normalize [file join $ROOT rtl mxfp2fix.sv]]
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize [file join $PROP_MXFP_DOT_RTL fp_aitb_proposed.sv]]
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize [file join $PROP_MXFP_DOT_RTL mxfp_dot_proposed.sv]]
 if {$EXP_WIDTH == 5 && $MAN_WIDTH == 2} {
@@ -64,13 +61,12 @@ if {$EXP_WIDTH == 5 && $MAN_WIDTH == 2} {
 } else {
 	set_global_assignment -name SYSTEMVERILOG_FILE [file normalize [file join $PROP_MXFP_DOT_RTL mxfp_dot_prop_mxfp${FULL_WIDTH}.sv]]
 }
-set_global_assignment -name SYSTEMVERILOG_FILE [file normalize [file join $MXFP_DOT_RTL pipeline.sv]]
 set_global_assignment -name SDC_FILE [file normalize $SDC_FILE]
 # Set number of processors and top design
 set_global_assignment -name TOP_LEVEL_ENTITY mxfp_dot_proposed
 set_global_assignment -name NUM_PARALLEL_PROCESSORS [exec nproc]
-if {$IS_FP8_DOT4 == 1} {
-	set_global_assignment -name PROJECT_OUTPUT_DIRECTORY "output_files_mxfp_dot_prop_E${EXP_WIDTH}_M${MAN_WIDTH}_N${ARR_SIZE}_DOT4"
+if {$EXP_WIDTH == 5 && $MAN_WIDTH == 2 && $IS_FP8_DOT4 == 1} {
+	set_global_assignment -name PROJECT_OUTPUT_DIRECTORY "output_files_mxfp_dot_prop_E${EXP_WIDTH}_M${MAN_WIDTH}_DOT4"
 } else {
 	set_global_assignment -name PROJECT_OUTPUT_DIRECTORY "output_files_mxfp_dot_prop_E${EXP_WIDTH}_M${MAN_WIDTH}"
 }
@@ -91,7 +87,6 @@ set_instance_assignment -name VIRTUAL_PIN ON -to fp32_flags_col2_o -entity mxfp_
 # Set parameters
 set_parameter -name M    $MAN_WIDTH
 set_parameter -name E    $EXP_WIDTH
-set_parameter -name N        $ARR_SIZE
 set_parameter -name IS_DOT4  $IS_FP8_DOT4
 set_parameter -name IS_SIM   $IS_SIM
 set_parameter -name MODE_INT $MODE
