@@ -1,0 +1,607 @@
+
+Warning-[LINX_KRNL] Unsupported Linux kernel
+  Linux kernel '6.8.0-100-generic' is not supported.
+  Supported versions are 2.4* or 2.6*.
+
+                         Chronologic VCS (TM)
+        Version L-2016.06-1_Full64 -- Thu May 14 13:41:12 2026
+               Copyright (c) 1991-2016 by Synopsys Inc.
+                         ALL RIGHTS RESERVED
+
+This program is proprietary and confidential information of Synopsys Inc.
+and may be used and disclosed only as authorized in a license agreement
+controlling such use and disclosure.
+
+Parsing design file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_lnsim.sv'
+Parsing design file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/tennm_atoms.sv'
+Parsing design file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv'
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[NZIR] Incorrect size number
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+  The specified width is '0'. Nonzero unsigned decimal number is required as 
+  the size constant. This '0' width will be ignored.
+
+
+Warning-[NZIR] Incorrect size number
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+  The specified width is '0'. Nonzero unsigned decimal number is required as 
+  the size constant. This '0' width will be ignored.
+
+
+Warning-[NZIR] Incorrect size number
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+  The specified width is '0'. Nonzero unsigned decimal number is required as 
+  the size constant. This '0' width will be ignored.
+
+
+Warning-[NZIR] Incorrect size number
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+  The specified width is '0'. Nonzero unsigned decimal number is required as 
+  the size constant. This '0' width will be ignored.
+
+
+Warning-[FLWI] For loop without initializer
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 19
+
+
+Parsing design file 'sys_array_packed_mult_tb.sv'
+Parsing design file '../rtl/sys_array_packed_mult.sv'
+Parsing design file '../../characterization/packed_multiplier/packed_dot_product_fp32.sv'
+Parsing design file '../../characterization/packed_multiplier/packed_dot_product.sv'
+Parsing design file '../../characterization/packed_multiplier/packed_multiplier.sv'
+Parsing design file '../../characterization/packed_multiplier/DSP_2x18x18.sv'
+Parsing design file '../../characterization/packed_multiplier/reduction.sv'
+Parsing design file '../../characterization/ai_tensor_block/rtl/pipeline.sv'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_primitives.v'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/220model.v'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/sgate.v'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_mf.v'
+
+Warning-[TMR] Text macro redefined
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_mf.v, 51
+  Text macro (MAX_WIDTH) is redefined. The last definition will override 
+  previous ones.
+  In /tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_lnsim.sv,
+  20660, it was defined as 2048
+
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_primitives.v'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/220model.v'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/sgate.v'
+Parsing library file '/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/altera_mf.v'
+CPU time: 28.617 seconds to compile
+Unsupported Linux kernel (6.8.0-100-generic), will try Linux
+                     Synopsys 1076 VHDL Analyzer
+                 Version L-2016.06-1 -- Jul 16, 2016
+              Copyright (c) 1991-2016 by Synopsys Inc.
+                         ALL RIGHTS RESERVED
+
+This program is proprietary and confidential information of Synopsys Inc.
+and may be used and disclosed only as authorized in a license agreement
+controlling such use and disclosure.
+
+Parsing design file '/home/rowleyra/fpga-mxfp/systolic_array/sim/../../characterization/packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e4m3_to_fp32.vhdl'
+
+Warning-[LINX_KRNL] Unsupported Linux kernel
+  Linux kernel '6.8.0-100-generic' is not supported.
+  Supported versions are 2.4* or 2.6*.
+
+
+Warning-[LCA_FEATURES_ENABLED] Usage warning
+  LCA features enabled by '-lca' argument on the command line.  For more 
+  information regarding list of LCA features please refer to Chapter "LCA 
+  features" in the VCS/VCS-MX Release Notes
+
+Doing common elaboration 
+
+Warning-[LINX_KRNL] Unsupported Linux kernel
+  Linux kernel '6.8.0-100-generic' is not supported.
+  Supported versions are 2.4* or 2.6*.
+
+                         Chronologic VCS (TM)
+        Version L-2016.06-1_Full64 -- Thu May 14 13:41:42 2026
+               Copyright (c) 1991-2016 by Synopsys Inc.
+                         ALL RIGHTS RESERVED
+
+This program is proprietary and confidential information of Synopsys Inc.
+and may be used and disclosed only as authorized in a license agreement
+controlling such use and disclosure.
+
+Top Level Modules:
+       sys_array_packed_mult_tb
+assign 4 sys_array_packed_mult_tb/EXP_W (Command line)
+assign 3 sys_array_packed_mult_tb/MAN_W (Command line)
+TimeScale is 1 ps / 1 ps
+
+Warning-[TFIPC] Too few instance port connections
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TFIPC] Too few instance port connections
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TFIPC] Too few instance port connections
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TFIPC] Too few instance port connections
+/tools/intel/intel/install/fpga/24.2/quartus/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv, 2
+
+
+
+Warning-[TFIPC] Too few instance port connections
+../../characterization/packed_multiplier/DSP_2x18x18.sv, 8
+"tennm_mac tennm_mac_component( .ax (ax),  .ay (ay),  .bx (bx),  .by (by),  .clr ({1'b0, 1'b0}),  .clk (clk),  .ena ({1'b1, 1'b1, 1'b1}),  .resulta (resulta),  .resultb (resultb));"
+  The above instance has fewer port connections than the module definition.
+  Please use '+lint=TFIPC-L' to print out detailed information of unconnected 
+  ports.
+
+
+Note-[SIMU-RESOLUTION] Simulation time resolution
+  Simulation time resolution is 1 PS
+
+Starting vcs inline pass...
+12 unique modules to generate
+recompiling package vcs_paramclassrepository
+recompiling module sys_array_packed_mult_tb
+recompiling module sys_array_packed_mult
+recompiling module packed_dot_product_fp32
+recompiling module packed_dot_product
+recompiling module MXFP_E4M3_to_FP32
+recompiling module packed_multiplier
+recompiling module DSP_2x18x18
+recompiling module tennm_mac
+recompiling module <protected>
+recompiling module <protected>
+recompiling module reduction
+All of 12 modules done
+/usr/bin/ld: warning: rmapats_mop.o: missing .note.GNU-stack section implies executable stack
+/usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+rm -f _csrc*.so pre_vcsobj_*.so share_vcsobj_*.so
+if [ -x ../simv ]; then chmod -x ../simv; fi
+g++  -o ../simv   -Wl,-rpath-link=./ -Wl,-rpath='$ORIGIN'/simv.daidir/ -Wl,-rpath=./simv.daidir/ -Wl,-rpath='$ORIGIN'/simv.daidir//scsim.db.dir  -L/usr/lib/x86_64-linux-gnu -L/lib/x86_64-linux-gnu -Wl,--no-as-needed -no-pie -rdynamic -Wl,-E -lncurses  amcQwB.o objs/amcQw_d.o  _2755972_archive_1.so  SIM_l.o       rmapats_mop.o rmapats.o rmar.o  rmar_llvm_0_1.o rmar_llvm_0_0.o       linux64_scvhdl_0.so vh/scscomm.o vh/scsFilelist.o    /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libzerosoft_rt_stubs.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/liberrorinf.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libsnpsmalloc.so    /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libvirsim.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libvcsnew.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/vcs_main.o /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libvcsmx.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libreader_common.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libBA.a /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libsimprofile.so /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libuclinative.so   -Wl,-whole-archive  -Wl,-no-whole-archive       ./../simv.daidir/vc_hdrs.o    /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/vcs_save_restore_new.o -ldl  -lc -lm -lpthread -ldl 
+/usr/bin/ld: warning: libncurses.so.5, needed by /tools/synopsys/install/vcs_2016.06-1/vcs-mx_vL-2016.06-1/linux64/lib/libuclinative.so, may conflict with libncurses.so.6
+/usr/bin/ld: warning: rmapats_mop.o: missing .note.GNU-stack section implies executable stack
+/usr/bin/ld: NOTE: This behaviour is deprecated and will be removed in a future version of the linker
+../simv up to date
+CPU time: 2.483 seconds to compile + .410 seconds to elab + .507 seconds to link
+
+Note-[RT_BS] Larger stack needed
+  Note: Bumping stack limit from 8192 to 8196 Kbytes.
+
+Chronologic VCS simulator copyright 1991-2016
+Contains Synopsys proprietary information.
+Compiler version L-2016.06-1_Full64; Runtime version L-2016.06-1_Full64;  May 14 13:41 2026
+============================================================
+Generated weights
+============================================================
+W[0] shared_exp=127 : 3d c0 33 be 41 b4 3f c2 35 b8 43 b6 39 c4 37 ba 45 b0 3b c6 31 bc 47 b2 3d c0 33 be 41 b4 3f c2
+W[1] shared_exp=128 : c4 37 ba 45 b0 3b c6 31 bc 47 b2 3d c0 33 be 41 b4 3f c2 35 b8 43 b6 39 c4 37 ba 45 b0 3b c6 31
+W[2] shared_exp=127 : 33 be 41 b4 3f c2 35 b8 43 b6 39 c4 37 ba 45 b0 3b c6 31 bc 47 b2 3d c0 33 be 41 b4 3f c2 35 b8
+============================================================
+Generated activations
+============================================================
+X[p=0][c=0][op=0] exp=127 : 39 ba 3b bc 3d be 3f b8 39 ba 3b bc 3d be 3f b8 39 ba 3b bc 3d be 3f b8 39 ba 3b bc 3d be 3f b8
+X[p=0][c=0][op=1] exp=128 : c4 45 c6 47 c0 41 c2 43 c4 45 c6 47 c0 41 c2 43 c4 45 c6 47 c0 41 c2 43 c4 45 c6 47 c0 41 c2 43
+X[p=0][c=1][op=0] exp=128 : b0 31 b2 33 b4 35 b6 37 b0 31 b2 33 b4 35 b6 37 b0 31 b2 33 b4 35 b6 37 b0 31 b2 33 b4 35 b6 37
+X[p=0][c=1][op=1] exp=127 : 3b bc 3d be 3f b8 39 ba 3b bc 3d be 3f b8 39 ba 3b bc 3d be 3f b8 39 ba 3b bc 3d be 3f b8 39 ba
+X[p=0][c=2][op=0] exp=127 : 47 c0 41 c2 43 c4 45 c6 47 c0 41 c2 43 c4 45 c6 47 c0 41 c2 43 c4 45 c6 47 c0 41 c2 43 c4 45 c6
+X[p=0][c=2][op=1] exp=128 : b2 33 b4 35 b6 37 b0 31 b2 33 b4 35 b6 37 b0 31 b2 33 b4 35 b6 37 b0 31 b2 33 b4 35 b6 37 b0 31
+X[p=1][c=0][op=0] exp=128 : b0 31 b2 33 b4 35 b6 37 b0 31 b2 33 b4 35 b6 37 b0 31 b2 33 b4 35 b6 37 b0 31 b2 33 b4 35 b6 37
+X[p=1][c=0][op=1] exp=127 : 3b bc 3d be 3f b8 39 ba 3b bc 3d be 3f b8 39 ba 3b bc 3d be 3f b8 39 ba 3b bc 3d be 3f b8 39 ba
+X[p=1][c=1][op=0] exp=127 : 47 c0 41 c2 43 c4 45 c6 47 c0 41 c2 43 c4 45 c6 47 c0 41 c2 43 c4 45 c6 47 c0 41 c2 43 c4 45 c6
+X[p=1][c=1][op=1] exp=128 : b2 33 b4 35 b6 37 b0 31 b2 33 b4 35 b6 37 b0 31 b2 33 b4 35 b6 37 b0 31 b2 33 b4 35 b6 37 b0 31
+X[p=1][c=2][op=0] exp=128 : be 3f b8 39 ba 3b bc 3d be 3f b8 39 ba 3b bc 3d be 3f b8 39 ba 3b bc 3d be 3f b8 39 ba 3b bc 3d
+X[p=1][c=2][op=1] exp=127 : 41 c2 43 c4 45 c6 47 c0 41 c2 43 c4 45 c6 47 c0 41 c2 43 c4 45 c6 47 c0 41 c2 43 c4 45 c6 47 c0
+X[p=2][c=0][op=0] exp=127 : 47 c0 41 c2 43 c4 45 c6 47 c0 41 c2 43 c4 45 c6 47 c0 41 c2 43 c4 45 c6 47 c0 41 c2 43 c4 45 c6
+X[p=2][c=0][op=1] exp=128 : b2 33 b4 35 b6 37 b0 31 b2 33 b4 35 b6 37 b0 31 b2 33 b4 35 b6 37 b0 31 b2 33 b4 35 b6 37 b0 31
+X[p=2][c=1][op=0] exp=128 : be 3f b8 39 ba 3b bc 3d be 3f b8 39 ba 3b bc 3d be 3f b8 39 ba 3b bc 3d be 3f b8 39 ba 3b bc 3d
+X[p=2][c=1][op=1] exp=127 : 41 c2 43 c4 45 c6 47 c0 41 c2 43 c4 45 c6 47 c0 41 c2 43 c4 45 c6 47 c0 41 c2 43 c4 45 c6 47 c0
+X[p=2][c=2][op=0] exp=127 : 35 b6 37 b0 31 b2 33 b4 35 b6 37 b0 31 b2 33 b4 35 b6 37 b0 31 b2 33 b4 35 b6 37 b0 31 b2 33 b4
+X[p=2][c=2][op=1] exp=128 : b8 39 ba 3b bc 3d be 3f b8 39 ba 3b bc 3d be 3f b8 39 ba 3b bc 3d be 3f b8 39 ba 3b bc 3d be 3f
+X[p=3][c=0][op=0] exp=128 : be 3f b8 39 ba 3b bc 3d be 3f b8 39 ba 3b bc 3d be 3f b8 39 ba 3b bc 3d be 3f b8 39 ba 3b bc 3d
+X[p=3][c=0][op=1] exp=127 : 41 c2 43 c4 45 c6 47 c0 41 c2 43 c4 45 c6 47 c0 41 c2 43 c4 45 c6 47 c0 41 c2 43 c4 45 c6 47 c0
+X[p=3][c=1][op=0] exp=127 : 35 b6 37 b0 31 b2 33 b4 35 b6 37 b0 31 b2 33 b4 35 b6 37 b0 31 b2 33 b4 35 b6 37 b0 31 b2 33 b4
+X[p=3][c=1][op=1] exp=128 : b8 39 ba 3b bc 3d be 3f b8 39 ba 3b bc 3d be 3f b8 39 ba 3b bc 3d be 3f b8 39 ba 3b bc 3d be 3f
+X[p=3][c=2][op=0] exp=128 : c4 45 c6 47 c0 41 c2 43 c4 45 c6 47 c0 41 c2 43 c4 45 c6 47 c0 41 c2 43 c4 45 c6 47 c0 41 c2 43
+X[p=3][c=2][op=1] exp=127 : 37 b0 31 b2 33 b4 35 b6 37 b0 31 b2 33 b4 35 b6 37 b0 31 b2 33 b4 35 b6 37 b0 31 b2 33 b4 35 b6
+X[p=4][c=0][op=0] exp=127 : 35 b6 37 b0 31 b2 33 b4 35 b6 37 b0 31 b2 33 b4 35 b6 37 b0 31 b2 33 b4 35 b6 37 b0 31 b2 33 b4
+X[p=4][c=0][op=1] exp=128 : b8 39 ba 3b bc 3d be 3f b8 39 ba 3b bc 3d be 3f b8 39 ba 3b bc 3d be 3f b8 39 ba 3b bc 3d be 3f
+X[p=4][c=1][op=0] exp=128 : c4 45 c6 47 c0 41 c2 43 c4 45 c6 47 c0 41 c2 43 c4 45 c6 47 c0 41 c2 43 c4 45 c6 47 c0 41 c2 43
+X[p=4][c=1][op=1] exp=127 : 37 b0 31 b2 33 b4 35 b6 37 b0 31 b2 33 b4 35 b6 37 b0 31 b2 33 b4 35 b6 37 b0 31 b2 33 b4 35 b6
+X[p=4][c=2][op=0] exp=127 : 3b bc 3d be 3f b8 39 ba 3b bc 3d be 3f b8 39 ba 3b bc 3d be 3f b8 39 ba 3b bc 3d be 3f b8 39 ba
+X[p=4][c=2][op=1] exp=128 : c6 47 c0 41 c2 43 c4 45 c6 47 c0 41 c2 43 c4 45 c6 47 c0 41 c2 43 c4 45 c6 47 c0 41 c2 43 c4 45
+============================================================
+Software golden dot products
+============================================================
+SW_GOLD[p=0][r=0][c=0][op=0] = 0x429b7400 (77.726562)
+SW_GOLD[p=0][r=0][c=0][op=1] = 0xc39a7800 (-308.937500)
+SW_GOLD[p=0][r=0][c=1][op=0] = 0xc29bc800 (-77.890625)
+SW_GOLD[p=0][r=0][c=1][op=1] = 0x42996c00 (76.710938)
+SW_GOLD[p=0][r=0][c=2][op=0] = 0x431cfc00 (156.984375)
+SW_GOLD[p=0][r=0][c=2][op=1] = 0xc2980000 (-76.000000)
+SW_GOLD[p=0][r=1][c=0][op=0] = 0xc31f5800 (-159.343750)
+SW_GOLD[p=0][r=1][c=0][op=1] = 0x4420b000 (642.750000)
+SW_GOLD[p=0][r=1][c=1][op=0] = 0x431ab000 (154.687500)
+SW_GOLD[p=0][r=1][c=1][op=1] = 0xc31b0800 (-155.031250)
+SW_GOLD[p=0][r=1][c=2][op=0] = 0xc39d8800 (-315.062500)
+SW_GOLD[p=0][r=1][c=2][op=1] = 0x4319c000 (153.750000)
+SW_GOLD[p=0][r=2][c=0][op=0] = 0x4297f000 (75.968750)
+SW_GOLD[p=0][r=2][c=0][op=1] = 0xc3933800 (-294.437500)
+SW_GOLD[p=0][r=2][c=1][op=0] = 0xc293f800 (-73.984375)
+SW_GOLD[p=0][r=2][c=1][op=1] = 0x42972000 (75.562500)
+SW_GOLD[p=0][r=2][c=2][op=0] = 0x43120000 (146.000000)
+SW_GOLD[p=0][r=2][c=2][op=1] = 0xc297e800 (-75.953125)
+SW_GOLD[p=1][r=0][c=0][op=0] = 0xc29bc800 (-77.890625)
+SW_GOLD[p=1][r=0][c=0][op=1] = 0x42996c00 (76.710938)
+SW_GOLD[p=1][r=0][c=1][op=0] = 0x431cfc00 (156.984375)
+SW_GOLD[p=1][r=0][c=1][op=1] = 0xc2980000 (-76.000000)
+SW_GOLD[p=1][r=0][c=2][op=0] = 0xc31a9000 (-154.562500)
+SW_GOLD[p=1][r=0][c=2][op=1] = 0x431b7400 (155.453125)
+SW_GOLD[p=1][r=1][c=0][op=0] = 0x431ab000 (154.687500)
+SW_GOLD[p=1][r=1][c=0][op=1] = 0xc31b0800 (-155.031250)
+SW_GOLD[p=1][r=1][c=1][op=0] = 0xc39d8800 (-315.062500)
+SW_GOLD[p=1][r=1][c=1][op=1] = 0x4319c000 (153.750000)
+SW_GOLD[p=1][r=1][c=2][op=0] = 0x439ee000 (317.750000)
+SW_GOLD[p=1][r=1][c=2][op=1] = 0xc39f5800 (-318.687500)
+SW_GOLD[p=1][r=2][c=0][op=0] = 0xc293f800 (-73.984375)
+SW_GOLD[p=1][r=2][c=0][op=1] = 0x42972000 (75.562500)
+SW_GOLD[p=1][r=2][c=1][op=0] = 0x43120000 (146.000000)
+SW_GOLD[p=1][r=2][c=1][op=1] = 0xc297e800 (-75.953125)
+SW_GOLD[p=1][r=2][c=2][op=0] = 0xc314c800 (-148.781250)
+SW_GOLD[p=1][r=2][c=2][op=1] = 0x4317f000 (151.937500)
+SW_GOLD[p=2][r=0][c=0][op=0] = 0x431cfc00 (156.984375)
+SW_GOLD[p=2][r=0][c=0][op=1] = 0xc2980000 (-76.000000)
+SW_GOLD[p=2][r=0][c=1][op=0] = 0xc31a9000 (-154.562500)
+SW_GOLD[p=2][r=0][c=1][op=1] = 0x431b7400 (155.453125)
+SW_GOLD[p=2][r=0][c=2][op=0] = 0x42182400 (38.035156)
+SW_GOLD[p=2][r=0][c=2][op=1] = 0xc31bc800 (-155.781250)
+SW_GOLD[p=2][r=1][c=0][op=0] = 0xc39d8800 (-315.062500)
+SW_GOLD[p=2][r=1][c=0][op=1] = 0x4319c000 (153.750000)
+SW_GOLD[p=2][r=1][c=1][op=0] = 0x439ee000 (317.750000)
+SW_GOLD[p=2][r=1][c=1][op=1] = 0xc39f5800 (-318.687500)
+SW_GOLD[p=2][r=1][c=2][op=0] = 0xc29c7800 (-78.234375)
+SW_GOLD[p=2][r=1][c=2][op=1] = 0x439ab000 (309.375000)
+SW_GOLD[p=2][r=2][c=0][op=0] = 0x43120000 (146.000000)
+SW_GOLD[p=2][r=2][c=0][op=1] = 0xc297e800 (-75.953125)
+SW_GOLD[p=2][r=2][c=1][op=0] = 0xc314c800 (-148.781250)
+SW_GOLD[p=2][r=2][c=1][op=1] = 0x4317f000 (151.937500)
+SW_GOLD[p=2][r=2][c=2][op=0] = 0x42143000 (37.046875)
+SW_GOLD[p=2][r=2][c=2][op=1] = 0xc313f800 (-147.968750)
+SW_GOLD[p=3][r=0][c=0][op=0] = 0xc31a9000 (-154.562500)
+SW_GOLD[p=3][r=0][c=0][op=1] = 0x431b7400 (155.453125)
+SW_GOLD[p=3][r=0][c=1][op=0] = 0x42182400 (38.035156)
+SW_GOLD[p=3][r=0][c=1][op=1] = 0xc31bc800 (-155.781250)
+SW_GOLD[p=3][r=0][c=2][op=0] = 0xc39a7800 (-308.937500)
+SW_GOLD[p=3][r=0][c=2][op=1] = 0x421cfc00 (39.246094)
+SW_GOLD[p=3][r=1][c=0][op=0] = 0x439ee000 (317.750000)
+SW_GOLD[p=3][r=1][c=0][op=1] = 0xc39f5800 (-318.687500)
+SW_GOLD[p=3][r=1][c=1][op=0] = 0xc29c7800 (-78.234375)
+SW_GOLD[p=3][r=1][c=1][op=1] = 0x439ab000 (309.375000)
+SW_GOLD[p=3][r=1][c=2][op=0] = 0x4420b000 (642.750000)
+SW_GOLD[p=3][r=1][c=2][op=1] = 0xc29d8800 (-78.765625)
+SW_GOLD[p=3][r=2][c=0][op=0] = 0xc314c800 (-148.781250)
+SW_GOLD[p=3][r=2][c=0][op=1] = 0x4317f000 (151.937500)
+SW_GOLD[p=3][r=2][c=1][op=0] = 0x42143000 (37.046875)
+SW_GOLD[p=3][r=2][c=1][op=1] = 0xc313f800 (-147.968750)
+SW_GOLD[p=3][r=2][c=2][op=0] = 0xc3933800 (-294.437500)
+SW_GOLD[p=3][r=2][c=2][op=1] = 0x42120000 (36.500000)
+SW_GOLD[p=4][r=0][c=0][op=0] = 0x42182400 (38.035156)
+SW_GOLD[p=4][r=0][c=0][op=1] = 0xc31bc800 (-155.781250)
+SW_GOLD[p=4][r=0][c=1][op=0] = 0xc39a7800 (-308.937500)
+SW_GOLD[p=4][r=0][c=1][op=1] = 0x421cfc00 (39.246094)
+SW_GOLD[p=4][r=0][c=2][op=0] = 0x42996c00 (76.710938)
+SW_GOLD[p=4][r=0][c=2][op=1] = 0xc39a9000 (-309.125000)
+SW_GOLD[p=4][r=1][c=0][op=0] = 0xc29c7800 (-78.234375)
+SW_GOLD[p=4][r=1][c=0][op=1] = 0x439ab000 (309.375000)
+SW_GOLD[p=4][r=1][c=1][op=0] = 0x4420b000 (642.750000)
+SW_GOLD[p=4][r=1][c=1][op=1] = 0xc29d8800 (-78.765625)
+SW_GOLD[p=4][r=1][c=2][op=0] = 0xc31b0800 (-155.031250)
+SW_GOLD[p=4][r=1][c=2][op=1] = 0x441ee000 (635.500000)
+SW_GOLD[p=4][r=2][c=0][op=0] = 0x42143000 (37.046875)
+SW_GOLD[p=4][r=2][c=0][op=1] = 0xc313f800 (-147.968750)
+SW_GOLD[p=4][r=2][c=1][op=0] = 0xc3933800 (-294.437500)
+SW_GOLD[p=4][r=2][c=1][op=1] = 0x42120000 (36.500000)
+SW_GOLD[p=4][r=2][c=2][op=0] = 0x42972000 (75.562500)
+SW_GOLD[p=4][r=2][c=2][op=1] = 0xc394c800 (-297.562500)
+[205000] GOLD captured p=0 row=0 col=0
+[205000] GOLD captured p=0 row=0 col=1
+[205000] GOLD captured p=0 row=0 col=2
+[205000] GOLD captured p=0 row=1 col=0
+[205000] GOLD captured p=0 row=1 col=1
+[205000] GOLD captured p=0 row=1 col=2
+[205000] GOLD captured p=0 row=2 col=0
+[205000] GOLD captured p=0 row=2 col=1
+[205000] GOLD captured p=0 row=2 col=2
+[215000] GOLD captured p=1 row=0 col=0
+[215000] GOLD captured p=1 row=0 col=1
+[215000] GOLD captured p=1 row=0 col=2
+[215000] GOLD captured p=1 row=1 col=0
+[215000] GOLD captured p=1 row=1 col=1
+[215000] GOLD captured p=1 row=1 col=2
+[215000] GOLD captured p=1 row=2 col=0
+[215000] GOLD captured p=1 row=2 col=1
+[215000] GOLD captured p=1 row=2 col=2
+[225000] GOLD captured p=2 row=0 col=0
+[225000] GOLD captured p=2 row=0 col=1
+[225000] GOLD captured p=2 row=0 col=2
+[225000] GOLD captured p=2 row=1 col=0
+[225000] GOLD captured p=2 row=1 col=1
+[225000] GOLD captured p=2 row=1 col=2
+[225000] GOLD captured p=2 row=2 col=0
+[225000] GOLD captured p=2 row=2 col=1
+[225000] GOLD captured p=2 row=2 col=2
+[235000] GOLD captured p=3 row=0 col=0
+[235000] GOLD captured p=3 row=0 col=1
+[235000] GOLD captured p=3 row=0 col=2
+[235000] GOLD captured p=3 row=1 col=0
+[235000] GOLD captured p=3 row=1 col=1
+[235000] GOLD captured p=3 row=1 col=2
+[235000] GOLD captured p=3 row=2 col=0
+[235000] GOLD captured p=3 row=2 col=1
+[235000] GOLD captured p=3 row=2 col=2
+[245000] GOLD captured p=4 row=0 col=0
+[245000] GOLD captured p=4 row=0 col=1
+[245000] GOLD captured p=4 row=0 col=2
+[245000] GOLD captured p=4 row=1 col=0
+[245000] GOLD captured p=4 row=1 col=1
+[245000] GOLD captured p=4 row=1 col=2
+[245000] GOLD captured p=4 row=2 col=0
+[245000] GOLD captured p=4 row=2 col=1
+[245000] GOLD captured p=4 row=2 col=2
+============================================================
+[245000] GOLD phase done, captured 45 expected outputs
+============================================================
+[505000] DUT row=2 col=2 p=0 op=0 dut=0x43120000 hw_gold=0x43120000 sw_gold=0x43120000 (146.000000)
+[505000] DUT row=2 col=2 p=0 op=1 dut=0xc297e800 hw_gold=0xc297e800 sw_gold=0xc297e800 (-75.953125)
+[515000] DUT row=1 col=2 p=0 op=0 dut=0xc39d8800 hw_gold=0xc39d8800 sw_gold=0xc39d8800 (-315.062500)
+[515000] DUT row=1 col=2 p=0 op=1 dut=0x4319c000 hw_gold=0x4319c000 sw_gold=0x4319c000 (153.750000)
+[515000] DUT row=2 col=1 p=0 op=0 dut=0xc293f800 hw_gold=0xc293f800 sw_gold=0xc293f800 (-73.984375)
+[515000] DUT row=2 col=1 p=0 op=1 dut=0x42972000 hw_gold=0x42972000 sw_gold=0x42972000 (75.562500)
+[515000] DUT row=2 col=2 p=1 op=0 dut=0xc314c800 hw_gold=0xc314c800 sw_gold=0xc314c800 (-148.781250)
+[515000] DUT row=2 col=2 p=1 op=1 dut=0x4317f000 hw_gold=0x4317f000 sw_gold=0x4317f000 (151.937500)
+[525000] DUT row=0 col=2 p=0 op=0 dut=0x431cfc00 hw_gold=0x431cfc00 sw_gold=0x431cfc00 (156.984375)
+[525000] DUT row=0 col=2 p=0 op=1 dut=0xc2980000 hw_gold=0xc2980000 sw_gold=0xc2980000 (-76.000000)
+[525000] DUT row=1 col=1 p=0 op=0 dut=0x431ab000 hw_gold=0x431ab000 sw_gold=0x431ab000 (154.687500)
+[525000] DUT row=1 col=1 p=0 op=1 dut=0xc31b0800 hw_gold=0xc31b0800 sw_gold=0xc31b0800 (-155.031250)
+[525000] DUT row=1 col=2 p=1 op=0 dut=0x439ee000 hw_gold=0x439ee000 sw_gold=0x439ee000 (317.750000)
+[525000] DUT row=1 col=2 p=1 op=1 dut=0xc39f5800 hw_gold=0xc39f5800 sw_gold=0xc39f5800 (-318.687500)
+[525000] DUT row=2 col=0 p=0 op=0 dut=0x4297f000 hw_gold=0x4297f000 sw_gold=0x4297f000 (75.968750)
+[525000] DUT row=2 col=0 p=0 op=1 dut=0xc3933800 hw_gold=0xc3933800 sw_gold=0xc3933800 (-294.437500)
+[525000] DUT row=2 col=1 p=1 op=0 dut=0x43120000 hw_gold=0x43120000 sw_gold=0x43120000 (146.000000)
+[525000] DUT row=2 col=1 p=1 op=1 dut=0xc297e800 hw_gold=0xc297e800 sw_gold=0xc297e800 (-75.953125)
+[525000] DUT row=2 col=2 p=2 op=0 dut=0x42143000 hw_gold=0x42143000 sw_gold=0x42143000 (37.046875)
+[525000] DUT row=2 col=2 p=2 op=1 dut=0xc313f800 hw_gold=0xc313f800 sw_gold=0xc313f800 (-147.968750)
+[535000] DUT row=0 col=1 p=0 op=0 dut=0xc29bc800 hw_gold=0xc29bc800 sw_gold=0xc29bc800 (-77.890625)
+[535000] DUT row=0 col=1 p=0 op=1 dut=0x42996c00 hw_gold=0x42996c00 sw_gold=0x42996c00 (76.710938)
+[535000] DUT row=0 col=2 p=1 op=0 dut=0xc31a9000 hw_gold=0xc31a9000 sw_gold=0xc31a9000 (-154.562500)
+[535000] DUT row=0 col=2 p=1 op=1 dut=0x431b7400 hw_gold=0x431b7400 sw_gold=0x431b7400 (155.453125)
+[535000] DUT row=1 col=0 p=0 op=0 dut=0xc31f5800 hw_gold=0xc31f5800 sw_gold=0xc31f5800 (-159.343750)
+[535000] DUT row=1 col=0 p=0 op=1 dut=0x4420b000 hw_gold=0x4420b000 sw_gold=0x4420b000 (642.750000)
+[535000] DUT row=1 col=1 p=1 op=0 dut=0xc39d8800 hw_gold=0xc39d8800 sw_gold=0xc39d8800 (-315.062500)
+[535000] DUT row=1 col=1 p=1 op=1 dut=0x4319c000 hw_gold=0x4319c000 sw_gold=0x4319c000 (153.750000)
+[535000] DUT row=1 col=2 p=2 op=0 dut=0xc29c7800 hw_gold=0xc29c7800 sw_gold=0xc29c7800 (-78.234375)
+[535000] DUT row=1 col=2 p=2 op=1 dut=0x439ab000 hw_gold=0x439ab000 sw_gold=0x439ab000 (309.375000)
+[535000] DUT row=2 col=0 p=1 op=0 dut=0xc293f800 hw_gold=0xc293f800 sw_gold=0xc293f800 (-73.984375)
+[535000] DUT row=2 col=0 p=1 op=1 dut=0x42972000 hw_gold=0x42972000 sw_gold=0x42972000 (75.562500)
+[535000] DUT row=2 col=1 p=2 op=0 dut=0xc314c800 hw_gold=0xc314c800 sw_gold=0xc314c800 (-148.781250)
+[535000] DUT row=2 col=1 p=2 op=1 dut=0x4317f000 hw_gold=0x4317f000 sw_gold=0x4317f000 (151.937500)
+[535000] DUT row=2 col=2 p=3 op=0 dut=0xc3933800 hw_gold=0xc3933800 sw_gold=0xc3933800 (-294.437500)
+[535000] DUT row=2 col=2 p=3 op=1 dut=0x42120000 hw_gold=0x42120000 sw_gold=0x42120000 (36.500000)
+[545000] DUT row=0 col=0 p=0 op=0 dut=0x429b7400 hw_gold=0x429b7400 sw_gold=0x429b7400 (77.726562)
+[545000] DUT row=0 col=0 p=0 op=1 dut=0xc39a7800 hw_gold=0xc39a7800 sw_gold=0xc39a7800 (-308.937500)
+[545000] DUT row=0 col=1 p=1 op=0 dut=0x431cfc00 hw_gold=0x431cfc00 sw_gold=0x431cfc00 (156.984375)
+[545000] DUT row=0 col=1 p=1 op=1 dut=0xc2980000 hw_gold=0xc2980000 sw_gold=0xc2980000 (-76.000000)
+[545000] DUT row=0 col=2 p=2 op=0 dut=0x42182400 hw_gold=0x42182400 sw_gold=0x42182400 (38.035156)
+[545000] DUT row=0 col=2 p=2 op=1 dut=0xc31bc800 hw_gold=0xc31bc800 sw_gold=0xc31bc800 (-155.781250)
+[545000] DUT row=1 col=0 p=1 op=0 dut=0x431ab000 hw_gold=0x431ab000 sw_gold=0x431ab000 (154.687500)
+[545000] DUT row=1 col=0 p=1 op=1 dut=0xc31b0800 hw_gold=0xc31b0800 sw_gold=0xc31b0800 (-155.031250)
+[545000] DUT row=1 col=1 p=2 op=0 dut=0x439ee000 hw_gold=0x439ee000 sw_gold=0x439ee000 (317.750000)
+[545000] DUT row=1 col=1 p=2 op=1 dut=0xc39f5800 hw_gold=0xc39f5800 sw_gold=0xc39f5800 (-318.687500)
+[545000] DUT row=1 col=2 p=3 op=0 dut=0x4420b000 hw_gold=0x4420b000 sw_gold=0x4420b000 (642.750000)
+[545000] DUT row=1 col=2 p=3 op=1 dut=0xc29d8800 hw_gold=0xc29d8800 sw_gold=0xc29d8800 (-78.765625)
+[545000] DUT row=2 col=0 p=2 op=0 dut=0x43120000 hw_gold=0x43120000 sw_gold=0x43120000 (146.000000)
+[545000] DUT row=2 col=0 p=2 op=1 dut=0xc297e800 hw_gold=0xc297e800 sw_gold=0xc297e800 (-75.953125)
+[545000] DUT row=2 col=1 p=3 op=0 dut=0x42143000 hw_gold=0x42143000 sw_gold=0x42143000 (37.046875)
+[545000] DUT row=2 col=1 p=3 op=1 dut=0xc313f800 hw_gold=0xc313f800 sw_gold=0xc313f800 (-147.968750)
+[545000] DUT row=2 col=2 p=4 op=0 dut=0x42972000 hw_gold=0x42972000 sw_gold=0x42972000 (75.562500)
+[545000] DUT row=2 col=2 p=4 op=1 dut=0xc394c800 hw_gold=0xc394c800 sw_gold=0xc394c800 (-297.562500)
+[555000] DUT row=0 col=0 p=1 op=0 dut=0xc29bc800 hw_gold=0xc29bc800 sw_gold=0xc29bc800 (-77.890625)
+[555000] DUT row=0 col=0 p=1 op=1 dut=0x42996c00 hw_gold=0x42996c00 sw_gold=0x42996c00 (76.710938)
+[555000] DUT row=0 col=1 p=2 op=0 dut=0xc31a9000 hw_gold=0xc31a9000 sw_gold=0xc31a9000 (-154.562500)
+[555000] DUT row=0 col=1 p=2 op=1 dut=0x431b7400 hw_gold=0x431b7400 sw_gold=0x431b7400 (155.453125)
+[555000] DUT row=0 col=2 p=3 op=0 dut=0xc39a7800 hw_gold=0xc39a7800 sw_gold=0xc39a7800 (-308.937500)
+[555000] DUT row=0 col=2 p=3 op=1 dut=0x421cfc00 hw_gold=0x421cfc00 sw_gold=0x421cfc00 (39.246094)
+[555000] DUT row=1 col=0 p=2 op=0 dut=0xc39d8800 hw_gold=0xc39d8800 sw_gold=0xc39d8800 (-315.062500)
+[555000] DUT row=1 col=0 p=2 op=1 dut=0x4319c000 hw_gold=0x4319c000 sw_gold=0x4319c000 (153.750000)
+[555000] DUT row=1 col=1 p=3 op=0 dut=0xc29c7800 hw_gold=0xc29c7800 sw_gold=0xc29c7800 (-78.234375)
+[555000] DUT row=1 col=1 p=3 op=1 dut=0x439ab000 hw_gold=0x439ab000 sw_gold=0x439ab000 (309.375000)
+[555000] DUT row=1 col=2 p=4 op=0 dut=0xc31b0800 hw_gold=0xc31b0800 sw_gold=0xc31b0800 (-155.031250)
+[555000] DUT row=1 col=2 p=4 op=1 dut=0x441ee000 hw_gold=0x441ee000 sw_gold=0x441ee000 (635.500000)
+[555000] DUT row=2 col=0 p=3 op=0 dut=0xc314c800 hw_gold=0xc314c800 sw_gold=0xc314c800 (-148.781250)
+[555000] DUT row=2 col=0 p=3 op=1 dut=0x4317f000 hw_gold=0x4317f000 sw_gold=0x4317f000 (151.937500)
+[555000] DUT row=2 col=1 p=4 op=0 dut=0xc3933800 hw_gold=0xc3933800 sw_gold=0xc3933800 (-294.437500)
+[555000] DUT row=2 col=1 p=4 op=1 dut=0x42120000 hw_gold=0x42120000 sw_gold=0x42120000 (36.500000)
+[565000] DUT row=0 col=0 p=2 op=0 dut=0x431cfc00 hw_gold=0x431cfc00 sw_gold=0x431cfc00 (156.984375)
+[565000] DUT row=0 col=0 p=2 op=1 dut=0xc2980000 hw_gold=0xc2980000 sw_gold=0xc2980000 (-76.000000)
+[565000] DUT row=0 col=1 p=3 op=0 dut=0x42182400 hw_gold=0x42182400 sw_gold=0x42182400 (38.035156)
+[565000] DUT row=0 col=1 p=3 op=1 dut=0xc31bc800 hw_gold=0xc31bc800 sw_gold=0xc31bc800 (-155.781250)
+[565000] DUT row=0 col=2 p=4 op=0 dut=0x42996c00 hw_gold=0x42996c00 sw_gold=0x42996c00 (76.710938)
+[565000] DUT row=0 col=2 p=4 op=1 dut=0xc39a9000 hw_gold=0xc39a9000 sw_gold=0xc39a9000 (-309.125000)
+[565000] DUT row=1 col=0 p=3 op=0 dut=0x439ee000 hw_gold=0x439ee000 sw_gold=0x439ee000 (317.750000)
+[565000] DUT row=1 col=0 p=3 op=1 dut=0xc39f5800 hw_gold=0xc39f5800 sw_gold=0xc39f5800 (-318.687500)
+[565000] DUT row=1 col=1 p=4 op=0 dut=0x4420b000 hw_gold=0x4420b000 sw_gold=0x4420b000 (642.750000)
+[565000] DUT row=1 col=1 p=4 op=1 dut=0xc29d8800 hw_gold=0xc29d8800 sw_gold=0xc29d8800 (-78.765625)
+[565000] DUT row=2 col=0 p=4 op=0 dut=0x42143000 hw_gold=0x42143000 sw_gold=0x42143000 (37.046875)
+[565000] DUT row=2 col=0 p=4 op=1 dut=0xc313f800 hw_gold=0xc313f800 sw_gold=0xc313f800 (-147.968750)
+[575000] DUT row=0 col=0 p=3 op=0 dut=0xc31a9000 hw_gold=0xc31a9000 sw_gold=0xc31a9000 (-154.562500)
+[575000] DUT row=0 col=0 p=3 op=1 dut=0x431b7400 hw_gold=0x431b7400 sw_gold=0x431b7400 (155.453125)
+[575000] DUT row=0 col=1 p=4 op=0 dut=0xc39a7800 hw_gold=0xc39a7800 sw_gold=0xc39a7800 (-308.937500)
+[575000] DUT row=0 col=1 p=4 op=1 dut=0x421cfc00 hw_gold=0x421cfc00 sw_gold=0x421cfc00 (39.246094)
+[575000] DUT row=1 col=0 p=4 op=0 dut=0xc29c7800 hw_gold=0xc29c7800 sw_gold=0xc29c7800 (-78.234375)
+[575000] DUT row=1 col=0 p=4 op=1 dut=0x439ab000 hw_gold=0x439ab000 sw_gold=0x439ab000 (309.375000)
+[585000] DUT row=0 col=0 p=4 op=0 dut=0x42182400 hw_gold=0x42182400 sw_gold=0x42182400 (38.035156)
+[585000] DUT row=0 col=0 p=4 op=1 dut=0xc31bc800 hw_gold=0xc31bc800 sw_gold=0xc31bc800 (-155.781250)
+============================================================
+[585000] TEST PASSED: received all expected DUT outputs (45).
+[585000] SW_GOLD warnings: 0 / 90 comparisons
+============================================================
+$finish called from file "sys_array_packed_mult_tb.sv", line 573.
+$finish at simulation time               585000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 585000 ps
+CPU Time:      0.360 seconds;       Data structure size:   2.5Mb
+Thu May 14 13:41:47 2026

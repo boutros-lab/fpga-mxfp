@@ -1,19 +1,34 @@
+// //////////////////////////////////////////////////////////////////////////////////////
+// Testbench: sys_array_packed_mult_tb
+// DUT: sys_array_packed_mult
+//
+// Description:
+// Testbench to verify the `sys_array_packed_mult` module by streaming in
+// "weight" matrix vectors while streaming in NUM_OPS sets of "activation" vectors.
+// P sets of (activations, weights) pairs are streamed in. Same weight vector used for simplification.
+//
+// //////////////////////////////////////////////////////////////////////////////////////
+
 `timescale 1ns/1ps
+
 module sys_array_packed_mult_tb;
-    localparam N = 3;
+
+    // Parameters
+    // Size of systolic array
+    parameter N = 3;
     // Number of sets of activations to stream in.
     localparam P = 5;
-    localparam EXP_W = 4;
-    localparam MAN_W = 3;
+    
+    parameter EXP_W = 4;
+    parameter MAN_W = 3;
     localparam DATA_MX_W = 1 + MAN_W + EXP_W;
     localparam SHARED_EXP_W = 8;
     localparam int MUL_WIDTH = 18;
     localparam int DOT_LEN = 32;
     localparam int DATA_OUT_W = 32;
     localparam int NUM_OPS = MUL_WIDTH / 2 / (1 + MAN_W);
-    localparam int FP_BIAS = (1 << (EXP_W-1)) - 1;
+    
     localparam int SHARED_EXP_BIAS = 127;
-
     localparam int GOLD_TOTAL_OUTPUTS = P * N * N;
     localparam int DUT_TOTAL_OUTPUTS = P * N * N;
 
@@ -29,7 +44,6 @@ module sys_array_packed_mult_tb;
     // SW golden model results and arrays
     shortreal w_vec_real [0:N-1][0:DOT_LEN-1];
     shortreal x_vec_real [0:P-1][0:N-1][0:DOT_LEN-1][0:NUM_OPS-1];
-
     // Software-computed golden results (one per p, row, col, op)
     shortreal sw_gold_real [0:P-1][0:N-1][0:N-1][0:NUM_OPS-1];
     logic [DATA_OUT_W-1:0] sw_gold_bits [0:P-1][0:N-1][0:N-1][0:NUM_OPS-1];
@@ -255,6 +269,8 @@ module sys_array_packed_mult_tb;
     );
 
     // Independent PE
+    // Allows verification of systolic array's dataflow (i.e. feeding the PE directly versus
+    // through the register chains in the array).
     logic gold_valid_in [0:N-1][0:N-1];
     logic gold_valid_out [0:N-1][0:N-1];
 

@@ -8,6 +8,10 @@ USER_DEFINED_ELAB_OPTIONS="+vcs+lic+wait -debug_access+pp"
 USER_DEFINED_ELAB_OPTIONS_APPEND=""
 USER_DEFINED_SIM_OPTIONS=""
 
+# Default MXFP format (e4m3); overridden by sweep script via EXP_W / MAN_W args
+EXP_W=4
+MAN_W=3
+
 # ----------------------------------------
 # overwrite variables - DO NOT MODIFY!
 # This block evaluates each command line argument, typically used for 
@@ -21,8 +25,16 @@ for expression in "$@"; do
   fi
 done
 
+# Select the mxfp_eXmY_to_fp32.vhdl that matches EXP_W / MAN_W
+VHDL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../../characterization/packed_multiplier/flopoco_fx2fp_pipelined"
+MXFP_VHDL_FILE="${VHDL_DIR}/mxfp_e${EXP_W}m${MAN_W}_to_fp32.vhdl"
+if [ ! -f "$MXFP_VHDL_FILE" ]; then
+  echo "Error: VHDL file not found for EXP_W=${EXP_W} MAN_W=${MAN_W}: $MXFP_VHDL_FILE" >&2
+  exit 1
+fi
+
 #-------------------------------------------
-# check tclsh version no earlier than 8.5 
+# check tclsh version no earlier than 8.5
 version=$(echo "puts [package vcompare [info tclversion] 8.5]; exit" | tclsh)
 if [ $version -eq -1 ]; then 
   echo "Error: Minimum required tcl package version is 8.5." >&2 
@@ -36,18 +48,14 @@ ELAB_OPTIONS=""
 design_files=(
   "sys_array_packed_mult_tb.sv"
   "../rtl/sys_array_packed_mult.sv"
-  "../../packed_multiplier/packed_dot_product_fp32.sv"
-  "../../packed_multiplier/packed_dot_product.sv"
-  "../../packed_multiplier/packed_multiplier.sv"
-  "../../packed_multiplier/DSP_2x18x18.sv"
-  "../../packed_multiplier/reduction.sv"
-  "../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e4m3_to_fp32.vhdl"
-  "../../ai_tensor_block/rtl/pipeline.sv"
+  "../../characterization/packed_multiplier/packed_dot_product_fp32.sv"
+  "../../characterization/packed_multiplier/packed_dot_product.sv"
+  "../../characterization/packed_multiplier/packed_multiplier.sv"
+  "../../characterization/packed_multiplier/DSP_2x18x18.sv"
+  "../../characterization/packed_multiplier/reduction.sv"
+  "$MXFP_VHDL_FILE"
+  "../../characterization/ai_tensor_block/rtl/pipeline.sv"
 )
-# "../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e5m2_to_fp32.vhdl"
-# "../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e3m2_to_fp32.vhdl"
-# "../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e2m1_to_fp32.vhdl"
-# "../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e2m3_to_fp32.vhdl"
 
 # -------------------------------------------
 # split files by language

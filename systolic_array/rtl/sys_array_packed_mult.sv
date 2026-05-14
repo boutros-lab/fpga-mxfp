@@ -1,21 +1,38 @@
+// //////////////////////////////////////////////////////////////////////////////////////
+// Module: sys_array_packed_mult
+//
+// Description:
+// Systolic array design whose processing element (PE) is a MXFP dot product unit using 
+// the Agilex-5 DSP block with the "Packed Fixed-Point Multiplier" approach (E3M2, E4M3 and E5M2 formats).
+//
+// Parameters:
+// - N: size of the systolic array (NxN PEs).
+// - EXP_W: exponent width of selected MXFP format.
+// - MAN_W: mantissa width of selected MXFP format.
+// - DATA_W: data width of selected MXFP format.
+// - SHARED_EXP_W: shared exponent width of MXFP format.
+// - DOT_LEN: length of dot product being implemented by PE. Also length of vectors in PE / MXFP block size.
+// - DATA_OUT_W: data width of output products.
+// - MUL_WIDTH: operand width of Agilex-5 DSP multiplier.
+// - NUM_OPS: number of dot products computed (NUM_OPS sets of activation vectors "dotted" with the same weight vector).
+// //////////////////////////////////////////////////////////////////////////////////////
+
 module sys_array_packed_mult #(
     // Size of the array (NxN)
     parameter N = 2,
     // Number format params
-    parameter MAN_W = 3,
     parameter EXP_W = 4,
+    parameter MAN_W = 3,
     parameter DATA_MX_W = 1 + MAN_W + EXP_W,
     parameter SHARED_EXP_W = 8,
-    // MX-FP Bias
-    parameter FP_BIAS = 1,
-    parameter SHARED_EXP_BIAS = 127,
-    // Packed multiplier specific parameters
-    parameter MUL_WIDTH = 18,
+    
     // Number of elements in vector to "dot" aka block size
     parameter DOT_LEN = 32,
     // PEs compute a FP32 output
     parameter DATA_OUT_W = 32,
 
+    // Packed multiplier specific parameters
+    parameter MUL_WIDTH = 18,
     // Local params
     localparam NUM_OPS = MUL_WIDTH / 2 / (1 + MAN_W)
 ) (
