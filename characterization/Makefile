@@ -1,5 +1,5 @@
 
-all: base base_opt packed aitb
+all: base base_opt packed aitb fp16
 
 base:
 	./run_base.sh
@@ -10,10 +10,13 @@ base_opt: base
 packed:
 	./run_packed.sh
 
+fp16:
+	./run_fp16.sh
+
 aitb:
 	./run_aitb.sh
 
 csv:
 	@./csv_viz.sh *.csv
 
-.PHONY: all base base_opt packed aitb csv
+.PHONY: all base base_opt packed aitb fp16 csv
