@@ -13,6 +13,7 @@ set DEVICE     "A5EC065BB32AE4S"
 set SDC_FILE   [file join $ROOT cons sys_array_aitb.sdc]
 set EXP_WIDTH  [lindex $argv 2]
 set MAN_WIDTH  [lindex $argv 3]
+set ARR_SIZE   [lindex $argv 4]
 
 if {[project_exists $PROJ]} {
     project_open -revision $REV $PROJ
@@ -28,7 +29,7 @@ set_global_assignment -name DEVICE $DEVICE
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 24.2.0
 set_global_assignment -name LAST_QUARTUS_VERSION "24.2.0 Pro Edition"
 # Get Verilog files and SDC file
-set MXFP_DOT_RTL [file normalize [file join $ROOT .. ai_tensor_block rtl]]
+set MXFP_DOT_RTL [file normalize [file join $ROOT .. characterization ai_tensor_block rtl]]
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize [file join $ROOT rtl sys_array_aitb.sv]]
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize [file join $MXFP_DOT_RTL fp_aitb.sv]]
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize [file join $MXFP_DOT_RTL mxfp_dot.sv]]
@@ -38,7 +39,7 @@ set_global_assignment -name SDC_FILE [file normalize $SDC_FILE]
 # Set number of processors and top design
 set_global_assignment -name TOP_LEVEL_ENTITY sys_array_aitb
 set_global_assignment -name NUM_PARALLEL_PROCESSORS 24
-set_global_assignment -name PROJECT_OUTPUT_DIRECTORY "output_files_E${EXP_WIDTH}_M${MAN_WIDTH}"
+set_global_assignment -name PROJECT_OUTPUT_DIRECTORY "output_files_aitb_E${EXP_WIDTH}_M${MAN_WIDTH}_N${ARR_SIZE}"
 
 # Set virtual pins
 set_instance_assignment -name VIRTUAL_PIN ON -to rst -entity sys_array_aitb
@@ -59,6 +60,7 @@ set_instance_assignment -name VIRTUAL_PIN ON -to fp32_flags_col2_o -entity sys_a
 # Set parameters
 set_parameter -name MAN_W    $MAN_WIDTH
 set_parameter -name EXP_W    $EXP_WIDTH
+set_parameter -name N        $ARR_SIZE
 
 # Other Assignments
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
