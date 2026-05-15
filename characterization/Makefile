@@ -16,7 +16,7 @@ fp16:
 aitb:
 	./run_aitb.sh
 
-csv:
-	@./csv_viz.sh *.csv
+table:
+	@./csv_viz.sh
 
-.PHONY: all base base_opt packed aitb fp16 csv
+.PHONY: all base base_opt packed aitb fp16 table

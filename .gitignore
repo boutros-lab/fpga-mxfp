@@ -11,6 +11,8 @@ qdb
 *.done
 *_save_view.txt
 *.qws
+*.log
+*.csv
 .qsys_edit
 simulation
 serv_req_info.txt
