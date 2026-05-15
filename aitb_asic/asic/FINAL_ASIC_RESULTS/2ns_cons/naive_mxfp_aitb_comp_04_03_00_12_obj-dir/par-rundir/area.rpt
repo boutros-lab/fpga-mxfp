@@ -1,0 +1,4 @@
+    Hinst Name                    Module Name                                                        Inst Count           Total Area
+---------------------------------------------------------------------------------------------------------------------------------
+naive_mxfp_aitb_comp_top                                                                                  23178            39168.645
+ u_naive_mxfp_comp_dot_fixed_col2 naive_mxfp_comp_dot_fixed_FIXED_DOT_LENGTH10_PACKED_REDUCTION0_445       7353            11126.056
