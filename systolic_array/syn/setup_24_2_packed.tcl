@@ -30,7 +30,7 @@ set_global_assignment -name DEVICE $DEVICE
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 25.3.0
 set_global_assignment -name LAST_QUARTUS_VERSION "25.3.0 Pro Edition"
 # Get Verilog files and SDC file
-set PACKED_MUL [file join $ROOT .. packed_multiplier]
+set PACKED_MUL [file join $ROOT .. characterization packed_multiplier]
 set AITB_RTL   [file join $ROOT .. ai_tensor_block rtl]
 
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize [file join $ROOT rtl sys_array_packed_mult.sv]]
@@ -40,12 +40,7 @@ set_global_assignment -name SYSTEMVERILOG_FILE [file normalize [file join $PACKE
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize [file join $PACKED_MUL packed_multiplier.sv]]
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize [file join $PACKED_MUL DSP_2x18x18.sv]]
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize [file join $PACKED_MUL reduction.sv]]
-# NOTE: stuck for this parameter assignment. Must only compile one at a time for correct functionning
 set_global_assignment -name VHDL_FILE [file normalize [file join $PACKED_MUL flopoco_fx2fp_pipelined mxfp_e${EXP_WIDTH}m${MAN_WIDTH}_to_fp32.vhdl]]
-# "../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e5m2_to_fp32.vhdl"
-# "../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e3m2_to_fp32.vhdl"
-# "../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e2m1_to_fp32.vhdl"
-# "../../packed_multiplier/flopoco_fx2fp_pipelined/mxfp_e2m3_to_fp32.vhdl"
 
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize [file join $AITB_RTL pipeline.sv]]
 
