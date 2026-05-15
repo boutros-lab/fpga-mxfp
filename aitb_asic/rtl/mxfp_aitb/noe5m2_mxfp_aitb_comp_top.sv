@@ -5,8 +5,7 @@
 import pkg_aitb::*;
 
 module noe5m2_mxfp_aitb_comp_top #(
-	parameter FIXED_INPUTS = FIXED_ELEMENTS,
-	parameter PACKED_REDUCTION = 0
+	parameter FIXED_INPUTS = FIXED_ELEMENTS
 )(
 	input logic clk,
 	input logic rst,
@@ -338,8 +337,7 @@ pipeline #(.W(SH_EXP_WIDTH), .STAGES(1)) PIPE_2_w_reg_c2 (
 
 // Dot engine (out: 70b vector)
 noe5m2_mxfp_comp_dot_fixed #(
-	.FIXED_DOT_LENGTH(FIXED_INPUTS),
-	.PACKED_REDUCTION(PACKED_REDUCTION)
+	.FIXED_DOT_LENGTH(FIXED_INPUTS)
 ) u_noe5m2_mxfp_comp_dot_fixed_col1 (
 	.i_mxfp_mode(i_mxfp_mode),
 
@@ -368,8 +366,7 @@ noe5m2_mxfp_comp_dot_fixed #(
 );
 
 noe5m2_mxfp_comp_dot_fixed #(
-	.FIXED_DOT_LENGTH(FIXED_INPUTS),
-	.PACKED_REDUCTION(PACKED_REDUCTION)
+	.FIXED_DOT_LENGTH(FIXED_INPUTS)
 ) u_noe5m2_mxfp_comp_dot_fixed_col2 (
 	.i_mxfp_mode(i_mxfp_mode),
 

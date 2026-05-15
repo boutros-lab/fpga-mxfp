@@ -31,8 +31,7 @@ module fixed8_mxfp_aitb_comp_wrapper (
 );
 
 naive_mxfp_aitb_comp_top #(
-	.FIXED_INPUTS(8),
-	.PACKED_REDUCTION(0)
+	.FIXED_INPUTS(8)
 ) u_fixed8_mxfp_aitb_comp_top (
 	.clk(clk),
 	.rst(rst),
