@@ -139,6 +139,12 @@ e4m3_proposed_fmax  = [457.67, 457.67, 457.67, 457.67, 457.67, 392.62]
 e4m3_proposed_alms  = [1438, 5777, 13010, 17665, 36081, 70644]
 e4m3_proposed_dsp   = [16, 64, 144, 196, 400, 784]
 
+# --- E5M2 Baseline ---
+e5m2_baseline_N     = [2, 4]
+e5m2_baseline_fmax  = [212.45, 210.04]
+e5m2_baseline_alms  = [41704, 167149]
+e5m2_baseline_dsp   = [64, 256]
+
 # --- E5M2 DOT8 ---
 e5m2_dot8_proposed_N     = [2, 4, 6, 7, 10, 14]
 e5m2_dot8_proposed_fmax  = [457.67, 457.67, 457.67, 457.67, 457.67, 392.62]
