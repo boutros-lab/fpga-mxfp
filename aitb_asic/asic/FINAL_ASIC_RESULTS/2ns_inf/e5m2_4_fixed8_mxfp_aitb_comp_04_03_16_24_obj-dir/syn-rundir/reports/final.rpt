@@ -1,0 +1,51 @@
+
+
+Working Directory = /home/msmekhem/research/repositories/fpga-mxfp/aitb_asic/asic/e5m2_4_fixed8_mxfp_aitb_comp_04_03_16_24_obj-dir/syn-rundir
+QoS Summary for e5m2_4_fixed8_mxfp_aitb_comp_wrapper
+================================================================================
+Metric                          final          
+================================================================================
+Slack (ps):                         1
+  R2R (ps):                         1
+  I2R (ps):                  no_value
+  R2O (ps):                  no_value
+  I2O (ps):                  no_value
+  CG  (ps):                  no_value
+TNS (ps):                           0
+  R2R (ps):                         0
+  I2R (ps):                  no_value
+  R2O (ps):                  no_value
+  I2O (ps):                  no_value
+  CG  (ps):                  no_value
+Failing Paths:                      0
+Cell Area:                     36,100
+Total Cell Area:               36,100
+Leaf Instances:                22,150
+Total Instances:               22,150
+Utilization (%):                 0.00
+Tot. Net Length (um):        no_value
+Avg. Net Length (um):        no_value
+Route Overflow H (%):        no_value
+Route Overflow V (%):        no_value
+MBCI(%) (bits/gate) :            0.00
+Norm Cong Hotspot Area:
+  Max Cong:                  no_value
+  Tot Cong:                  no_value
+================================================================================
+CPU  Runtime (h:m:s):        00:07:24
+Real Runtime (h:m:s):        00:05:10
+CPU  Elapsed (h:m:s):        00:07:26
+Real Elapsed (h:m:s):        00:05:11
+Memory (MB):                  2089.97
+================================================================================
+================================================================================
+Flow Settings:
+================================================================================
+Total Runtime (h:m:s): 00:05:10
+Total Memory (MB):     2089.97
+Executable Version:    21.17-s066_1
+================================================================================
+Total Cell Area =  Cell Area + Physical Cell Area
+Total Instances =  Leaf Instances + Physical Instances
+
+

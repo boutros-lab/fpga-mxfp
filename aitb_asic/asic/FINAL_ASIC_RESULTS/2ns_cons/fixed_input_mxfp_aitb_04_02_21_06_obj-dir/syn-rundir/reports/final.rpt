@@ -1,0 +1,51 @@
+
+
+Working Directory = /home/msmekhem/research/repositories/fpga-mxfp/aitb_asic/asic/fixed_input_mxfp_aitb_04_02_21_06_obj-dir/syn-rundir
+QoS Summary for fixed_input_mxfp_aitb_top
+================================================================================
+Metric                          final          
+================================================================================
+Slack (ps):                        20
+  R2R (ps):                        20
+  I2R (ps):                  no_value
+  R2O (ps):                  no_value
+  I2O (ps):                  no_value
+  CG  (ps):                  no_value
+TNS (ps):                           0
+  R2R (ps):                         0
+  I2R (ps):                  no_value
+  R2O (ps):                  no_value
+  I2O (ps):                  no_value
+  CG  (ps):                  no_value
+Failing Paths:                      0
+Cell Area:                     28,458
+Total Cell Area:               28,458
+Leaf Instances:                15,142
+Total Instances:               15,142
+Utilization (%):                 0.00
+Tot. Net Length (um):        no_value
+Avg. Net Length (um):        no_value
+Route Overflow H (%):        no_value
+Route Overflow V (%):        no_value
+MBCI(%) (bits/gate) :            0.00
+Norm Cong Hotspot Area:
+  Max Cong:                  no_value
+  Tot Cong:                  no_value
+================================================================================
+CPU  Runtime (h:m:s):        00:04:04
+Real Runtime (h:m:s):        00:03:04
+CPU  Elapsed (h:m:s):        00:04:07
+Real Elapsed (h:m:s):        00:03:05
+Memory (MB):                  1935.02
+================================================================================
+================================================================================
+Flow Settings:
+================================================================================
+Total Runtime (h:m:s): 00:03:04
+Total Memory (MB):     1935.02
+Executable Version:    21.17-s066_1
+================================================================================
+Total Cell Area =  Cell Area + Physical Cell Area
+Total Instances =  Leaf Instances + Physical Instances
+
+
