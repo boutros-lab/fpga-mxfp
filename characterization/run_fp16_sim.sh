@@ -16,9 +16,9 @@ for ((i=0; i<${#E[@]}; i++)); do
 	grep "PASSED" fp16_sim_E${E[$i]}_M${M[$i]}.log > /dev/null 2>&1
 
 	if [ $? -eq 0 ]; then
-		echo E${E[$i]}_M${M[$i]} TEST PASSED
+		echo FP16 E${E[$i]}_M${M[$i]} TEST PASSED
 	else
-		echo E${E[$i]}_M${M[$i]} TEST FAILED
+		echo FP16 E${E[$i]}_M${M[$i]} TEST FAILED
 	fi
 done
 

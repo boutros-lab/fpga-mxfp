@@ -4,8 +4,8 @@
 module mxfp_dot_tb();
 
 localparam CLK_PERIOD = 2;   // Clock period in ns
-localparam NUM_LOADS = 1;    // Number of times AITB is loaded with new pair of vectors
-localparam REUSE_FACTOR = 10; // Number of vector operands multiplied by the loaded vectors in the AITB
+localparam NUM_LOADS = 2;    // Number of times AITB is loaded with new pair of vectors
+localparam REUSE_FACTOR = 2; // Number of vector operands multiplied by the loaded vectors in the AITB
 
 localparam BIAS = 1;
 
@@ -26,6 +26,9 @@ logic [31:0] o_ref_result0;
 logic [31:0] o_ref_result1;
 logic o_valid;
 logic o_valid_golden;
+
+logic [31:0] golden_result0_bits;
+logic [31:0] golden_result1_bits;
 
 // Flatten input
 always_comb begin
@@ -81,8 +84,8 @@ initial begin
 			load0_data[load_id][element_id] = $random;
 			load1_data[load_id][element_id] = $random;
 		end
-		load0_sh_exp[load_id] = $urandom/*_range(100, 80)*/;
-		load1_sh_exp[load_id] = $urandom/*_range(100, 80)*/;
+		load0_sh_exp[load_id] = $random/*_range(100, 80)*/;
+		load1_sh_exp[load_id] = $random/*_range(100, 80)*/;
 	end
 	// Generate streamed in vectors
 	for (reuse_id = 0; reuse_id < REUSE_FACTOR; reuse_id = reuse_id + 1) begin
@@ -90,7 +93,7 @@ initial begin
 			for (element_id = 0; element_id < 32; element_id = element_id + 1) begin
 				input_data[load_id][reuse_id][element_id] = $random;
 			end
-			input_sh_exp[load_id][reuse_id] = $urandom/*_range(20, 10)*/;
+			input_sh_exp[load_id][reuse_id] = $random/*_range(20, 10)*/;
 		end
 	end
 	// Calculate golden results
@@ -109,6 +112,14 @@ initial begin
 				shortreal'(2.0 ** (int'(load0_sh_exp[load_id])-127 + int'(input_sh_exp[load_id][reuse_id])-127));
 			golden_result1[reuse_id + (REUSE_FACTOR*load_id)] = (golden_result1[reuse_id + (REUSE_FACTOR*load_id)]) * 
 				shortreal'(2.0 ** (int'(load1_sh_exp[load_id])-127 + int'(input_sh_exp[load_id][reuse_id])-127));
+
+//			golden_result0_bits = $shortrealtobits(golden_result0[reuse_id + (REUSE_FACTOR*load_id)]);
+//			golden_result1_bits = $shortrealtobits(golden_result1[reuse_id + (REUSE_FACTOR*load_id)]);
+//			if (golden_result0_bits[30:23] == '0) //Flush to zero as AITB does not handle subnormals
+//				golden_result0[reuse_id + (REUSE_FACTOR*load_id)] = 0.0;
+//
+//			if (golden_result1_bits[30:23] == '0) // Flush to zero as AITB does not handle subnormals
+//				golden_result1[reuse_id + (REUSE_FACTOR*load_id)] = 0.0;
 			
 		end
 	end
@@ -152,8 +163,6 @@ initial begin
 	end
 end
 integer out_id, mistakes;
-logic [31:0] golden_result0_bits;
-logic [31:0] golden_result1_bits;
 ///*
 initial begin
 	out_id = 0;
