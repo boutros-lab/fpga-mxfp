@@ -34,12 +34,12 @@ module mxfp_dot_tb();
     localparam tree_add_reg_stages = pipeline_add ? $clog2(k) - 1 : 0;
 
     localparam fix2fp_stages = `PIPELINE_FLOPOCO == 1 ? 
-            					      ((exp_width == 5 && man_width == 2) ? 14 :
-            		                               (exp_width == 4 && man_width == 3) ? 11 :
-            		                               (exp_width == 3 && man_width == 2) ?  6 :
-            		                               (exp_width == 2 && man_width == 3) ?  6 :
-            		                               (exp_width == 2 && man_width == 1) ?  5 :
-        		                               0) : 0;
+						      ((exp_width == 5 && man_width == 2) ? 14 :
+						       (exp_width == 4 && man_width == 3) ? 11 :
+						       (exp_width == 3 && man_width == 2) ?  6 :
+						       (exp_width == 2 && man_width == 3) ?  6 :
+						       (exp_width == 2 && man_width == 1) ?  5 :
+						       0) : 0;
 
     logic signed [bit_width-1:0] vector_a[`TESTS][k];
     logic signed [bit_width-1:0] vector_b[`TESTS][k];
@@ -66,7 +66,7 @@ module mxfp_dot_tb();
 	$write("    ");
 
 	for (int i = 0; i < k; i = i + 1) begin
-        	$write("%0x ", vector_a[0][i]);
+		$write("%0x ", vector_a[0][i]);
 	end
 
 	$display();
@@ -140,26 +140,28 @@ module mxfp_dot_tb();
 	    i_valid = 1'b1;
 
 	    #10
-	    //for (int j = 0; j < (input_stages + dot_fp_stages + tree_add_reg_stages + fix2fp_stages + fp32_stages + output_stages); j++) begin
-            //    #10;
-	    //end
 
 	    if (o_valid == 1'b1) begin
-	    	if (o_fp32[31:0] !== fp32_result[valid_count]) begin
-	    	    $display("!!!!!MISMATCH!!!!!");
-	    	    $display("TEST: %0x", valid_count);
-	    	    $display("DUT: %0x", o_fp32[31:0]);
-	    	    $display("REF: %0x", fp32_result[valid_count]);
-	    	    $display("REF Shared Exp A: %0x", shared_exp_a[valid_count]);
-	    	    $display("REF Shared Exp B: %0x", shared_exp_b[valid_count]);
+		if (o_fp32[31:0] !== fp32_result[valid_count]) begin
+		    $display("!!!!!MISMATCH!!!!!");
+		    $display("TEST: %0x", valid_count);
+		    $display("DUT: %0x", o_fp32[31:0]);
+		    $display("REF: %0x", fp32_result[valid_count]);
+		    $display("REF Shared Exp A: %0x", shared_exp_a[valid_count]);
+		    $display("REF Shared Exp B: %0x", shared_exp_b[valid_count]);
 
-	    	    $display("Orig FP32:    %0x", u_dot.u_dot_fp_fp32.o_fp32);
-	    	    $display("Orig Exp:     %0x", u_dot.u_dot_fp_fp32.o_fp32[30:23]);
-	    	    $display("Scaled Exp:   %0x", u_dot.u_dot_fp_fp32.scaled_exponent);
-	    	    $display("Shared Sum:   %0x", u_dot.u_dot_fp_fp32.shared_exp_sum_q);
+		    $display("Orig FP32:    %0x", u_dot.u_dot_fp_fp32.o_fp32);
+		    $display("Orig Exp:     %0x", u_dot.u_dot_fp_fp32.o_fp32[30:23]);
+		    $display("Scaled Exp:   %0x", u_dot.u_dot_fp_fp32.scaled_exponent);
+		    $display("Shared Sum:   %0x", u_dot.u_dot_fp_fp32.shared_exp_sum_q);
 
-	    	    mismatch_count = mismatch_count + 1;
-	    	end
+		    mismatch_count = mismatch_count + 1;
+		end else begin
+		    $display("=====MATCH=====");
+		    $display("TEST: %0x", valid_count);
+		    $display("DUT: %0x", o_fp32[31:0]);
+		    $display("REF: %0x", fp32_result[valid_count]);
+		end
 
 		valid_count++;
 	    end
@@ -171,21 +173,26 @@ module mxfp_dot_tb();
 	    #10
 
 	    if (o_valid == 1'b1) begin
-	    	if (o_fp32[31:0] !== fp32_result[valid_count]) begin
-	    	    $display("!!!!!MISMATCH!!!!!");
-	    	    $display("TEST: %0x", valid_count);
-	    	    $display("DUT: %0x", o_fp32[31:0]);
-	    	    $display("REF: %0x", fp32_result[valid_count]);
-	    	    $display("REF Shared Exp A: %0x", shared_exp_a[valid_count]);
-	    	    $display("REF Shared Exp B: %0x", shared_exp_b[valid_count]);
+		if (o_fp32[31:0] !== fp32_result[valid_count]) begin
+		    $display("!!!!!MISMATCH!!!!!");
+		    $display("TEST: %0x", valid_count);
+		    $display("DUT: %0x", o_fp32[31:0]);
+		    $display("REF: %0x", fp32_result[valid_count]);
+		    $display("REF Shared Exp A: %0x", shared_exp_a[valid_count]);
+		    $display("REF Shared Exp B: %0x", shared_exp_b[valid_count]);
 
-	    	    $display("Orig FP32:    %0x", u_dot.u_dot_fp_fp32.o_fp32);
-	    	    $display("Orig Exp:     %0x", u_dot.u_dot_fp_fp32.o_fp32[30:23]);
-	    	    $display("Scaled Exp:   %0x", u_dot.u_dot_fp_fp32.scaled_exponent);
-	    	    $display("Shared Sum:   %0x", u_dot.u_dot_fp_fp32.shared_exp_sum_q);
+		    $display("Orig FP32:    %0x", u_dot.u_dot_fp_fp32.o_fp32);
+		    $display("Orig Exp:     %0x", u_dot.u_dot_fp_fp32.o_fp32[30:23]);
+		    $display("Scaled Exp:   %0x", u_dot.u_dot_fp_fp32.scaled_exponent);
+		    $display("Shared Sum:   %0x", u_dot.u_dot_fp_fp32.shared_exp_sum_q);
 
-	    	    mismatch_count = mismatch_count + 1;
-	    	end
+		    mismatch_count = mismatch_count + 1;
+		end else begin
+		    $display("=====MATCH=====");
+		    $display("TEST: %0x", valid_count);
+		    $display("DUT: %0x", o_fp32[31:0]);
+		    $display("REF: %0x", fp32_result[valid_count]);
+		end
 
 		valid_count++;
 	    end
@@ -199,6 +206,7 @@ module mxfp_dot_tb();
          end else begin
             $display("=====================================");
 	    $display("TEST PASSED");
+	    $display("Total Mismatches: %0d/%0d", mismatch_count, `TESTS);
             $display("=====================================");
          end
 
