@@ -19,4 +19,6 @@ aitb:
 table:
 	@./csv_viz.sh
 
+sim-fp16:
+	./run_fp16_sim.sh
 .PHONY: all base base_opt packed aitb fp16 table
