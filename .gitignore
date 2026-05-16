@@ -13,6 +13,7 @@ qdb
 *.qws
 *.log
 *.csv
+*.hex
 .qsys_edit
 simulation
 serv_req_info.txt
