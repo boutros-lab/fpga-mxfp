@@ -1,0 +1,147 @@
+/CMC/tools/synopsys/hspice_vV-2023.12/hspice/V-2023.12/hspice/bin/cshrc.meta: No such file or directory.
+ ****** PrimeSim HSPICE -- V-2023.12-SP2-2 linux64 (Aug 05 2024 9120765) ******
+  Copyright (c) 1986 - 2026 by Synopsys, Inc. All Rights Reserved.
+  This software and the associated documentation are proprietary
+  to Synopsys, Inc. This software may only be used in accordance
+  with the terms and conditions of a written license agreement with
+  Synopsys, Inc. All other use, reproduction, or distribution of
+  this software is strictly prohibited.
+  Input File: lut_e_driver_with_lut.sp                                          
+  Command line options: /CMC/tools/synopsys/hspice_vV-2023.12-SP2-2/hspice/V-2023.12-SP2-2/hspice/linux64/hspice lut_e_driver_with_lut.sp
+  Start time: Fri Apr  3 20:43:18 2026
+ lic:  
+ lic: FLEXlm: SDK_12.11.9.5 
+ lic: USER:   aelsousy             HOSTNAME: KingsLanding 
+ lic: HOSTID: 42711dd2             PID:      3033678 
+ lic: Using FLEXlm license file: 
+ lic: 6053@cadpass2.eng.uwaterloo.ca 
+ lic: Checkout 1 hspice 
+ lic: License/Maintenance for hspice will expire on 19-mar-2027/2026.03 
+ lic: 3(in_use)/500(total) FLOATING license(s) on SERVER 6053@cadpass2.eng.uwaterloo.ca 
+ lic:   
+ 
+  **info**: .option gmin=1e-12 is scaled to gmin=1e-15 for BSIM-CMG.
+  **info**: .option gmindc=1e-12 is scaled to gmindc=1e-15 for BSIM-CMG.
+
+  **info** (lut_e_driver_with_lut.sp:18) DC voltage reset to initial transient source value in source 0:vin_gate. new dc=0.8000D+00
+  **warning** (lut_e_driver_with_lut.sp:18) pulse rise time is  < or = zero, reset to tstep
+  **warning** (lut_e_driver_with_lut.sp:18) pulse fall time is  < or = zero, reset to tstep
+  **warning** (lut_e_driver_with_lut.sp:17) pulse rise time is  < or = zero, reset to tstep
+  **warning** (lut_e_driver_with_lut.sp:17) pulse fall time is  < or = zero, reset to tstep
+             
+ Summary of Linear Res Distribution Info
+ ---------------------------------------
+ |Range          |Total     |Percent(%)|
+ |---------------+----------+----------|
+ |1e+00  ~  1e+03|115       |100.0000  |
+ ---------------------------------------
+              
+             
+ Summary of Linear Cap Distribution Info
+ ---------------------------------------
+ |Range          |Total     |Percent(%)|
+ |---------------+----------+----------|
+ |1e-18  ~  1e-17|8         |3.4783    |
+ |1e-17  ~  1e-16|154       |66.9565   |
+ |1e-16  ~  1e-15|68        |29.5652   |
+ ---------------------------------------
+              
+             
+ Summary of Detailed RC Type Statistics
+ -------------------------
+ |Element Type|Number    |
+ |------------+----------|
+ |Constant Res|115       |
+ |            |          |
+ |Constant Cap|230       |
+ -------------------------
+              
+  
+  **warning** No connections on node n_rsel; Node ignored.
+  **warning**  the following singular supplies have a terminal that is not connected to any other element
+ supply                 node1                  node2
+ vrefmtjn            0:vrefmtj          defined in subckt 0            0:0                defined in subckt 0
+ vsupplylp           0:vdd_lp           defined in subckt 0            0:0                defined in subckt 0
+ vclmomtjn           0:vclmpmtj         defined in subckt 0            0:0                defined in subckt 0
+  
+      
+ **info** set option symb=1 internally to help for convergence.
+ *****************************************************************
+ ******  option summary
+ ******
+ runlvl  = 3         bypass  = 2.0000    
+
+   *** data name = sweep_data , index =     1 ***
+
+ ******
+ .title lut_e_driver
+
+ ****** transient analysis tnom=  25.000 temp=  25.000 ******
+ meas_total_tfall=  33.9236p  targ=   9.0935n   trig=   9.0596n
+ meas_total_trise=  30.7029p  targ=   5.0890n   trig=   5.0583n
+ meas_logic_low_voltage=   2.0213u
+ meas_current1=  -5.3020f  from=   5.0000n     to=   7.0000n
+ meas_current2=-695.8772a  from=   9.0000n     to=  11.0000n
+ meas_avg_power=   1.1996u
+
+          ***** job concluded
+1****** PrimeSim HSPICE -- V-2023.12-SP2-2 linux64 (Aug 05 2024 9120765) ******
+ ******  
+ .title lut_e_driver
+
+ ****** job statistics summary tnom=  25.000 temp=  25.000 ******
+  
+ ******  Machine Information  ******
+ CPU:
+ model name	: Intel(R) Xeon(R) w9-3495X
+ cpu MHz	: 799.356
+ CPU(s)		: 112
+  
+ OS:
+ Linux version 6.8.0-106-generic (buildd@lcy02-amd64-074) (x86_64-linux-gnu-gcc-13 (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0, GNU ld (GNU Binutils for Ubuntu) 2.42) #106-Ubuntu SMP PREEMPT_DYNAMIC Fri Mar  6 07:58:08 UTC 2026
+
+ System loadavg : 2.25 2.23 2.09 3/3659 3033682
+
+
+  ******  PrimeSim HSPICE Threads Information  ******
+
+  Command Line Threads Count :     1
+  Available CPU Count        :   112
+  Actual Threads Count       :     1
+
+
+  ******  Circuit Statistics  ******
+  # nodes       =     168 # elements   =     601
+  # resistors   =     116 # capacitors =     230 # inductors   =       0
+  # mutual_inds =       0 # vccs       =       0 # vcvs        =       0
+  # cccs        =       0 # ccvs       =       0 # volt_srcs   =       9
+  # curr_srcs   =       0 # diodes     =       0 # bjts        =       0
+  # jfets       =       0 # mosfets    =     246 # U elements  =       0
+  # T elements  =       0 # W elements =       0 # B elements  =       0
+  # S elements  =       0 # P elements =       0 # va device   =       0
+  # vector_srcs =       0 # N elements =       0
+
+
+  ******  Runtime Statistics (seconds)  ******
+
+  analysis           time    # points   tot. iter  conv.iter
+  op point           0.01           1           5
+  transient          0.25       16001        1270         484 rev=         9
+  readin             0.01
+  errchk             0.01
+  setup              0.00
+  output             0.00
+
+
+           peak memory used        489.44 megabytes
+           total cpu time            0.28 seconds
+           total elapsed time        0.64 seconds
+           job started at     20:43:18 04/03/2026
+           job ended   at     20:43:18 04/03/2026
+
+>info:         ***** hspice job concluded
+           job total runtime         0.64 seconds
+
+
+ lic: Release hspice token(s) 
+ lic: total license checkout elapse time:        0.36(s)

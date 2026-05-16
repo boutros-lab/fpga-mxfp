@@ -1,0 +1,47 @@
+* "simulator" "PrimeSim HSPICE"
+* "version" "V-2023.12-SP2-2 linux64"
+* "format" "HSP"
+* "rundate" "20:44:57 04/03/2026 "
+* "netlist" "hard_block_ddriver.sp "
+* "runtitle" ".title dedicated routing driver"
+* time =    0.            
+* temperature =   25.0000        
+*** BEGIN: Saved Operating Point ***                     
+.option 
++ gmindc=   1.0000p       
+.nodeset
++ n_1_0 = 799.9993m       
++ n_1_1 =   3.2454u       
++ n_1_2 =   2.6401u       
++ n_1_3 =   2.6401u       
++ n_hang2 = 100.9910m       
++ n_in =   0.            
++ nnd = 538.0912m       
++ vclmpmtj = 653.0000m       
++ vdd = 800.0000m       
++ vdd_lp = 950.0000m       
++ vdd_test = 800.0000m       
++ vrefmtj = 627.0000m       
++ vsram =   1.0000        
++ vsram_n =   0.            
++ xdriver.n_1_1 = 799.9991m       
++ xdriver.n_1_2 = 799.9991m       
++ xdriver.n_1_3 =   3.8954u       
++ xdriver.n_1_4 =   3.8954u       
++ xdriver.n_1_5 = 799.9991m       
++ xdriver.n_1_6 = 799.9991m       
++ xdriver.n_1_7 =   2.6401u       
++ xff.n_1_1 =   2.6468u       
++ xff.n_1_2 =   2.6468u       
++ xff.n_1_3 =   2.6468u       
++ xff.n_2_1 = 787.4758m       
++ xff.n_2_2 = 787.2416m       
++ xff.n_3_1 =  93.7105m       
++ xff.n_3_2 =  93.4935m       
++ xff.n_4_1 = 780.1744m       
++ xff.n_4_2 = 780.0369m       
++ xff.n_5_1 = 414.7459m       
++ xff.n_5_2 = 414.6221m       
++ xff.n_6_1 = 467.1850m       
++ xff.n_6_2 = 467.1850m       
+***   END: Saved Operating Point ***                     
