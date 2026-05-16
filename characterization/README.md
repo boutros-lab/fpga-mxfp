@@ -11,3 +11,5 @@ To reproduce the characterization results, run `make` and wait for the synthesis
 | `aitb_base.csv`   | Tensor Mode              |
 
 Afterwards, run `make table` to generate a visualization similar to Table 1. 
+
+To check functional correctness, run `make sim-all` to run a functional simulation check for all implementations. Run `make sim-{base|base_opt|packed|fp16|aitb}` if you want to check each implementation's correctness on its own. Logs for each implementation's run can be found under the implementation's directory.
