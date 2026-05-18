@@ -4,10 +4,15 @@
 N=$1
 REV=$2
 IMPL=$3 #{aitb|packed}
+IS_FP8_DOT4=${4:-0}
 
 # Determine the directory pattern to search for based on DUT and M
 # Using POSIX 'test' command '[ ... ]' for maximum compatibility
-PATTERN="output_files_${IMPL}_${REV}"
+if [ "$IS_FP8_DOT4" = "1" ]; then
+  PATTERN="output_files_${IMPL}_${REV}_DOT4"
+else
+  PATTERN="output_files_${IMPL}_${REV}"
+fi
 
 OUT_FILE="results/${IMPL}_${REV}.csv"
 

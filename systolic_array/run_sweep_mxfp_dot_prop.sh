@@ -44,8 +44,8 @@ M=(2)
 for e in ${E[@]}; do
 	for m in ${M[@]}; do
 		echo "N,Fmax_MHz,ALMs_used_total,ALMs_LUT_FF,ALMs_LUT_only,ALMs_FF_only,ALMs_Memory,ALMs_VIRTUAL_IO,ALUT_route_through,Total_LABs,Memory_LABs,Hyper_REG,M20K_RAMs,DSP_blocks" > E${e}_M${m}_mxfp_dot_prop_sweep.csv
-		make fitmxfp_dot_prop E=$e M=$m IS_FP8_DOT4=1
-		./extract.sh E${e}_M${m} E${e}_M${m} mxfp_dot_prop
+		make fitmxfp_dot_prop E=$e M=$m IS_FP8_DOT4=0
+		./extract.sh E${e}_M${m} E${e}_M${m} mxfp_dot_prop 0
 		tail -n 1 results/mxfp_dot_prop_E${e}_M${m}.csv >> mxfp_dot_prop_sweep.csv
 	done
 done
