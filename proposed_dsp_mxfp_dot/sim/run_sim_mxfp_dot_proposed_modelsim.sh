@@ -42,6 +42,7 @@ design_files=(
 "../../aitb_asic/rtl/mxfp_dot/flopoco_normalizers/normalizer_sgn_70b.vhdl"
 "../../aitb_asic/rtl/mxfp_dot/mxfp_multiply.sv"
 "../../aitb_asic/rtl/mxfp_dot/flopoco_shifters/fp8_67_shifter.vhdl"
+"../../aitb_asic/rtl/mxfp_dot/pow2_reduction_norecurse.sv"
 )
 
 # -------------------------------------------
