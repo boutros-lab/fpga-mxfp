@@ -18,6 +18,7 @@ NUM_OPS = 2
 def compute_tflops(alms, dsps, fmax_mhz, num_dots=NUM_DOTS_PROP, dot_size=MX_BLOCK_SIZE):
     if alms <= 0:
         return 0.0
+    # DSP or ALM limited?
     alm_limited = math.floor(TOTAL_ALM / alms)
     dsp_divisor = dsps if dsps != 0 else 0.0001
     dsp_limited = math.floor(TOTAL_DSP / dsp_divisor)
@@ -26,12 +27,15 @@ def compute_tflops(alms, dsps, fmax_mhz, num_dots=NUM_DOTS_PROP, dot_size=MX_BLO
     return units * num_dots * fmax_mhz * dot_size * NUM_OPS / 1_000_000
 
 def main():
+    # Re-create Table V (for our Proposed DSP)
+    # CSV of MXFP dot unit format sweep results. If does not exist, run the sweep script.
     csv_path = sys.argv[1] if len(sys.argv) > 1 else "mxfp_dot_prop_sweep.csv"
 
     if not os.path.exists(csv_path):
         print("Running run_sweep_mxfp_dot_prop.sh")
         subprocess.run(["bash", "run_sweep_mxfp_dot_prop.sh"], check=True)
 
+    # Parse CSV
     rows = []
     with open(csv_path, newline="") as f:
         reader = csv.DictReader(f)
@@ -42,6 +46,7 @@ def main():
             alms_vio = int(row["ALMs_VIRTUAL_IO"])
             dsps = int(row["DSP_blocks"])
             alms = alms_total - alms_vio
+            # Number of dot products computed per unit (D = 2)
             d = NUM_DOTS_PROP
             tflops = compute_tflops(alms, dsps, fmax, num_dots=d)
             rows.append((fmt, fmax, alms, dsps, d, tflops))
@@ -54,6 +59,7 @@ def main():
     header_line = "  ".join(h.ljust(col_w[i]) for i, h in enumerate(headers))
     sep = "  ".join("-" * col_w[i] for i in range(len(headers)))
 
+    # Print table
     print("Resource utilization and device peak performance with our proposed DSP block.")
     print(header_line)
     print(sep)
