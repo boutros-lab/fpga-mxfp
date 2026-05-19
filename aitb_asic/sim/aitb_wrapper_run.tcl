@@ -1,5 +1,6 @@
 vlib work
 
+vlog -sv "rtl/pkg_aitb.sv"
 vlog -sv "rtl/*.sv"
 vcom "rtl/ieee_fp32_add.vhdl"
 
