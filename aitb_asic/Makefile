@@ -20,19 +20,25 @@ data_and_sim_mxfp:
 	PROJ_ROOT=$(CURDIR) ../testbench/scripts/generate_data.py --common_vec -e $(E) -m $(M) -k $(K) -t $(TESTS) $(DATA_OPTS)
 	$(MAKE) sim_mxfp
 syn:
-	hammer-vlsi -p asic/${ASIC_YML}.yml -e asic/${ASIC_YML}.yml --obj_dir asic/${ASIC_YML}_${TIMESTAMP}_obj-dir syn
+	hammer-vlsi -p hammer_yml/${ASIC_YML}.yml -e hammer_yml/${ASIC_YML}.yml --obj_dir hammer_yml/${ASIC_YML}_${TIMESTAMP}_obj-dir syn
 
 fit:
-	hammer-vlsi -p asic/${ASIC_YML}.yml -e asic/${ASIC_YML}.yml --obj_dir asic/${ASIC_YML}_${TIMESTAMP}_obj-dir syn-par
+	hammer-vlsi -p hammer_yml/${ASIC_YML}.yml -e hammer_yml/${ASIC_YML}.yml --obj_dir hammer_yml/${ASIC_YML}_${TIMESTAMP}_obj-dir syn-par
+
+sim_all:
+	PROJ_ROOT=$(CURDIR) ./scripts/run_all_designs.sh
+
+table:
+	PROJ_ROOT=$(CURDIR) ./scripts/get_asic_results.sh
 
 clean:
-	rm -f *.log *.json asic/obj-dir -r
+	rm -f *.log *.csv *.json hammer_yml/obj-dir -r
 	rm -rf work
 	rm -rf data
 	rm -f transcript
 	rm -rf test_logs
 
 clean_asic:
-	rm -rf asic/*obj-dir
+	rm -rf hammer_yml/*obj-dir
 
-.PHONY: sim sim_mxfp data_and_sim_mxfp fit syn clean clean_asic
+.PHONY: sim sim_mxfp data_and_sim_mxfp fit syn sim_all results clean clean_asic
