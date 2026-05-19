@@ -28,6 +28,6 @@ if [ ! -x ./simv ]; then
   exit 1
 fi
 
-./simv -gui -dve_opt "-session=mxfp_dot_proposed_tb.tcl" +vcs+lic+wait
+#./simv -gui -dve_opt "-session=mxfp_dot_proposed_tb.tcl" +vcs+lic+wait
 # If no TCL session file:
-# ./simv -gui +vcs+lic+wait
+ ./simv -gui +vcs+lic+wait
