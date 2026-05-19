@@ -47,7 +47,14 @@ localparam flat_element_width = FIXED_INPUTS ? mxfp_fixed_width : bit_width;
 function real geterror(input real dut_fp32, input real ref_fp32);
 	real error;
 	
-	error = ((ref_fp32 - dut_fp32) / ref_fp32) * 100;
+	if (ref_fp32 == 0.0 && dut_fp32 == 0.0) begin
+		// Avoid NaN
+		error = 0.0;
+	end else if (ref_fp32 != ref_fp32 && dut_fp32 != dut_fp32) begin // Both NaN
+		error = 0.0;
+	end else begin
+		error = ((ref_fp32 - dut_fp32) / ref_fp32) * 100;
+	end
 	
 	if (error < 0.0) begin
 		error = error * -1.0;
@@ -295,6 +302,7 @@ initial begin
 		$display("Max Error 0: %f%%, Tolerance: %f", max_error, tolerance);
 	end else begin
 		$display("Simulation PASSED!");
+		$display("%0d/%0d Tests Failed", mistakes, TEST_LENGTH);
 		$display("%0d/%0d Inexact", inexact, TEST_LENGTH);
 		$display("Max Error 0: %f%%, Tolerance: %f", max_error, tolerance);
 	end

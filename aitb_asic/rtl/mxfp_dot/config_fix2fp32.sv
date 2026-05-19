@@ -5,7 +5,7 @@
 * As a result, does not support subnormals
 *
 * Uses flopoco generated normalizer, current supported input widths:
-*    70b (Naive, Packed), 69b (E5M2 4), ??b (Alignment, Hybrid)
+*    70b (Naive, Packed), 69b (E5M2 4), 40b (No E5M2), <23b (No FP8)
 */
 
 module config_fix2fp32 #(
@@ -63,7 +63,7 @@ generate
 			.R(significand)
 		);
 	end else if (INPUT_WIDTH == 40) begin
-		// Unsigned normalizer more efficient at lower input widths
+		// Unsigned normalizer more area efficient at lower input widths
 		logic [INPUT_WIDTH-2:0] unsigned_fixed;
 
 		assign unsigned_fixed = sign ? -i_fixed : i_fixed;
@@ -75,7 +75,7 @@ generate
 			.R(significand)
 		);
 	end else if (INPUT_WIDTH <= 23) begin
-		// Unsigned normalizer more efficient at lower input widths
+		// Unsigned normalizer more area efficient at lower input widths
 		logic [INPUT_WIDTH-2:0] unsigned_fixed;
 
 		assign unsigned_fixed = sign ? -i_fixed : i_fixed;
