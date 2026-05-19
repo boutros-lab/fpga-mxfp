@@ -25,7 +25,7 @@ syn:
 fit:
 	hammer-vlsi -p hammer_yml/${ASIC_YML}.yml -e hammer_yml/${ASIC_YML}.yml --obj_dir hammer_yml/${ASIC_YML}_${TIMESTAMP}_obj-dir syn-par
 
-sim_all:
+sim_all_mxfp:
 	PROJ_ROOT=$(CURDIR) ./scripts/run_all_designs.sh
 
 table:
@@ -41,4 +41,4 @@ clean:
 clean_asic:
 	rm -rf hammer_yml/*obj-dir
 
-.PHONY: sim sim_mxfp data_and_sim_mxfp fit syn sim_all results clean clean_asic
+.PHONY: sim sim_mxfp data_and_sim_mxfp fit syn sim_all_mxfp table clean clean_asic

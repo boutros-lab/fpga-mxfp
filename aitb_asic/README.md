@@ -1,4 +1,26 @@
-# Aletra-like AI Tensor Block Implementation
+## IV. DSP Block Architecture Modifications
+
+# Design Naming
+
+| Design Iteration                | Module Name                    |
+|---------------------------------|--------------------------------|
+| (1) Fixed-point inputs          | `fixed_input_mxfp_aitb`        |
+| (2) MXFP inputs (all)           | `naive_mxfp_aitb_comp`         |
+| (3.1) MXFP inputs (No MXFP8)    | `nofp8_mxfp_aitb_comp`         |
+| (3.2) MXFP inputs (No E5M2)     | `noe5m2_mxfp_aitb_comp`        |
+| (3.3) MXFP inputs (reduce E5M2) | `e5m2_4_mxfp_aitb_comp`        |
+| (4) MXFP inputs (No E5M2)       | `noe5m2_fixed8_mxfp_aitb_comp` |
+
+# Functional Simulation Instructions
+
+To run functional simulation for baseline design, run `make sim`
+To run functional simulation for all improved designs, run `make sim_all_mxfp`
+
+# Generating Table IV
+
+To generate a table similar to table IV from Innovus and COFFE report, run `make table`
+
+## Aletra-like AI Tensor Block Implementation
 
 ## Description
 This is an implementation of an Altera-like AI Tensor Block DSP mode configured in FP mode. This DSP mode has a latency of 5 cycles. 
@@ -8,9 +30,16 @@ Loading is managed by 2 seperate sets of buffers (8bx10), controlled by the 2 si
 
 ## Directory structure
 
-## Microarchitecture
+`asic_rpts/`: Innovus reports for area and timing of AITB designs
+`coffe_rpts/`: COFFE reports for interconnect area
+`hammer_yml/`: YML files for HAMMER configuration
+`rtl/`: RTL Design files
+`rtl/mxfp_dot/`: RTL Design files for mxfp dot product
+`rtl/mxfp_aitb/`: Top level RTL Design files for improved AITB
+`scripts/`: Scripts for running tests/generating tables
+`sim/`: TB files
 
-Diagram
+## Microarchitecture
 
 ### Modules
 
@@ -41,6 +70,7 @@ II. `dot.sv`: Dot Engine
 ---
 
 III. CPA
+
 **NOTE** This is a carry propoagate adder that is used for accumulation in the AITB's fixed point mode. However it exists in the FP mode as a passthrough.
 ---
 IV. `fix2fp32.sv`: Fix to FP32 converter
