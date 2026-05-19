@@ -2,6 +2,7 @@
 import csv
 import math
 import sys
+import os, subprocess
 
 # Agilex 5 constants
 TOTAL_ALM = 222400
@@ -26,6 +27,10 @@ def compute_tflops(alms, dsps, fmax_mhz, num_dots=NUM_DOTS_PROP, dot_size=MX_BLO
 
 def main():
     csv_path = sys.argv[1] if len(sys.argv) > 1 else "mxfp_dot_prop_sweep.csv"
+
+    if not os.path.exists(csv_path):
+        print("Running run_sweep_mxfp_dot_prop.sh")
+        subprocess.run(["bash", "run_sweep_mxfp_dot_prop.sh"], check=True)
 
     rows = []
     with open(csv_path, newline="") as f:
