@@ -5,6 +5,8 @@ M=(1 3)
 
 mkdir -p results
 
+echo "Format,Fmax_MHz,ALMs_used_total,ALMs_LUT_FF,ALMs_LUT_only,ALMs_FF_only,ALMs_Memory,ALMs_VIRTUAL_IO,ALUT_route_through,Total_LABs,Memory_LABs,Hyper_REG,M20K_RAMs,DSP_blocks" > mxfp_dot_prop_sweep.csv
+
 for e in ${E[@]}; do
 	for m in ${M[@]}; do
 		echo "N,Fmax_MHz,ALMs_used_total,ALMs_LUT_FF,ALMs_LUT_only,ALMs_FF_only,ALMs_Memory,ALMs_VIRTUAL_IO,ALUT_route_through,Total_LABs,Memory_LABs,Hyper_REG,M20K_RAMs,DSP_blocks" > E${e}_M${m}_mxfp_dot_prop_sweep.csv
