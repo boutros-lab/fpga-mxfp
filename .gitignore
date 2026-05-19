@@ -17,3 +17,4 @@ qdb
 .qsys_edit
 simulation
 serv_req_info.txt
+characterization/fp16_dot_product/sim/modelsim.ini
