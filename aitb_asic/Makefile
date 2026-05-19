@@ -30,6 +30,7 @@ clean:
 	rm -rf work
 	rm -rf data
 	rm -f transcript
+	rm -rf test_logs
 
 clean_asic:
 	rm -rf asic/*obj-dir
