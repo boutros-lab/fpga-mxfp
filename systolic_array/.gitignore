@@ -16,3 +16,5 @@ elaborate.log
 vhdlan.log
 vlogan.log
 vc_hdrs.h
+sa_venv
+*.csv

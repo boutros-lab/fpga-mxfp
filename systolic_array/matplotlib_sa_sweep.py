@@ -172,7 +172,7 @@ def build_plots():
 
     fig.subplots_adjust(left=0.07, right=0.99, top=0.98, bottom=0.10)
 
-    out_path = os.path.join(SCRIPT_DIR, "tflops_sweep.pdf")
+    out_path = os.path.join(SCRIPT_DIR, "sa_tflops_sweep.pdf")
     fig.savefig(out_path, format="pdf", bbox_inches="tight")
     plt.close(fig)
     print(f"Saved: {out_path}")
