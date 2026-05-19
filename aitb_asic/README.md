@@ -7,6 +7,8 @@ As well as the baseline implementation which closely matches the Altera AITB, th
 
 ## Functional Simulation Instructions
 
+Run `source env.sh`.
+
 To run functional simulation for baseline design, run `make sim`.
 
 To run functional simulation for all modified designs, run `make sim_all_mxfp`.
