@@ -1,0 +1,24 @@
+E     ?= 2
+M     ?= 1
+K     ?= 32
+TESTS ?= 256
+PIPE  ?= 1
+
+# Extra options
+DATA_OPTS ?=
+SIM_OPTS  ?= -d $(PIPE) -a $(PIPE) -p $(PIPE) -f $(PIPE)
+
+data:
+	PROJ_ROOT=$(CURDIR) ../../testbench/scripts/generate_data.py -e $(E) -m $(M) -k $(K) -t $(TESTS) $(DATA_OPTS)
+
+sim:
+	./scripts/test_mxfp_fp32.sh -e $(E) -m $(M) -k $(K) -t $(TESTS) $(SIM_OPTS)
+
+data_and_sim: data sim
+
+clean:
+	rm -rf data
+	rm -rf sim
+	rm -rf MXFP*
+
+.PHONY: data sim data_and_sim clean
