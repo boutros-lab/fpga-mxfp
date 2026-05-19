@@ -1,9 +1,10 @@
-## IV. DSP Block Architecture Modifications
+# IV. DSP Block Architecture Modifications
 
-# Design Naming
+## Design Naming
 
 | Design Iteration                | Module Name                    |
 |---------------------------------|--------------------------------|
+| Baseline                        | `aitb`                         |
 | (1) Fixed-point inputs          | `fixed_input_mxfp_aitb`        |
 | (2) MXFP inputs (all)           | `naive_mxfp_aitb_comp`         |
 | (3.1) MXFP inputs (No MXFP8)    | `nofp8_mxfp_aitb_comp`         |
@@ -11,16 +12,16 @@
 | (3.3) MXFP inputs (reduce E5M2) | `e5m2_4_mxfp_aitb_comp`        |
 | (4) MXFP inputs (No E5M2)       | `noe5m2_fixed8_mxfp_aitb_comp` |
 
-# Functional Simulation Instructions
+## Functional Simulation Instructions
 
 To run functional simulation for baseline design, run `make sim`
 To run functional simulation for all improved designs, run `make sim_all_mxfp`
 
-# Generating Table IV
+## Generating Table IV
 
 To generate a table similar to table IV from Innovus and COFFE report, run `make table`
 
-## Aletra-like AI Tensor Block Implementation
+# Aletra-like AI Tensor Block Implementation
 
 ## Description
 This is an implementation of an Altera-like AI Tensor Block DSP mode configured in FP mode. This DSP mode has a latency of 5 cycles. 
@@ -93,7 +94,7 @@ V. `ieee_fp32_add.vhdl` Flopoco-generated IEEE single-precision FP32 adder
 - There is a `pipeline.sv` module. This is just a module that encapsulates the pipeline register logic.
  
 ## Running the ASIC flow
- 1. Double check that all the files you need are listed under `synthesis.inputs.input_files` in `asic/asap7.yml`. Note the that is a YAML style list.
+ 1. Double check that all the files you need are listed under `synthesis.inputs.input_files` in `hammer_yml/asap7.yml`. Note the that is a YAML style list.
  2. Load Genus and Innovus modules
  3. Activate the conda environment with `conda activate hammer`.
  4. Run `make fit` for running the full ASIC flow (RTL to GDSII)
