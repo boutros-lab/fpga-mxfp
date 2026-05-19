@@ -35,7 +35,7 @@ for (( i=0; i<NUM_CONFIGS; i++ )); do
     echo "Log: $LOG"
     echo "============================================================"
 
-    SIM_OPTIONS="-gMODE_INT=${MODE} -gEXP_W=${EXP_W} -gMAN_W=${MAN_W} -gIS_DOT4=${IS_DOT4}"
+    SIM_OPTIONS="-suppress 14408 -gMODE_INT=${MODE} -gEXP_W=${EXP_W} -gMAN_W=${MAN_W} -gIS_DOT4=${IS_DOT4}"
 
     set +e
     bash run_sim_sys_array_aitb_prop_modelsim.sh \
