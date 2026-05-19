@@ -3,8 +3,12 @@ import csv
 import os
 import subprocess
 
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
+import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
+
+# Use Liberation Sans (same font plotly used originally) to match the target style.
+plt.rcParams["font.family"] = "Liberation Sans"
+plt.rcParams["font.sans-serif"] = ["Liberation Sans", "Arial", "DejaVu Sans"]
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -55,8 +59,8 @@ def format_perf_title(fmt_name, baseline_vals, proposed_vals):
     baseline_peak = max(baseline_vals) if baseline_vals else 0
     proposed_peak = max(proposed_vals) if proposed_vals else 0
     if baseline_peak <= 0:
-        return f"{fmt_name}<br>N/A"
-    return f"{fmt_name}<br>{proposed_peak / baseline_peak:.1f}x perf."
+        return f"{fmt_name}\nN/A"
+    return f"{fmt_name}\n{proposed_peak / baseline_peak:.1f}x perf."
 
 
 def check_sweep_csvs():
@@ -90,23 +94,40 @@ def check_sweep_csvs():
     )
 
 
+def style_axis(ax):
+    ax.set_xlim(0, 21)
+    ax.set_ylim(0, 22)
+    ax.set_xticks([0, 5, 10, 15, 20])
+    ax.tick_params(axis="both", direction="out", labelsize=14)
+    ax.tick_params(axis="x", labelsize=16)
+    ax.grid(True, which="major", linestyle=":", color="lightgray", linewidth=0.8)
+    ax.set_axisbelow(True)
+    for spine in ax.spines.values():
+        spine.set_color("black")
+        spine.set_linewidth(1)
+
+
 def build_plots():
     # Layout: row1 = E5M2, E4M3, E3M2 / row2 = E2M3, E2M1, (legend)
     layout = [
-        ("E5_M2", 1, 1),
-        ("E4_M3", 1, 2),
-        ("E3_M2", 1, 3),
-        ("E2_M3", 2, 1),
-        ("E2_M1", 2, 2),
+        ("E5_M2", 0, 0),
+        ("E4_M3", 0, 1),
+        ("E3_M2", 0, 2),
+        ("E2_M3", 1, 0),
+        ("E2_M1", 1, 1),
     ]
 
-    fig = make_subplots(rows=2, cols=3,
-                        shared_yaxes=True, horizontal_spacing=0.02, vertical_spacing=0.15)
+    fig, axes = plt.subplots(
+        nrows=2, ncols=3, figsize=(8, 5.3),
+        sharey=True, gridspec_kw=dict(hspace=0.35, wspace=0.08),
+    )
 
-    first_trace = True
-    annotations = []
+    used_axes = set()
 
     for fmt, row, col in layout:
+        ax = axes[row][col]
+        used_axes.add((row, col))
+
         prop_path = os.path.join(SCRIPT_DIR, f"{fmt}_aitb_prop_sweep.csv")
         prop_N, prop_fmax = parse_sweep_csv(prop_path)
         prop_tflops = calc_tflops(prop_N, D_AITB_PROP, prop_fmax)
@@ -121,68 +142,39 @@ def build_plots():
         base_N, base_fmax = parse_sweep_csv(base_path)
         base_tflops = calc_tflops(base_N, base_D, base_fmax)
 
-        fig.add_trace(
-            go.Scatter(x=base_N, y=base_tflops,
-                       name="Baseline DSP", marker_color=PINK, line=dict(color=PINK),
-                       legendgroup="Baseline DSP", showlegend=first_trace),
-            row=row, col=col,
-        )
-        fig.add_trace(
-            go.Scatter(x=prop_N, y=prop_tflops,
-                       name="Our Proposed DSP", marker_color=TEAL, line=dict(color=TEAL),
-                       legendgroup="Our Proposed DSP", showlegend=first_trace),
-            row=row, col=col,
-        )
-        first_trace = False
+        ax.plot(base_N, base_tflops, color=PINK, marker="o", markersize=5,
+                linewidth=2, label="Baseline DSP")
+        ax.plot(prop_N, prop_tflops, color=TEAL, marker="o", markersize=5,
+                linewidth=2, label="Our Proposed DSP")
+
+        style_axis(ax)
 
         title_text = format_perf_title(LABELS[fmt], base_tflops, prop_tflops)
-        xref = f"x{'' if (row == 1 and col == 1) else (row - 1) * 3 + col}"
-        yref = f"y{'' if (row == 1 and col == 1) else (row - 1) * 3 + col}"
-        annotations.append(
-            dict(text=f"<b>{title_text}</b>", xref=xref, yref=yref,
-                 x=1, y=21, showarrow=False, font=dict(size=18),
-                 xanchor="left", yanchor="top")
-        )
+        ax.text(0.05, 0.90, title_text, transform=ax.transAxes,
+                fontsize=18, fontweight="bold",
+                ha="left", va="top", multialignment="center")
 
-    fig.update_layout(
-        width=600, height=400,
-        plot_bgcolor="white", paper_bgcolor="white",
-        font=dict(size=14, color="black"),
-        margin=dict(l=40, r=10, t=10, b=60),
-        showlegend=True,
-        annotations=annotations,
-    )
+        ax.set_xlabel("N", fontsize=14, labelpad=2)
+        if col == 0:
+            ax.set_ylabel("TFLOPS", fontsize=14, labelpad=2)
 
-    fig.update_layout(
-        legend=dict(
-            xanchor="center", yanchor="middle",
-            x=0.84, y=0.15,
-            font=dict(size=15),
-            bordercolor="black", borderwidth=1,
-        ),
-    )
+    # Use 6th subplot area for legend
+    legend_ax = axes[1][2]
+    legend_ax.axis("off")
+    legend_handles = [
+        Line2D([0], [0], color=PINK, marker="o", markersize=6, linewidth=2,
+               label="Baseline DSP"),
+        Line2D([0], [0], color=TEAL, marker="o", markersize=6, linewidth=2,
+               label="Our Proposed DSP"),
+    ]
+    legend_ax.legend(handles=legend_handles, loc="center", fontsize=15,
+                     frameon=True, edgecolor="black", fancybox=False)
 
-    fig.update_xaxes(
-        title_text="N", title_standoff=3,
-        showline=True, linewidth=1, linecolor="black", mirror=True,
-        ticks="outside", tickmode="array", tickvals=[0, 5, 10, 15, 20],
-        tickangle=0, tickfont=dict(size=16), range=[0, 21],
-        showgrid=True, gridcolor="lightgray", griddash="dot",
-    )
-    fig.update_yaxes(
-        showline=True, linewidth=1, linecolor="black", mirror=True,
-        gridcolor="lightgray", griddash="dot",
-        ticks="outside", tickangle=0, range=[0, 22],
-    )
-    fig.update_yaxes(title_text="TFLOPS", title_standoff=2, row=1, col=1)
-    fig.update_yaxes(title_text="TFLOPS", title_standoff=2, row=2, col=1)
+    fig.subplots_adjust(left=0.07, right=0.99, top=0.98, bottom=0.10)
 
-    # Hide 6th subplot axes (used as legend area)
-    fig.update_xaxes(visible=False, row=2, col=3)
-    fig.update_yaxes(visible=False, row=2, col=3)
-
-    out_path = os.path.join(SCRIPT_DIR, "tflops_sweep.pdf")
-    fig.write_image(out_path, format="pdf")
+    out_path = os.path.join(SCRIPT_DIR, "sa_tflops_sweep.pdf")
+    fig.savefig(out_path, format="pdf", bbox_inches="tight")
+    plt.close(fig)
     print(f"Saved: {out_path}")
 
 
