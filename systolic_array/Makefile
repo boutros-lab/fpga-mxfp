@@ -3,7 +3,12 @@ M ?= 1
 N ?= 2
 IS_FP8_DOT4 ?= 0 
 
-.PHONY: fitaitb fitpacked
+.PHONY: fitaitb fitpacked venv
+
+venv: requirements.txt
+	python3 -m venv sa_venv
+	sa_venv/bin/pip install -r requirements.txt
+	@echo "Venv ready. Run: source sa_venv/bin/activate"
 
 fitaitb:
 	quartus_sh -t syn/setup_24_2_aitb.tcl mxfp_dot_cli aitb_E$E_M$M_N$N $E $M $N
