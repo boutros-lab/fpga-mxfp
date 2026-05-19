@@ -10,8 +10,8 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 k = 32  # MX block size
 
-RED = "#C0392B"
-GREEN = "#27AE60"
+PINK = "#E08896"
+TEAL = "#2E5C7E"
 
 # Best baseline for E2M1 and E2M3: AITB mode.
 AITB_CONFIGS = ["E2_M1", "E2_M3"]
@@ -55,8 +55,8 @@ def format_perf_title(fmt_name, baseline_vals, proposed_vals):
     baseline_peak = max(baseline_vals) if baseline_vals else 0
     proposed_peak = max(proposed_vals) if proposed_vals else 0
     if baseline_peak <= 0:
-        return f"{fmt_name} (N/A)"
-    return f"{fmt_name} ({proposed_peak / baseline_peak:.1f}x higher perf.)"
+        return f"{fmt_name}<br>N/A"
+    return f"{fmt_name}<br>{proposed_peak / baseline_peak:.1f}x perf."
 
 
 def check_sweep_csvs():
@@ -123,13 +123,13 @@ def build_plots():
 
         fig.add_trace(
             go.Scatter(x=base_N, y=base_tflops,
-                       name="Baseline DSP", marker_color=RED, line=dict(color=RED),
+                       name="Baseline DSP", marker_color=PINK, line=dict(color=PINK),
                        legendgroup="Baseline DSP", showlegend=first_trace),
             row=row, col=col,
         )
         fig.add_trace(
             go.Scatter(x=prop_N, y=prop_tflops,
-                       name="Our Proposed DSP", marker_color=GREEN, line=dict(color=GREEN),
+                       name="Our Proposed DSP", marker_color=TEAL, line=dict(color=TEAL),
                        legendgroup="Our Proposed DSP", showlegend=first_trace),
             row=row, col=col,
         )
