@@ -28,4 +28,6 @@ if [ ! -x ./simv ]; then
   exit 1
 fi
 
-./simv -gui -dve_opt "-session=sa_packed_wave.tcl" +vcs+lic+wait
+#./simv -gui -dve_opt "-session=sa_packed_wave.tcl" +vcs+lic+wait
+# No gui
+./simv +vcs+lic+wait

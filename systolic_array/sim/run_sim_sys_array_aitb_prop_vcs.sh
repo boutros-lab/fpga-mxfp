@@ -29,4 +29,4 @@ if [ ! -x ./simv ]; then
 fi
 
 #./simv -gui -dve_opt "-session=sa_packed_wave.tcl" +vcs+lic+wait
-./simv -gui +vcs+lic+wait
+./simv +vcs+lic+wait

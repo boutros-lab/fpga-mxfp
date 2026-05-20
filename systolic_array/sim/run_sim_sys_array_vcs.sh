@@ -6,6 +6,6 @@ TOP_LEVEL_NAME="sys_array_aitb_tb"
 
 sh setup_sim_sys_array_vcs.sh QUARTUS_INSTALL_DIR=$QUARTUS_INSTALL_DIR USER_DEFINED_ELAB_OPTIONS="\"$USER_DEFINED_ELAB_OPTIONS\"" SKIP_SIM=$SKIP_SIM TOP_LEVEL_NAME=$TOP_LEVEL_NAME > rtl_sim_log
 
-./simv -gui -dve_opt "-session=sa_aitb_tb_wave.tcl" +vcs+lic+wait
+#./simv -gui -dve_opt "-session=sa_aitb_tb_wave.tcl" +vcs+lic+wait
 # no gui
-#./simv +vcs+lic+wait
+./simv +vcs+lic+wait
