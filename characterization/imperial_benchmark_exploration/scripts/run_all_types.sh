@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PROJ_ROOT="/home/msmekhem/lp_dsp/"
+#PROJ_ROOT="/home/msmekhem/lp_dsp/"
 
 mul_int_default="$RTL_ROOT/mul_int.sv"
 mul_int_logic="$RTL_ROOT/mul_int_logic.sv"

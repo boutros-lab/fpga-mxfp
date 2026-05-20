@@ -135,7 +135,7 @@ generate
 	end
 endgenerate
 
-// Get final sums for each mode, TODO, could do more packing here
+// Get final sums for each mode
 assign e4m3_sum = e4m3_partial[0] + e4m3_partial[1];
 assign fp6_sum  = fp6_partial[0] + fp6_partial[1] + fp6_partial[2];
 assign fp4_sum  = fp4_partial[0] + fp4_partial[1] + fp4_partial[2] + fp4_partial[3];

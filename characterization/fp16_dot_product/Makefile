@@ -8,7 +8,7 @@ DATA_OPTS ?=
 SIM_OPTS  ?=
 
 data:
-	PROJ_ROOT=$(CURDIR) ../testbench/scripts/generate_data.py -e $(E) -m $(M) -k $(K) -t $(TESTS) $(DATA_OPTS)
+	PROJ_ROOT=$(CURDIR) ../../testbench/scripts/generate_data.py -e $(E) -m $(M) -k $(K) -t $(TESTS) $(DATA_OPTS)
 
 sim:
 	./scripts/test_fp16_mxfp_dp.sh -e $(E) -m $(M) -k $(K) -t $(TESTS) $(SIM_OPTS)

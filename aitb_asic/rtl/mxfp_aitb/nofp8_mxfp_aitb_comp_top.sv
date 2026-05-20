@@ -5,8 +5,7 @@
 import pkg_aitb::*;
 
 module nofp8_mxfp_aitb_comp_top #(
-	parameter FIXED_INPUTS = FIXED_ELEMENTS,
-	parameter PACKED_REDUCTION = 0
+	parameter FIXED_INPUTS = FIXED_ELEMENTS
 )(
 	input logic clk,
 	input logic rst,
@@ -283,8 +282,7 @@ pipeline #(.W(SH_EXP_WIDTH), .STAGES(1)) PIPE_2_w_reg_c2 (
 
 // Dot engine (out: 70b vector)
 nofp8_mxfp_comp_dot_fixed #(
-	.FIXED_DOT_LENGTH(FIXED_INPUTS),
-	.PACKED_REDUCTION(PACKED_REDUCTION)
+	.FIXED_DOT_LENGTH(FIXED_INPUTS)
 ) u_nofp8_mxfp_comp_dot_fixed_col1 (
 	.i_mxfp_mode(i_mxfp_mode),
 
@@ -306,8 +304,7 @@ nofp8_mxfp_comp_dot_fixed #(
 );
 
 nofp8_mxfp_comp_dot_fixed #(
-	.FIXED_DOT_LENGTH(FIXED_INPUTS),
-	.PACKED_REDUCTION(PACKED_REDUCTION)
+	.FIXED_DOT_LENGTH(FIXED_INPUTS)
 ) u_nofp8_mxfp_comp_dot_fixed_col2 (
 	.i_mxfp_mode(i_mxfp_mode),
 
@@ -365,7 +362,7 @@ pipeline #(.W(SH_EXP_WIDTH), .STAGES(1)) PIPE_3_w_reg_c2 (
 );
 
 // CPA Adder (used for FXP Tensor Mode but in this datapath nonetheless)
-assign adder_out_col1 = dot_out_col1_pipe + '0; // TODO, not sure what to do about this
+assign adder_out_col1 = dot_out_col1_pipe + '0;
 assign adder_out_col2 = dot_out_col2_pipe + '0;
 
 // FXP to FP32
