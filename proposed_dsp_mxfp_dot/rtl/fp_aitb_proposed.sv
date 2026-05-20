@@ -38,7 +38,7 @@ module fp_aitb_proposed #(
 
     generate
         if (IS_SIM) begin
-            naive_mxfp_aitb_top aitb(
+            naive_mxfp_aitb_comp_top aitb(
                 .clk(clk),
                 .rst(rst),
                 .acc_en(acc_en_i),
