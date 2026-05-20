@@ -37,10 +37,10 @@ $ source sa_venv/bin/activate
 (sa_venv)$ python summarize_systolic_array_sweep.py
 ```
 **Note:** This can take approximately 4 hours.
-The above Python file will run `run_sweep_aitb.sh`, `run_sweep_packed.sh` and `run_sweep_prop.sh` in parallel if their respective CSV result files are not already generated. Then, the Python script will parse the results to re-create the performance result prop (`sa_tflops_sweep.pdf`). The virtual environnment installs `matplotlib`, which is used for the plot generation.
+The above Python file will run `run_sweep_aitb.sh`, `run_sweep_packed.sh` and `run_sweep_prop.sh` in parallel if their respective CSV result files are not already generated. Then, the Python script will parse the results to re-create the performance result prop (`sa_tflops_sweep.pdf`). The virtual environment installs `matplotlib`, which is used for the plot generation.
 
 ## File Descriptions
-Descriptions of the sub-directories are given below.
+Descriptions of the sub-directories and select files in this `systolic_array` directory are given below.
 
 ### cons
 Conatins the `sdc` used with Quartus to evaluate utilization and timing of the systolic arrays.
@@ -50,7 +50,7 @@ RTL descriptions of the systolic arrays. The systolic arrays implement matrix
 multiplications. The matrix multiplication is between a $N \times k$ matrix and a $k \times (N \times D)$ matrix, where $k = 32$ (MXFP block size) and $D$ is the number of 32-element MXFP dot product operations computed per processing element (PE).
 - `sys_array_aitb_prop.sv`: systolic array design whose PE is a MXFP dot product unit using our proposed DSP block. See the `proposed_dsp_mxfp_dot` directory for details on the dot product unit using our proposed DSP block. $D = 2$.
 - `sys_array_aitb.sv`: systolic array design whose PE is a MXFP dot product unit using the Agilex-5 DSP block configured in tensor mode (for E2M3 and E2M1 MXFP formats). $D = 2$.
-- `sys_array_packed_mult.sv`: systolic array design whose PE is a MXFP dot product unit using the Agilex-5 DSP block with the "Packed Fixed-Point Multiplier" approach (E3M2, E4M3 and E5M2 formats). $D = NUM\_OPS$.
+- `sys_array_packed_mult.sv`: systolic array design whose PE is a MXFP dot product unit using the Agilex-5 DSP block with the "Packed Fixed-Point Multiplier" approach (E3M2, E4M3 and E5M2 formats). $D = NUM\_OPS$ parameter defined in the module.
 
 ### sim
 Testbenches for functional verification and simulation scripts.
@@ -58,8 +58,30 @@ Testbenches for functional verification and simulation scripts.
 - `sys_array_aitb_tb.sv`: testbench to verify `sys_array_aitb` module by loading in a set of vectors from a "weight" matrix followed by streaming "P" sets of "activation" vectors.
 - `sys_array_packed_mult_tb.sv`: testbench to verify `sys_array_packed_mult` module by streaming "P" sets of "weight" and "activation" vectors to the systolic array.
 
-For each of the three systolic arrays (and their testbench), a pair of "run" and "setup" scripts exist to run a the testbench for a systolic array with VCS (VCS 2016.06-1 was used). The run script uses the related setup script. A pair of scripts also exist to run the mxfp_dot module from the AITB characterization.
+ModelSim Simulation Scripts
+For each of the three systolic arrays (and their testbench), a "run" script exists to run the testbench for the systolic array with ModelSim. These scripts are used by the aforementioned `sweep_sim_*_modelsim.sh` scripts.
+
+The three "sweep" scripts exist to simulate the corresponding three sytolic arrays with their supported MXFP formats. Outputs of simulations appear in a `logs` sub-directory.
+
+Additional Scripts for VCS
+For each of the three systolic arrays (and their testbench), a pair of "run" and "setup" scripts exist to run the testbench for the systolic array with VCS (VCS 2016.06-1 was used). The run script uses the related setup script.
 
 Three "sweep" scripts exist to simulate the corresponding three sytolic arrays with their supported MXFP formats. Outputs of simulations appear in a `logs` sub-directory.
 
 ### syn
+- `fit.tcl`: script that runs synthesis, place and route, and timing analysis with Quartus.
+- `setup_24_2_mxfp_dot_prop.tcl`: script to setup a Quartus project for the `mxfp_dot_proposed` module (found in the `proposed_dsp_mxfp_dot` directory, using the pin-compatible stand-in of our proposed DSP block).
+- `setup_24_2_aitb.tcl`: script to setup a Quartus project for the `sys_array_aitb` module.
+- `setup_24_2_packed.tcl`: script to setup a Quartus project for the `sys_array_packed_mult` module.
+- `setup_24_2_aitb_prop.tcl`: script to setup a Quartus project for the `sys_array_aitb_prop` module (using the pin-compatible stand-in of our proposed DSP block).
+
+### Notable Other Files
+- `summarize_mxfp_dot_prop_sweep.py`: see above.
+- `summarize_systolic_array_sweep.py`: see above.
+- `run_sweep_mxfp_dot_prop.sh`: runs the Quartus flow for the `mxfp_dot_proposed` module for all MXFP formats.
+- `run_sweep_aitb.sh`: runs the Quartus flow for the `sys_array_aitb` module for E2M1 and E2M3 formats with various values of N (systolic array size is $N \times N$).
+- `run_sweep_packed.sh`: runs the Quartus flow for the`sys_array_packed_mult` module for E3M2, E4M3 and E5M2 formats with various values of N (systolic array size is $N \times N$).
+- `run_sweep_prop.sh`: runs the Quartus flow for the `sys_array_aitb_prop` module for all MXFP formats with various values of N (systolic array size is $N \times N$).
+- `extract.sh`: script to parse Quartus run results, writing extracted data to CSV.
+- `requirements.txt`: used to re-create Python virtual environment.
+- `Makefile`: Makefile to run Quartus flows (used by aforementioned bash scripts). Target `venv` re-creates the Python environment. Target `clean` removes all results from Quartus runs.
