@@ -27,4 +27,4 @@ fitmxfp_dot_prop:
 	quartus_sh -t syn/fit.tcl mxfp_dot_cli build_24_2 mxfp_dot_prop_E$E_M$M
 
 clean:
-	rm -rf build_24_2 *.csv
+	rm -rf build_24_2 *.csv results
