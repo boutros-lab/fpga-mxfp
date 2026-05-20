@@ -2,8 +2,9 @@
 This directory contains the RTL descriptions instantiating our proposed DSP block to form MXFP dot product units.
 
 ## Simulation of MXFP Dot Product Unit
-The following command allows simulation of the MXFP dot product unit using our proposed DSP block design:
+The following command allows simulation of the MXFP dot product unit using our proposed DSP block design with ModelSim:
 ```bash
+$ cd sim
 $ bash sweep_sim_mxfp_dot_proposed_modelsim.sh
 ```
 

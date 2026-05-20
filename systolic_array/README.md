@@ -1,6 +1,44 @@
 # MXFP-based Systolic Arrays on Agilex-5
 This directory contains systolic array implementations to perform matrix multiplication using MXFP on Agilex-5.
 
+## Simulation of Systolic Array Designs
+The following command allows simulation of the systolic array designs using the baseline AITB (E2M1 and E2M3) with ModelSim:
+```bash
+$ cd sim
+$ bash sweep_sim_sys_array_aitb_modelsim.sh
+```
+
+The following command allows simulation of the systolic array designs using the baseline DSP, packed approach, (E3M2, E4M3 and E5M2) with ModelSim:
+```bash
+$ cd sim
+$ bash sweep_sim_sys_array_packed_modelsim.sh
+```
+
+The following command allows simulation of the systolic array designs using our proposed DSP (all formats) with ModelSim:
+```bash
+$ cd sim
+$ bash sweep_sim_sys_array_aitb_prop_modelsim.sh
+```
+**Warning:** for MXFP6 and MXFP8 simulations, Questa Altera Edition limit for instances is surpassed (warning suppressed in the aforementioned sweep script).
+
+## MXFP Dot Product Unit Resource Utilization and Device Peak Performance
+To obtain the results from Table V for the MXFP Dot Product Unit with our proposed DSP block, run:
+```bash
+$ python3 summarize_mxfp_dot_prop_sweep.py
+```
+**Note:** This can take approximately 1-2 hours.
+The above Python file will run the `run_sweep_mxfp_dot_prop.sh` script, running Quartus, if the CSV result file is not already generated. Then, the Python script will summarize the results in a table in the terminal.
+
+## Systolic Array Designs Performance Results
+To obtain the results from Figure 6 for the performance results for the systolic array design targeting the baseline Agilex-5 DSP block and our proposed DSP block, run:
+```bash
+$ make venv
+$ source sa_venv/bin/activate
+(sa_venv)$ python summarize_systolic_array_sweep.py
+```
+**Note:** This can take approximately 4 hours.
+The above Python file will run `run_sweep_aitb.sh`, `run_sweep_packed.sh` and `run_sweep_prop.sh` in parallel if their respective CSV result files are not already generated. Then, the Python script will parse the results to re-create the performance result prop (`sa_tflops_sweep.pdf`). The virtual environnment installs `matplotlib`, which is used for the plot generation.
+
 ## File Descriptions
 Descriptions of the sub-directories are given below.
 
