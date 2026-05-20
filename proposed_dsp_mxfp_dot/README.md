@@ -29,8 +29,6 @@ Testbench for functional verification and simulation scripts.
 - `run_sim_mxfp_dot_proposed_modelsim.sh`: script to setup and run a simulation with QuestaSim/ModelSim of `mxfp_dot_proposed_tb.sv`.
 - `sweep_sim_mxfp_dot_proposed_modelsim.sh`: script to run simulations of `mxfp_dot_proposed_tb.sv` for every MXFP format.
 
-- `modelsim.ini`: QuestaSim/ModelSim configuration file that maps Intel/Altera device simulation libraries from the local Quartus Pro installation to their paths; required for simulating with device primitives via -L tennm_ver. This file is **tool-version and installation-path specific** and may need to be regenerated for a different Quartus installation.
-
 Additional Scripts for VCS
 - `run_sim_mxfp_dot_proposed_vcs.sh` and `setup_sim_mxfp_dot_proposed_vcs.sh`: scripts to respectively execute a simulation with VCS 2016.06-1 and setup the simulation. To run a simulation: `bash run_sim_mxfp_dot_proposed_vcs.sh`.
 - `sweep_sim_mxfp_dot_proposed_vcs.sh`: simulates `mxfp_dot_proposed_tb`, with VCS, with all valid parameter sets providing a summary and log files written in a `logs` sub-directory.
