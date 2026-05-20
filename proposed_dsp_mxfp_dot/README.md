@@ -1,6 +1,15 @@
 # MXFP Dot Product Unit Using Proposed DSP Block Design
 This directory contains the RTL descriptions instantiating our proposed DSP block to form MXFP dot product units.
 
+## Simulation of MXFP Dot Product Unit
+The following command allows simulation of the MXFP dot product unit using our proposed DSP block design:
+```bash
+$ bash sweep_sim_mxfp_dot_proposed_modelsim.sh
+```
+
+## MXFP Dot Product Unit Resource Utilization and Device Peak Performance
+See `systolic_array/README.md` for instructions on how to obtain the results from Table V for the MXFP Dot Product Unit with our proposed DSP block.
+
 ## File Descriptions
 Descriptions of the sub-directories are given below.
 
@@ -16,10 +25,11 @@ RTL descriptions of the dot product units.
 ### sim
 Testbench for functional verification and simulation scripts.
 - `mxfp_dot_proposed_tb.sv`: testbench to verify `mxfp_dot_proposed` module by loading in `NUM_LOADS` sets of vectors followed by streaming in `REUSE_FACTOR` vectors.
+- `run_sim_mxfp_dot_proposed_modelsim.sh`: script to setup and run a simulation with QuestaSim/ModelSim of `mxfp_dot_proposed_tb.sv`.
+- `sweep_sim_mxfp_dot_proposed_modelsim.sh`: script to run simulations of `mxfp_dot_proposed_tb.sv` for every MXFP format.
+
+- `modelsim.ini`: QuestaSim/ModelSim configuration file that maps Intel/Altera device simulation libraries from the local Quartus Pro installation to their paths; required for simulating with device primitives via -L tennm_ver. This file is **tool-version and installation-path specific** and may need to be regenerated for a different Quartus installation.
+
+Additional Scripts for VCS
 - `run_sim_mxfp_dot_proposed_vcs.sh` and `setup_sim_mxfp_dot_proposed_vcs.sh`: scripts to respectively execute a simulation with VCS 2016.06-1 and setup the simulation. To run a simulation: `bash run_sim_mxfp_dot_proposed_vcs.sh`.
 - `sweep_sim_mxfp_dot_proposed_vcs.sh`: simulates `mxfp_dot_proposed_tb`, with VCS, with all valid parameter sets providing a summary and log files written in a `logs` sub-directory.
-
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-TODO: (but do we really need that?)
-See the `systolic_array` directory for details on simulating `mxfp_dot_proposed_tb` using ModelSim/QuestaSim.
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
