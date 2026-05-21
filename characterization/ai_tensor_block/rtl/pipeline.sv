@@ -28,7 +28,7 @@ module pipeline #(
         end else begin
             // Multi-stage pipeline
             for (i = 0; i < STAGES; i = i + 1) begin : pipeline_stages
-                always_ff @(posedge clk or posedge rst) begin
+                always_ff @(posedge clk /*or posedge rst*/) begin
                     if (rst)
                         stage_reg[i] <= '0;
                     else if (i == 0)

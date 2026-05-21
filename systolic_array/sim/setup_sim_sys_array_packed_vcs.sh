@@ -1,0 +1,152 @@
+# initialize variables
+TOP_LEVEL_NAME="sys_array_packed_mult_tb"
+
+QUARTUS_INSTALL_DIR=$QUARTUS_ROOT
+SKIP_SIM=1
+USER_DEFINED_ELAB_OPTIONS="+vcs+lic+wait -debug_access+pp"
+#USER_DEFINED_ELAB_OPTIONS="+vcs+lic+wait"
+USER_DEFINED_ELAB_OPTIONS_APPEND=""
+USER_DEFINED_SIM_OPTIONS=""
+
+# Default MXFP format (e4m3); overridden by sweep script via EXP_W / MAN_W args
+EXP_W=4
+MAN_W=3
+
+# ----------------------------------------
+# overwrite variables - DO NOT MODIFY!
+# This block evaluates each command line argument, typically used for 
+# overwriting variables. An example usage:
+#   sh <simulator>_setup.sh SKIP_SIM=1
+for expression in "$@"; do
+  eval $expression
+  if [ $? -ne 0 ]; then
+    echo "Error: This command line argument, \"$expression\", is/has an invalid expression." >&2
+    exit $?
+  fi
+done
+
+# Select the mxfp_eXmY_to_fp32.vhdl that matches EXP_W / MAN_W
+VHDL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../../characterization/packed_multiplier/flopoco_fx2fp_pipelined"
+MXFP_VHDL_FILE="${VHDL_DIR}/mxfp_e${EXP_W}m${MAN_W}_to_fp32.vhdl"
+if [ ! -f "$MXFP_VHDL_FILE" ]; then
+  echo "Error: VHDL file not found for EXP_W=${EXP_W} MAN_W=${MAN_W}: $MXFP_VHDL_FILE" >&2
+  exit 1
+fi
+
+#-------------------------------------------
+# check tclsh version no earlier than 8.5
+version=$(echo "puts [package vcompare [info tclversion] 8.5]; exit" | tclsh)
+if [ $version -eq -1 ]; then 
+  echo "Error: Minimum required tcl package version is 8.5." >&2 
+  exit 1 
+fi 
+
+ELAB_OPTIONS=""
+
+# -------------------------------------------
+# design files
+design_files=(
+  "sys_array_packed_mult_tb.sv"
+  "../rtl/sys_array_packed_mult.sv"
+  "../../characterization/packed_multiplier/packed_dot_product_fp32.sv"
+  "../../characterization/packed_multiplier/packed_dot_product.sv"
+  "../../characterization/packed_multiplier/packed_multiplier.sv"
+  "../../characterization/packed_multiplier/DSP_2x18x18.sv"
+  "../../characterization/packed_multiplier/reduction.sv"
+  "$MXFP_VHDL_FILE"
+  "../../characterization/ai_tensor_block/rtl/pipeline.sv"
+)
+
+# -------------------------------------------
+# split files by language
+sv_files=()
+v_files=()
+vhdl_files=()
+
+for f in "${design_files[@]}"; do
+  case "$f" in
+    *.sv)
+      sv_files+=("$f")
+      ;;
+    *.v)
+      v_files+=("$f")
+      ;;
+    *.vhd|*.vhdl)
+      vhdl_files+=("$f")
+      ;;
+    *)
+      echo "Warning: Unknown file extension, skipping: $f"
+      ;;
+  esac
+done
+
+# -------------------------------------------
+# clean old compile database if desired
+# rm -rf csrc simv simv.daidir ucli.key work.vhdlan
+# rm -rf .vlogan .vhdlan
+
+# -------------------------------------------
+# compile Verilog/SystemVerilog libraries and sources
+if [ ${#v_files[@]} -gt 0 ] || [ ${#sv_files[@]} -gt 0 ]; then
+  vlogan -full64 -l vlogan.log \
+    -assert svaext \
+    -timescale=1ps/1ps \
+    -sverilog \
+    +v2k \
+    +verilog2001ext+.v \
+    -work work \
+    "$QUARTUS_INSTALL_DIR/eda/sim_lib/altera_lnsim.sv" \
+    "$QUARTUS_INSTALL_DIR/eda/sim_lib/tennm_atoms.sv" \
+    "$QUARTUS_INSTALL_DIR/eda/sim_lib/synopsys/tennm_atoms_ncrypt.sv" \
+    -v "$QUARTUS_INSTALL_DIR/eda/sim_lib/altera_primitives.v" \
+    -v "$QUARTUS_INSTALL_DIR/eda/sim_lib/220model.v" \
+    -v "$QUARTUS_INSTALL_DIR/eda/sim_lib/sgate.v" \
+    -v "$QUARTUS_INSTALL_DIR/eda/sim_lib/altera_mf.v" \
+    "${v_files[@]}" \
+    "${sv_files[@]}"
+
+  if [ $? -ne 0 ]; then
+    echo "Error: vlogan compilation failed." >&2
+    exit 1
+  fi
+fi
+
+# -------------------------------------------
+# compile VHDL sources
+if [ ${#vhdl_files[@]} -gt 0 ]; then
+  vhdlan -full64 -l vhdlan.log \
+    -work work \
+    "${vhdl_files[@]}"
+
+  if [ $? -ne 0 ]; then
+    echo "Error: vhdlan compilation failed." >&2
+    exit 1
+  fi
+fi
+
+
+# -------------------------------------------
+# elaborate
+vcs -full64 -lca \
+  -assert svaext \
+  -l elaborate.log \
+  -debug_access+pp \
+  -LDFLAGS -no-pie \
+  $USER_DEFINED_ELAB_OPTIONS \
+  $USER_DEFINED_ELAB_OPTIONS_APPEND \
+  -top "$TOP_LEVEL_NAME"
+
+if [ $? -ne 0 ]; then
+  echo "Error: vcs elaboration failed." >&2
+  exit 1
+fi
+
+#-top $TOP_LEVEL_NAME -R
+#-top $TOP_LEVEL_NAME -R -gui &
+
+# simulate
+# if [ $SKIP_SIM -eq 0 ]; then
+#   ./simv $SIM_OPTIONS $USER_DEFINED_SIM_OPTIONS
+# fi
+
+# ./simv -top npu_tb -R #-gui &
