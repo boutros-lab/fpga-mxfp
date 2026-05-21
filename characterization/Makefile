@@ -2,6 +2,10 @@
 all: base base_opt packed aitb fp16
 sim-all: sim-base sim-base_opt sim-packed sim-fp16 sim-aitb
 
+venv: requirements.txt
+	python3 -m venv char_venv
+	char_venv/bin/pip install -r requirements.txt
+
 base:
 	./run_base.sh
 
@@ -20,6 +24,9 @@ aitb:
 table:
 	@./csv_viz.sh
 
+tflops: venv
+	char_venv/bin/python tflops_chart.py
+
 sim-base:
 	./run_base_sim.sh
 
@@ -36,4 +43,4 @@ sim-aitb:
 	./run_aitb_sim.sh
 
 
-.PHONY: all base base_opt packed aitb fp16 table sim-packed sim-fp16 sim-aitb sim-base sim-base_opt sim-all
+.PHONY: all base base_opt packed aitb fp16 table tflops sim-packed sim-fp16 sim-aitb sim-base sim-base_opt sim-all
