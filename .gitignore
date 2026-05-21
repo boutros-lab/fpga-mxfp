@@ -21,3 +21,5 @@ systolic_array/data*
 testbench/scripts/data/
 build_24_2
 *copy*
+*.pdf
+char_venv
