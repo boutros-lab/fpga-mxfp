@@ -1,7 +1,7 @@
 module packed_multiplier # (
     parameter op_width = 3,
     parameter mul_width = 18,
-    localparam num_ops = mul_width / 2 / op_width
+    localparam num_ops = (mul_width / (op_width)) - (mul_width / (2*(op_width)))
 ) (
     input logic clk,
     input logic [op_width-1:0] operands [num_ops-1:0], sharedOperand,
@@ -13,7 +13,13 @@ module packed_multiplier # (
 // Pack and unpack operands and products
 for (genvar i = 0; i < num_ops; i++) begin : gen_operand_packing
     assign mul_x[i * 2 * op_width +: op_width] = operands[i]; // place operand
-    assign mul_x[i * 2 * op_width + op_width +: op_width] = {(op_width){1'b0}}; // pad other half with zeros
+    
+    if ((i * 2 * op_width + op_width + op_width) < mul_width) begin // Remaining bits < op_width (but not 0)
+        assign mul_x[i * 2 * op_width + op_width +: op_width] = {(op_width){1'b0}}; // pad other half with zeros
+    end else if ((i * 2 * op_width + op_width) < mul_width) begin // Remaining bits > op_width
+        assign mul_x[mul_width - 1 : i * 2 * op_width + op_width] = 'b0; // pad other half with zeros
+    end
+
     assign products[i] = mul_result[i * 2 * op_width +: 2 * op_width]; // extract product
 end
 if (num_ops * 2 * op_width < mul_width) // pad remaining bits with zeros

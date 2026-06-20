@@ -5,7 +5,7 @@ parameter exponent_width = 5;
 parameter mantissa_width = 2;
 parameter mul_width = 18;
 parameter block_size = 32;
-localparam num_ops = mul_width / 2 / (1+mantissa_width);
+localparam num_ops = (mul_width / (1+mantissa_width)) - (mul_width / (2*(1+mantissa_width)));
 
 logic clk;
 logic valid_in, valid_out;

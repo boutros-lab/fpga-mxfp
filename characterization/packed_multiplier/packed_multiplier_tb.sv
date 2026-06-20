@@ -5,7 +5,7 @@ module packed_multiplier_tb;
 parameter tests = 1024;
 parameter op_width = 3;
 parameter mul_width = 18;
-localparam num_ops = mul_width / 2 / op_width;
+localparam num_ops = (mul_width / (op_width)) - (mul_width / (2*(op_width)));
 
 logic clk;
 logic [op_width-1:0] operands_a [num_ops], operands_b [num_ops];
