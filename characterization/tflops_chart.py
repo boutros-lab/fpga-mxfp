@@ -48,7 +48,7 @@ AITB_KEYS = {
 }
 
 # Depth (num_dots) per architecture
-PACKED_DEPTH = {"E5M2": 3, "E4M3": 2, "E3M2": 3, "E2M3": 2, "E2M1": 4}
+PACKED_DEPTH = {"E5M2": 3, "E4M3": 2, "E3M2": 3, "E2M3": 2, "E2M1": 5}
 AITB_DEPTH = {"E5M2": None, "E4M3": None, "E3M2": None, "E2M3": 2, "E2M1": 2}
 
 

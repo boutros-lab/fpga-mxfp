@@ -6,7 +6,7 @@ parameter exponent_width = 4;
 parameter mantissa_width = 3;
 parameter mul_width = 18;
 parameter block_size = 32;
-localparam num_ops = mul_width / 2 / (1+mantissa_width);
+localparam num_ops = (mul_width / (1+mantissa_width)) - (mul_width / (2*(1+mantissa_width)));
 localparam result_width = 1 + 2 * (mantissa_width + 1) + 2 ** (exponent_width + 1) - 2 + $clog2(block_size);
 
 logic clk;

@@ -3,7 +3,7 @@ module packed_dot_product #(
     parameter mantissa_width = 3,
     parameter mul_width = 18,
     parameter block_size = 32, // must be divisible by 2 since the DSP can handle 2 multiplications at once
-    localparam num_ops = mul_width / 2 / (1+mantissa_width), 
+    localparam num_ops = (mul_width / (1+mantissa_width)) - (mul_width / (2*(1+mantissa_width))), 
     // Sign + Mantissa_Multiplied + Max_Exponent_Sum_Shift + Block_Sum
     localparam fixed_point_product_width = 1 + 2 * (mantissa_width + 1) + 2 ** (exponent_width + 1) - 2,
     localparam result_width = fixed_point_product_width + $clog2(block_size)
