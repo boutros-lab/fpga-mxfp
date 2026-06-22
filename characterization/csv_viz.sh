@@ -47,7 +47,7 @@ declare -A PACKED_DEPTH=(
 	[E4M3]="2"
 	[E3M2]="3"
 	[E2M3]="2"
-	[E2M1]="4"
+	[E2M1]="5"
 )
 
 declare -A AITB_DEPTH=(
