@@ -22,5 +22,6 @@ clean:
 	rm -rf data
 	rm -rf sim
 	rm -rf MXFP*
+	rm -rf *log
 
 .PHONY: data sim data_and_sim syn clean
