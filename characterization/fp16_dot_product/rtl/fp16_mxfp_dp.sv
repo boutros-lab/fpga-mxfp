@@ -16,7 +16,7 @@ module fp16_mxfp_dp #(
 	input logic [7:0] shared_exp_in_b,
 	output logic [31:0] fp32_out
 );
-	localparam DP_LATENCY     = 6 + ($clog2(k) - 2) * 3;
+	localparam DP_LATENCY     = k > 2 ? (6 + ($clog2(k) - 2) * 3) : 6;
 	localparam SH_EXP_LATENCY = 3 + DP_LATENCY;
 
 	genvar i;

@@ -28,7 +28,9 @@
 `timescale 1 ps / 1 ps
 // synopsys translate_on
 
-module  vector_one  (
+module  vector_one  #(
+	parameter FP16_MODE = "extended" // "bfloat16"
+)(
 
            clk,
 
@@ -86,7 +88,7 @@ module  vector_one  (
 
             defparam
                     tennm_fp_mac_component.operation_mode = "fp16_vector1",
-                    tennm_fp_mac_component.fp16_mode = "extended",
+                    tennm_fp_mac_component.fp16_mode = FP16_MODE,
                     tennm_fp_mac_component.fp16_input_width = 16,
                     tennm_fp_mac_component.use_chainin = "true",
                     tennm_fp_mac_component.fp32_adder_subtract = "false",
@@ -113,7 +115,9 @@ endmodule
 
 
 
-module  vector_one_no_chainin  (
+module  vector_one_no_chainin  #(
+	parameter FP16_MODE = "extended" // "bfloat16"
+)(
 
            clk,
 
@@ -167,7 +171,7 @@ module  vector_one_no_chainin  (
 
             defparam
                     tennm_fp_mac_component.operation_mode = "fp16_vector1",
-                    tennm_fp_mac_component.fp16_mode = "extended",
+                    tennm_fp_mac_component.fp16_mode = FP16_MODE,
                     tennm_fp_mac_component.fp16_input_width = 16,
                     tennm_fp_mac_component.use_chainin = "false",
                     tennm_fp_mac_component.fp32_adder_subtract = "false",
