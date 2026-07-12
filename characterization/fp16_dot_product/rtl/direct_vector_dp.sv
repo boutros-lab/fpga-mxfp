@@ -1,11 +1,131 @@
-// Chained FP16 DSPs creating a dot product
-// K must be a power of two, in order to create non-power of two dot products,
-// build smaller trees and sum together while balancing latencies
-
+// Build any length FP16 dot product
+// For non-powers of two, builds several power-of-two dps and sums their
+// results
+// Note: There are edge cases where this is not the most DSP-efficient
+// approach, and zero padding the vector may be favourable
+// e.g. k=3 will be implemented with 3 DSPs, where it can be implemented with
+// 2 for k=4, this would also result in a higher latency, so this edge case is handled, 
+// for k=31 this is even worse, k=31 and k=32 would use the same
+// number of DSPs (16), but this approach will use 5 extra DSPs (latency is
+// the same regardless)
+// In general, if you're close enough to a power of two, it may be benificial
+// to zero pad
 module direct_vector_dp #(
 	parameter k = 32,
 	parameter FP16_MODE = "extended" // bfloat16
-) (
+)(
+	input logic clk,
+	input logic rst,
+	input logic [15:0] fp16_in_a [k],
+	input logic [15:0] fp16_in_b [k],
+	output logic [31:0] fp32_out
+);
+// Find the largest power of 2 dp that can be built
+localparam MAX_POW2    = 2 ** ($clog2(k + 1) - 1);
+localparam LATENCY     = k > 2 ? (6 + ($clog2(k) - 2) * 3) : 6; // Expected total latency (fp32_add has a latency of 3, so this works for pow2 and non-pow2)
+localparam MP2_LATENCY = MAX_POW2 > 2 ? (6 + ($clog2(MAX_POW2) - 2) * 3) : 6; // Expected latency for largest dp
+
+generate
+	if (k == MAX_POW2) begin
+		// Terminate
+		pow2_direct_vector_dp #(
+			.k(k),
+			.FP16_MODE(FP16_MODE)
+		) u_pow2_direct_vector_dp_pow2 (
+			.clk(clk),
+			.rst(rst),
+			.fp16_in_a(fp16_in_a),
+			.fp16_in_b(fp16_in_b),
+			.fp32_out(fp32_out)
+		);
+	end else if (k == 3) begin
+		// Special case where latency calculation is inaccurate and
+		// DSP usage is wasteful, zero pad instead
+		logic [15:0] fp16_in_a_k4 [4];
+		logic [15:0] fp16_in_b_k4 [4];
+
+		for (genvar i = 0; i < 3; i++) begin
+			assign fp16_in_a_k4[i] = fp16_in_a[i];
+			assign fp16_in_b_k4[i] = fp16_in_b[i];
+		end
+
+		assign fp16_in_a_k4[3] = 16'b0;
+		assign fp16_in_b_k4[3] = 16'b0;
+
+		pow2_direct_vector_dp #(
+			.k(4),
+			.FP16_MODE(FP16_MODE)
+		) u_pow2_direct_vector_dp_k4 (
+			.clk(clk),
+			.rst(rst),
+			.fp16_in_a(fp16_in_a_k4),
+			.fp16_in_b(fp16_in_b_k4),
+			.fp32_out(fp32_out)
+		);
+	end else begin
+		localparam REMAINDER   = k - MAX_POW2; // Remaining elements
+		localparam REM_LATENCY = REMAINDER > 2 ? (6 + ($clog2(REMAINDER) - 2) * 3) : 6; // Expected latency for next call
+
+		logic [31:0] max_fp32, rem_fp32, rem_fp32_q;
+
+		// Largest dp for current k
+		pow2_direct_vector_dp #(
+			.k(MAX_POW2),
+			.FP16_MODE(FP16_MODE)
+		) u_pow2_direct_vector_dp_max (
+			.clk(clk),
+			.rst(rst),
+			.fp16_in_a(fp16_in_a[0+:MAX_POW2]),
+			.fp16_in_b(fp16_in_b[0+:MAX_POW2]),
+			.fp32_out(max_fp32)
+		);
+
+		// Remainder
+		direct_vector_dp #(
+			.k(REMAINDER),
+			.FP16_MODE(FP16_MODE)
+		) u_direct_vector_dp_rem (
+			.clk(clk),
+			.rst(rst),
+			.fp16_in_a(fp16_in_a[MAX_POW2+:REMAINDER]),
+			.fp16_in_b(fp16_in_b[MAX_POW2+:REMAINDER]),
+			.fp32_out(rem_fp32)
+		);
+
+		// Balance latency for remainder fp32
+		pipeline #(
+			.width(32),
+			.depth(MP2_LATENCY - REM_LATENCY)
+		) u_pipeline_rem_fp32 (
+			.clk(clk),
+			.rst(rst),
+			.data(rem_fp32),
+			.data_q(rem_fp32_q)
+		);
+
+		// Sum up fp32 outputs (3 cycle latency)
+		fp32_add 
+		u_fp32_add (
+			.clk(clk),
+			.clr0(rst),
+			.clr1(rst),
+			.ena(3'b111),
+			.fp32_adder_a(max_fp32),
+			.fp32_adder_b(rem_fp32_q),
+			.fp32_result(fp32_out)
+		);
+	end
+endgenerate
+
+endmodule
+
+// Chained FP16 DSPs creating a dot product
+// K must be a power of two, in order to create non-power of two dot products,
+// build smaller dps and sum together while balancing latencies
+module pow2_direct_vector_dp #(
+	parameter k = 32,
+	parameter FP16_MODE = "extended" // bfloat16
+)(
 	input logic clk,
 	input logic rst,
 	input logic [15:0] fp16_in_a [k],
@@ -25,7 +145,22 @@ logic [31:0] fp32_out_1 [4];
 logic [31:0] fp32_out_3 [4];
 
 generate
-	if (k == 2) begin
+	if (k == 1) begin
+		// Feed in 0 to bottom multiplier
+		sum_of_two_no_chainin #(
+			.FP16_MODE(FP16_MODE)
+		) u_sum_of_two_no_chainin (
+			.fp16_mult_top_a (fp16_in_a[0]), 
+			.fp16_mult_top_b (fp16_in_b[0]), 
+			.fp16_mult_bot_a (16'b0), 
+			.fp16_mult_bot_b (16'b0), 
+			.clr0            (rst),
+			.clr1            (rst),
+			.clk             (clk),
+			.ena             (3'b111),
+			.fp32_result     (fp32_out)
+		);
+	end else if (k == 2) begin
 		sum_of_two_no_chainin #(
 			.FP16_MODE(FP16_MODE)
 		) u_sum_of_two_no_chainin (
