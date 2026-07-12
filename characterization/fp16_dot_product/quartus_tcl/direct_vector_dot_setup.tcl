@@ -38,9 +38,11 @@ set_global_assignment -name LAST_QUARTUS_VERSION "25.3.0 Pro Edition"
 
 # Get Verilog files and SDC file
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/direct_vector_dp.sv]
+set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/pipeline.sv]
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/ip/sum_of_two.v]
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/ip/vector_one.v]
 set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/ip/vector_two.v]
+set_global_assignment -name SYSTEMVERILOG_FILE [file normalize $ROOT/rtl/ip/fp32_add.v]
 set_global_assignment -name SDC_FILE [file normalize $SDC_FILE]
 
 # Set number of processors and top design

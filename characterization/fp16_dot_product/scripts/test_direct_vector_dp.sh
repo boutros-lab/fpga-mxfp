@@ -39,8 +39,8 @@ done
 
 vmap tennm "/tools/altera/quartus-pro/25.3/questa_fse/intel/verilog/tennm"
 
-vlog -sv $TB_ROOT/bf16_dp_tb.sv $RTL_ROOT/direct_vector_dp.sv \
-	$IP_ROOT/sum_of_two.v $IP_ROOT/vector_one.v $IP_ROOT/vector_two.v \
+vlog -sv $TB_ROOT/bf16_dp_tb.sv $RTL_ROOT/direct_vector_dp.sv $RTL_ROOT/pipeline.sv \
+	$IP_ROOT/sum_of_two.v $IP_ROOT/vector_one.v $IP_ROOT/vector_two.v $IP_ROOT/fp32_add.v \
 	+define+K=$k +define+TESTS=$test_length
 
 vsim -voptargs=+acc -L tennm_ver -c work.bf16_dp_tb -do "log -r /*; run -all; quit -f"
