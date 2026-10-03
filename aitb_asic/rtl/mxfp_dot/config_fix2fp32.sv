@@ -116,7 +116,7 @@ endgenerate
 always_comb begin
 	if (underflow || (!overflow && (exponent == 0))) begin // Underflow, Flush subnormals
 		o_fp = {sign, 31'b0}; // 0
-	end else if (overflow) begin // Overflow
+	end else if (overflow || (exponent == 8'hFF)) begin // Overflow; biased exponent 255 is out of range too
 		o_fp = {sign, 31'h7f800000}; // Inf
 	end else begin // Normal
 		o_fp = {sign, exponent, fraction};
